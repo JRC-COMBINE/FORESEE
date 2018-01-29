@@ -14,7 +14,13 @@ CellResponseProcessor(TrainObject, DrugName, CellResponseType,
 
 \item{CellResponseType}{Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc., that is used for prediction}
 
-\item{CellResponseTransformation}{Method that is to be used to transform the drug response data of the TrainObject, such as power transform, logarithm, binarization, user defined functions, etc.}
+\item{CellResponseTransformation}{Method that is to be used to transform the drug response data of the TrainObject:
+the function power transform power transforms the drug response data,
+the function logarithm returns the natural logarithm of the drug response data,
+the function binarization_kmeans returns a binarized drug response vector based on 2 kmeans clusters,
+the function binarization_cutoff returns a binarized drug response vector based on a cutoff at the median,
+the function none returns the unchanged drug response data,
+the function user-defined function is determined by the function in the input}
 }
 \value{
 \item{TrainObject}{The TrainObject with preprocessed drug response data.}

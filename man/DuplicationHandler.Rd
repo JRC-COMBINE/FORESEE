@@ -9,7 +9,10 @@ DuplicationHandler(Object, DuplicationHandling)
 \arguments{
 \item{Object}{FORESEE Object (ForeseeCell or ForeseeTrain) that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
 
-\item{DuplicationHandling}{Method for handling duplicates of gene names, such as taking none, the average, the first hit, etc.}
+\item{DuplicationHandling}{Method for handling duplicates of gene names.
+"mean" calculates the mean of all rows that have the same gene name,
+"first" chooses the first occuring row of duplicated genes only,
+"none" removes all genes that occur more than once.}
 }
 \value{
 \item{Object}{The object without duplicated gene names}

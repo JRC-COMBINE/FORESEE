@@ -3,12 +3,140 @@
 #' The FeatureSelector selects features from all genes to be used for drug efficacy prediction.
 #'
 #' @param TrainObject Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
-#' @param DrugName Name of the drug whose efficacy is supposed to be predicted with the model
+#' @param TestObject Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
 #' @param GeneFilter Set of genes to be considered for training the model, such as all, a certain percantage based on variance or p-value, specific gene sets like landmark genes, gene ontologies or pathways, etc.
-
+#' The option 'variance' removes the 20 % genes of lowest variance across samples in the TrainObject
+#' The option 'pvalue' removes the 20 % genes of lowest p-value (ttest) across samples in the TrainObject
+#' The option 'landmarkgenes' uses the L1000 gene set downloaded from CLUE Command App
+#' The option 'ontology' uses a specific set of genes included in the chosen ontology? -> Ali
+#' The option 'pathway' uses a specific set of genes included in the chosen pathway? -> Ali
+#' #' The option 'all' keeps all genes as features
+#' If the user inserts a list as an input, the list is considered as chosen features.
 #' @return \item{TrainObject}{The TrainObject with the selected gene set as features.}
+#'         \item{TestObject}{The TestObject with homogenized features according to the chosen TrainObject.}
 #' @export
 
-FeatureSelector <- function(TrainObject, DrugName, GeneFilter){
-  return(TrainObject)
+
+#ToDo1: make variance nicer! (use implemented function)
+#ToDo2: p-value
+#ToDo3: Ontologies
+#ToDo4: Pathways
+#ToDo5: User-defined gene lists
+
+
+FeatureSelector <- function(TrainObject,TestObject, GeneFilter){
+  UseMethod("FeatureSelector", object = GeneFilter)
+  # Update Objects in the Environment
+  TrainObject <<- TrainObject_selectedfeatures
+  TestObject <<- TrainObject_selectedfeatures
 }
+
+FeatureSelector.character <- function(TrainObject, TestObject, GeneFilter){
+  class(GeneFilter) <- GeneFilter;
+  UseMethod("FeatureSelector", object = GeneFilter)
+}
+
+# FeatureSelector.list <- function(TrainObject, TestObject, GeneFilter){
+#   UseMethod("FeatureSelector", object = GeneFilter)
+# }
+
+
+################################################################################
+### Option "variance" to keep variance genes as features in the TrainObject
+FeatureSelector.variance <- function(TrainObject, TestObject, GeneFilter){
+
+  TrainObject_selectedfeatures <- TrainObject
+  TestObject_selectedfeatures <- TestObject
+
+  # Calculate variance of each gene across all samples in TrainObject
+  # A MESS! USE SOME IMPLEMENTED ANOVA METHOD INSTEAD!
+  variance_TrainObject<-c()
+  for (i in 1:dim(TrainObject_selectedfeatures$GeneExpression)[1]){
+    variance_TrainObject[i] <- var(TrainObject_selectedfeatures$GeneExpression[i,])
+  }
+  names(variance_TrainObject) <- rownames(TrainObject_selectedfeatures$GeneExpression)
+  highest_variant_genes <- sort(variance_TrainObject,decreasing = TRUE)
+  features <- names(highest_variant_genes[1:(0.8*length(highest_variant_genes))])
+
+  TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[features,]
+  TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[features,]
+
+  # Update Objects in the Environment
+  TrainObject <<- TrainObject_selectedfeatures
+  TestObject <<- TestObject_selectedfeatures
+}
+
+################################################################################
+### Option "pvalue" to keep pvalue genes as features in the TrainObject
+FeatureSelector.pvalue <- function(TrainObject, TestObject, GeneFilter){
+
+  TrainObject_selectedfeatures <- TrainObject
+  TestObject_selectedfeatures <- TestObject
+
+  # Calculate p-value of each gene across all samples in TrainObject
+
+
+  # Update Objects in the Environment
+  TrainObject <<- TrainObject_selectedfeatures
+  TestObject <<- TestObject_selectedfeatures
+}
+
+################################################################################
+### Option "landmarkgenes" to keep landmarkgenes genes as features in the TrainObject
+FeatureSelector.landmarkgenes <- function(TrainObject, TestObject, GeneFilter){
+
+  TrainObject_selectedfeatures <- TrainObject
+  TestObject_selectedfeatures <- TestObject
+
+  # Load list of landmark genes
+  load("./data/LM_genes_entrez.rda")
+  TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[rownames(TrainObject_selectedfeatures$GeneExpression) %in% LM_genes_entrez,]
+  TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[rownames(TestObject_selectedfeatures$GeneExpression) %in% LM_genes_entrez,]
+
+  # Update Objects in the Environment
+  TrainObject <<- TrainObject_selectedfeatures
+  TestObject <<- TestObject_selectedfeatures
+}
+
+################################################################################
+### Option "ontology" to keep ontology genes as features in the TrainObject
+FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter){
+
+  TrainObject_selectedfeatures <- TrainObject
+  TestObject_selectedfeatures <- TestObject
+
+  # Ali's implementation
+
+  # Update Objects in the Environment
+  TrainObject <<- TrainObject_selectedfeatures
+  TestObject <<- TestObject_selectedfeatures
+}
+
+################################################################################
+### Option "pathway" to keep pathway genes as features in the TrainObject
+FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter){
+
+  TrainObject_selectedfeatures <- TrainObject
+  TestObject_selectedfeatures <- TestObject
+
+  # Ali's implementation
+
+  # Update Objects in the Environment
+  TrainObject <<- TrainObject_selectedfeatures
+  TestObject <<- TestObject_selectedfeatures
+}
+
+################################################################################
+### Option "all" to keep all genes as features in the TrainObject
+FeatureSelector.all <- function(TrainObject, TestObject, GeneFilter){
+
+  TrainObject_selectedfeatures <- TrainObject
+  TestObject_selectedfeatures <- TestObject
+
+  # Don't remove any genes
+
+  # Update Objects in the Environment
+  TrainObject <<- TrainObject_selectedfeatures
+  TestObject <<- TestObject_selectedfeatures
+}
+

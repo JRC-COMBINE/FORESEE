@@ -4,9 +4,9 @@
 #'
 #' @param Object FORESEE Object (ForeseeCell or ForeseeTrain) that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
 #' @param DuplicationHandling Method for handling duplicates of gene names.
-#' "mean" calculates the mean of all rows that have the same gene name,
-#' "first" chooses the first occuring row of duplicated genes only,
-#' "none" removes all genes that occur more than once.
+#' The function 'mean' calculates the mean of all rows that have the same gene name,
+#' The function 'first' chooses the first occuring row of duplicated genes only,
+#' The function 'none' removes all genes that occur more than once.
 
 #' @return \item{Object}{The object without duplicated gene names}
 #' @export
@@ -40,7 +40,7 @@ DuplicationHandler.first <- function(Object, DuplicationHandling){
   dim_after <- dim(Object_withoutDuplicates$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The removal of duplicates, reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
+  print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
   Object <<- Object_withoutDuplicates
@@ -62,7 +62,7 @@ DuplicationHandler.none <- function(Object, DuplicationHandling){
   dim_after<- dim(Object_withoutDuplicates$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The removal of duplicates, reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
+  print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
   Object <<- Object_withoutDuplicates
@@ -87,7 +87,7 @@ DuplicationHandler.mean <- function(Object, DuplicationHandling){
   dim_after<- dim(Object_withoutDuplicates$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The removal of duplicates, reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
+  print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
   Object <<- Object_withoutDuplicates

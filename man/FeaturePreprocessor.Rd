@@ -11,7 +11,13 @@ FeaturePreprocessor(TrainObject, TestObject, FeaturePreprocessing)
 
 \item{TestObject}{Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
 
-\item{FeaturePreprocessing}{Method for preprocessing the inputs of the model, such as z-score, principal component analysis, PhysioSpace similarity, etc.}
+\item{FeaturePreprocessing}{Method for preprocessing the inputs of the model:
+The function 'zscore_genewise' calculates the zscore normalizing each gene over all samples,
+The function 'zscore_samplewise' calculates the zscore normalizing each sample over all genes,
+The function 'pca' does principal component analysis,
+The function 'physio' does physiospace analysis with the samples using cell line gene expression of the gdsc data base as physiological references,
+The function 'none' keeps the gene expression values unchanged,
+If the user wants to implement a user-defined function batch effect removal function, the input should be the function.}
 }
 \value{
 \item{TrainObject}{The TrainObject with preprocessed features.}

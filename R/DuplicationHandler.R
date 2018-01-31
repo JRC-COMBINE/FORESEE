@@ -25,6 +25,32 @@ DuplicationHandler.character <- function(Object, DuplicationHandling){
 }
 
 ################################################################################
+### Function "function" applies the function in "DuplicationHandling"
+# to all rows that have the same gene name
+DuplicationHandler.function <- function(Object, DuplicationHandling){
+
+  Object_withoutDuplicates <- Object
+
+  # Counts the number of duplicated gene names in the gene expression matrix
+  dim_before <- dim(Object_withoutDuplicates$GeneExpression)[1]
+
+  # Removes duplicates
+  Object_withoutDuplicates$GeneExpression <- data.matrix(aggregate(x = Object_withoutDuplicates$GeneExpression, by = list(rownames(Object_withoutDuplicates$GeneExpression)), FUN = DuplicationHandling))
+  rownames(Object_withoutDuplicates$GeneExpression) <- Object_withoutDuplicates$GeneExpression[,1]
+  Object_withoutDuplicates$GeneExpression <- Object_withoutDuplicates$GeneExpression[,2:dim(Object_withoutDuplicates$GeneExpression)[2]]
+
+  # Calculates the dimension of the gene expression matrix after removing duplicates
+  dim_after<- dim(Object_withoutDuplicates$GeneExpression)[1]
+
+  # Prints the reduction of gene names
+  print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
+
+  # Update Object in the Environment
+  Object <<- Object_withoutDuplicates
+
+}
+
+################################################################################
 ### Function "first" to choose the first occuring row of duplicated genes only
 DuplicationHandler.first <- function(Object, DuplicationHandling){
 

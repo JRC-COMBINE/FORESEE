@@ -30,6 +30,12 @@
 
 ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, CellResponseTransformation, InputDataTypes,
                          DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing, BlackBox, nfoldCrossvalidation){
-  ForeseeModel<-0
-  return(ForeseeModel,TrainObject, TestObject)
+  #Handling duplicated genes:
+  TrainObject <- DuplicationHandler(Object = TrainObject, DuplicationHandling = DuplicationHandling)
+  TestObject <- DuplicationHandler(Object = TestObject, DuplicationHandling = DuplicationHandling)
+
+  #Homogenizing Train and Test Objects:
+  Homogenizer(TrainObject, TestObject, HomogenizationMethod)
+
+  return(list("TrainObject"=TrainObject, "TestObject"=TestObject))
 }

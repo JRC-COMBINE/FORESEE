@@ -3,5 +3,6 @@
 .RData
 .Ruserdata
 data-raw/*
+data/*
 .DS_Store
 .gitignore

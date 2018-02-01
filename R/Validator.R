@@ -10,7 +10,29 @@
 #' @export
 
 Validator <- function(Foreseen, TestObject, Evaluation){
-  Performance<-0
-  # Plots
+  UseMethod("Validator", object = HomogenizationMethod)
+}
+
+Validator.character <- function(Foreseen, TestObject, Evaluation){
+  class(Evaluation) <- Evaluation;
+  UseMethod("Validator", object = Evaluation)
+}
+
+################################################################################
+### Function "function" applies the function in "Evaluation" to predicted values
+Validator.function <- function(Foreseen, TestObject, Evaluation) {
+
+  return(Performance)
+}
+
+################################################################################
+### Function "function" applies the function in "Evaluation" to predicted values
+Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
+  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$annotation)
+  if(is.numeric(ANNOTATIONS)){
+    message("Annotation of the test set is binarized for calculating ROC")
+    ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
+  }
+  ##Not complete here!
   return(Performance)
 }

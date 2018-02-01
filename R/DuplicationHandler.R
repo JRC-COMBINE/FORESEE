@@ -43,7 +43,8 @@ DuplicationHandler.first <- function(Object, DuplicationHandling){
   print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
-  Object <<- Object_withoutDuplicates
+  Object <- Object_withoutDuplicates
+  return(Object)
 }
 
 ################################################################################
@@ -65,7 +66,8 @@ DuplicationHandler.none <- function(Object, DuplicationHandling){
   print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
-  Object <<- Object_withoutDuplicates
+  Object <- Object_withoutDuplicates
+  return(Object)
 }
 
 
@@ -90,8 +92,8 @@ DuplicationHandler.mean <- function(Object, DuplicationHandling){
   print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
-  Object <<- Object_withoutDuplicates
-
+  Object <- Object_withoutDuplicates
+  return(Object)
 }
 
 

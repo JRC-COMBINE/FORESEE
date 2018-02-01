@@ -26,9 +26,6 @@
 
 FeatureSelector <- function(TrainObject,TestObject, GeneFilter){
   UseMethod("FeatureSelector", object = GeneFilter)
-  # Update Objects in the Environment
-  TrainObject <<- TrainObject_selectedfeatures
-  TestObject <<- TrainObject_selectedfeatures
 }
 
 FeatureSelector.character <- function(TrainObject, TestObject, GeneFilter){
@@ -40,6 +37,30 @@ FeatureSelector.character <- function(TrainObject, TestObject, GeneFilter){
 #   UseMethod("FeatureSelector", object = GeneFilter)
 # }
 
+################################################################################
+### Function "function" applies the function in "GeneFilter"
+# to Train and Test objects
+FeatureSelector.function <- function(TrainObject, TestObject, GeneFilter){
+
+  TrainObject_selectedfeatures <- TrainObject
+  TestObject_selectedfeatures <- TestObject
+
+  # Calculate a measure by GeneFilter  of each gene across all samples in TrainObject
+  measure_TrainObject<-c()
+  for (i in 1:dim(TrainObject_selectedfeatures$GeneExpression)[1]){
+    measure_TrainObject[i] <- GeneFilter(TrainObject_selectedfeatures$GeneExpression[i,])
+  }
+  names(measure_TrainObject) <- rownames(TrainObject_selectedfeatures$GeneExpression)
+  highest_measured_genes <- sort(measure_TrainObject,decreasing = TRUE)
+  features <- names(highest_measured_genes[1:(0.8*length(highest_measured_genes))])
+
+  TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[features,]
+  TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[features,]
+
+  # Update Objects in the Environment
+  assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
+}
 
 ################################################################################
 ### Option "variance" to keep variance genes as features in the TrainObject
@@ -73,12 +94,22 @@ FeatureSelector.pvalue <- function(TrainObject, TestObject, GeneFilter){
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
 
-  # Calculate p-value of each gene across all samples in TrainObject
+  # Calculate ttest-p-value of each gene between all samples in TrainObject and TestObject
+  pvalue_TrainObject<-c()
+  for (i in 1:dim(TrainObject_selectedfeatures$GeneExpression)[1]){
+    pvalue_TrainObject[i] <- t.test(TrainObject_selectedfeatures$GeneExpression[i,],
+                                    TestObject_selectedfeatures$GeneExpression[i,])$p.value
+  }
+  names(pvalue_TrainObject) <- rownames(TrainObject_selectedfeatures$GeneExpression)
+  lowest_pvalued_genes <- sort(pvalue_TrainObject,decreasing = FALSE)
+  features <- names(lowest_pvalued_genes[1:(0.8*length(lowest_pvalued_genes))])
 
+  TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[features,]
+  TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[features,]
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_selectedfeatures
-  TestObject <<- TestObject_selectedfeatures
+  assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
 }
 
 ################################################################################

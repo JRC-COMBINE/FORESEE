@@ -16,7 +16,6 @@
 
 DuplicationHandler <- function(Object, DuplicationHandling){
   UseMethod("DuplicationHandler", object = DuplicationHandling)
-  return(Object)
 }
 
 DuplicationHandler.character <- function(Object, DuplicationHandling){
@@ -46,7 +45,7 @@ DuplicationHandler.function <- function(Object, DuplicationHandling){
   print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
-  Object <<- Object_withoutDuplicates
+  return(Object_withoutDuplicates)
 
 }
 
@@ -69,7 +68,7 @@ DuplicationHandler.first <- function(Object, DuplicationHandling){
   print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
-  Object <<- Object_withoutDuplicates
+  return(Object_withoutDuplicates)
 }
 
 ################################################################################
@@ -91,7 +90,7 @@ DuplicationHandler.none <- function(Object, DuplicationHandling){
   print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
-  Object <<- Object_withoutDuplicates
+  return(Object_withoutDuplicates)
 }
 
 
@@ -116,8 +115,13 @@ DuplicationHandler.mean <- function(Object, DuplicationHandling){
   print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
-  Object <<- Object_withoutDuplicates
+  return(Object_withoutDuplicates)
 
 }
 
-
+################################################################################
+### Function "default" is called in case method in "DuplicationHandling" is
+# unknown to DuplicationHandler
+DuplicationHandler.default <- function(Object, DuplicationHandling){
+  stop(paste("Method",DuplicationHandling,"is not defined for handling duplicated genes!"))
+}

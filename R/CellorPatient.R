@@ -8,6 +8,9 @@
 #' @export
 
 CellorPatient <- function(Object){
-  CellorPatient_status <- 0
-  return(CellorPatient_status)
+  if(any(class(Object)==c("ForeseeCell","ForeseePatient"))) {
+    warning(paste("Input of CellorPatient function should be a Foresee Object! returning NULL"))
+    return(NULL)
+  }
+  return(ifelse(test = class(GSE6434)=="ForeseeCell", yes = T, no = F))
 }

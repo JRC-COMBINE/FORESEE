@@ -24,8 +24,6 @@
 
 Homogenizer <- function(TrainObject, TestObject, HomogenizationMethod){
   UseMethod("Homogenizer", object = HomogenizationMethod)
-  TrainObject <<- TrainObject_homogenized
-  TestObject <<- TestObject_homogenized
 }
 
 Homogenizer.character <- function(TrainObject, TestObject, HomogenizationMethod){
@@ -33,24 +31,28 @@ Homogenizer.character <- function(TrainObject, TestObject, HomogenizationMethod)
   UseMethod("Homogenizer", object = HomogenizationMethod)
 }
 
-# Homogenizer.function <- function(TrainObject, TestObject, HomogenizationMethod) {
-#   UseMethod("Homogenizer", object = HomogenizationMethod)
-#
-#   TrainObject_homogenized <- TrainObject
-#   TestObject_homogenized <- TestObject
-#
-#   # Removes gene expression matrices to common gene names only
-#   CommonGenes <- rownames(TrainObject_homogenized$GeneExpression)[rownames(TrainObject_homogenized$GeneExpression) %in% rownames(TestObject_homogenized$GeneExpression)]
-#   TrainObject_homogenized$GeneExpression <- TrainObject_homogenized$GeneExpression[CommonGenes,]
-#   TestObject_homogenized$GeneExpression <- TestObject_homogenized$GeneExpression[CommonGenes,]
-#
-#   ### What to do with User-defined function goes here
-#
-#
-#   # Update Objects in the Environment
-#   TrainObject <<- TrainObject_hom
-#   TestObject <<- TrainObject_hom
-# }
+################################################################################
+### Function "function" applies the function in "HomogenizationMethod"
+# to Train and Test objects
+Homogenizer.function <- function(TrainObject, TestObject, HomogenizationMethod) {
+
+  TrainObject_homogenized <- TrainObject
+  TestObject_homogenized <- TestObject
+
+  # Removes gene expression matrices to common gene names only
+  CommonGenes <- rownames(TrainObject_homogenized$GeneExpression)[rownames(TrainObject_homogenized$GeneExpression) %in% rownames(TestObject_homogenized$GeneExpression)]
+  TrainObject_homogenized$GeneExpression <- TrainObject_homogenized$GeneExpression[CommonGenes,]
+  TestObject_homogenized$GeneExpression <- TestObject_homogenized$GeneExpression[CommonGenes,]
+
+  ### What to do with User-defined function goes here
+  homogenizedTrainAndTestGex <- HomogenizationMethod(TrainObject_homogenized$GeneExpression, TestObject_homogenized$GeneExpression)
+  TrainObject_homogenized$GeneExpression <- homogenizedTrainAndTestGex[[1]]
+  TestObject_homogenized$GeneExpression <- homogenizedTrainAndTestGex[[2]]
+
+  # Update Objects in the Environment
+  TrainObject <<- TrainObject_homogenized
+  TestObject <<- TestObject_homogenized
+}
 
 
 
@@ -247,6 +249,84 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
 }
 
 ################################################################################
+### Function "RUV", based on RUV4 in package "ruv"
+Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
+
+  TrainObject_homogenized <- TrainObject
+  TestObject_homogenized <- TestObject
+
+  # Counts the number of gene names in the objects' gene expression matrices
+  dim_before_train <- dim(TrainObject_homogenized$GeneExpression)[1]
+  dim_before_test <- dim(TestObject_homogenized$GeneExpression)[1]
+
+  # Removes gene expression matrices to common gene names only
+  CommonGenes <- rownames(TrainObject_homogenized$GeneExpression)[rownames(TrainObject_homogenized$GeneExpression) %in% rownames(TestObject_homogenized$GeneExpression)]
+  TrainObject_homogenized$GeneExpression <- TrainObject_homogenized$GeneExpression[CommonGenes,]
+  TestObject_homogenized$GeneExpression <- TestObject_homogenized$GeneExpression[CommonGenes,]
+
+
+  # Load list of housekeeping genes
+  # "Human housekeeping genes revisited", E. Eisenberg and E.Y. Levanon, Trends in Genetics, 29 (2013)
+  # load("./data/HK_genes_entrez.rda")
+  warning("Didn't have housekeeping gene list, made a dummy list for now")
+  HK_genes_entrez <- rownames(TestObject_homogenized$GeneExpression)[1:200]
+  NegativeControl <-  rownames(TestObject_homogenized$GeneExpression) %in% HK_genes_entrez
+
+  # Create Data out of both batches
+  BothBatches <- cbind(TrainObject_homogenized$GeneExpression,TestObject_homogenized$GeneExpression)
+  BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
+
+  # NegativeControl <-  rownames(TestObject_homogenized$GeneExpression) %in% HK_genes_entrez
+  # NegativeControl <-  HK_genes_entrez[HK_genes_entrez %in% CommonGenes]
+  # sum(HK_genes_entrez %in% CommonGenes)
+
+  # Apply principal component analysis to gene expression matrix of only the control genes
+  # pca_NegativeControl <- princomp(BothBatches[NegativeControl,])
+  # loadings_10PCs<- pca_NegativeControl$loadings[,1:10]
+  # scores_10PCs<- pca_NegativeControl$scores[,1:10]
+  # LinearModel_RUV<-BothBatches
+  # for (i in 1:dim(LinearModel_RUV)[1]){
+  #   LinearModel_RUV[i,] <- lm(BothBatches[i,]~loadings_10PCs)$residuals
+  # }
+  ### Is it correct to project on the loadings???
+
+  # dim(BothBatches)
+  # dim(loadings_10PCs)
+  # hist(BothBatches[1,])
+  # hist(LinearModel_RUV[1,])
+  # hist(BothBatches[,1])
+  # hist(LinearModel_RUV[,1])
+
+  # # Homogenizes both gene expression Data sets
+  # BothBatches <- cbind(TrainObject_homogenized$GeneExpression,TestObject_homogenized$GeneExpression)
+  # BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
+  # # WRONG! RUVObject <- RUV2(Y=t(BothBatches), Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k = 0)
+
+  RUVObject <- RUV4(Y=t(BothBatches), X=matrix(c(rep(0, ncol(TrainObject_homogenized$GeneExpression)),
+                                          rep(1, ncol(TestObject_homogenized$GeneExpression))),
+                                          ncol = 1),
+                    ctl = NegativeControl, k = 10)
+
+  BothBatchesHomogenized <- t(as.matrix(c(rep(0, ncol(TrainObject_homogenized$GeneExpression)),
+              rep(1, ncol(TestObject_homogenized$GeneExpression)))) %*% RUVObject$betahat)
+  TrainObject_homogenized$GeneExpression <- BothBatchesHomogenized[, BatchIndex=="trainobject"]
+  TestObject_homogenized$GeneExpression <- BothBatchesHomogenized[, BatchIndex=="testobject"]
+
+  # Counts the number of gene names in the objects' gene expression matrices after homogenization
+  dim_after_train <- dim(TrainObject_homogenized$GeneExpression)[1]
+  dim_after_test <- dim(TestObject_homogenized$GeneExpression)[1]
+
+  # Prints the reduction of gene names
+  print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
+
+  # Update Objects in the Environment
+  # TrainObject <<- TrainObject_homogenized
+  # TestObject <<- TestObject_homogenized
+  assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
+  assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
+}
+
+################################################################################
 ### Function "none"
 Homogenizer.none <- function(TrainObject, TestObject, HomogenizationMethod){
 
@@ -276,5 +356,10 @@ Homogenizer.none <- function(TrainObject, TestObject, HomogenizationMethod){
   TestObject <<- TestObject_homogenized
 }
 
-
+################################################################################
+### Function "default" is called in case method in "HomogenizationMethod" is
+# unknown to Homogenizer
+Homogenizer.default <- function(TrainObject, TestObject, HomogenizationMethod){
+  stop(paste("Method",HomogenizationMethod,"is not defined as a homogenization method!"))
+}
 

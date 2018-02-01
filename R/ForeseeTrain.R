@@ -31,6 +31,7 @@
 ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, CellResponseTransformation, InputDataTypes,
                          DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing, BlackBox, nfoldCrossvalidation){
 
+
   TrainObject <- TrainObject
   TestObject <- TestObject
   DrugName <- DrugName
@@ -141,5 +142,6 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, Ce
   ForeseeModel <<- ForeseeModel
   TrainObject <<- TrainObject
   TestObject <<- TestObject
+
 
 }

@@ -214,7 +214,7 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
   for (i in 1:dim(LinearModel_RUV)[1]){
   LinearModel_RUV[i,] <- lm(BothBatches[i,]~loadings_10PCs)$residuals
   }
-  ### Is it correct to project on the loadings???
+  ### Is it correct to project on the loadings??? Recheck
 
   # dim(BothBatches)
   # dim(loadings_10PCs)
@@ -226,8 +226,10 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
   # # Homogenizes both gene expression Data sets
   # BothBatches <- cbind(TrainObject_homogenized$GeneExpression,TestObject_homogenized$GeneExpression)
   # BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
-  # # WRONG! RUVObject <- RUV2(Y=t(BothBatches), Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k = 0)
+  # # WRONG! RUVObject <- RUV4(Y=t(BothBatches), X=rownames(),Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k = 0)
+  RUVObject <- RUV4(Y=t(BothBatches), X=colnames(t(BothBatches)),Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl)
 
+  RUVObject <- RUV4(Y=t(BothBatches), X=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k=1)
 
   TrainObject_homogenized$GeneExpression <- LinearModel_RUV[, BatchIndex=="trainobject"]
   TestObject_homogenized$GeneExpression <- LinearModel_RUV[, BatchIndex=="testobject"]

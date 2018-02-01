@@ -17,7 +17,7 @@ The option 'pvalue' removes the 20 % genes of lowest p-value (ttest) across samp
 The option 'landmarkgenes' uses the L1000 gene set downloaded from CLUE Command App
 The option 'ontology' uses a specific set of genes included in the chosen ontology? -> Ali
 The option 'pathway' uses a specific set of genes included in the chosen pathway? -> Ali
-#' The option 'all' keeps all genes as features
+The option 'all' keeps all genes as features
 If the user inserts a list as an input, the list is considered as chosen features.}
 }
 \value{

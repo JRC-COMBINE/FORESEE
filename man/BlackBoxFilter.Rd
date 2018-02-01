@@ -9,7 +9,13 @@ BlackBoxFilter(TrainObject, BlackBox, nfoldCrossvalidation)
 \arguments{
 \item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
 
-\item{BlackBox}{Modeling algorithm for training, such as linear regression, elastic net, lasso regression, ridge regression, tandem, support vector machines, random forests, user defined functions, etc.}
+\item{BlackBox}{Modeling algorithm for training:
+The function 'linear' fits a linear regression model to the training data,
+The function 'ridge' fits a linear ridge regression model by Cule et al. (2012) to the training data,
+The function 'lasso' fits a lasso regression model from the glmnet package by Friedman et al. (2008) to the training data,
+The function 'elasticnet' fits an elastic net regression model from the glmnet package by Friedman et al. (2008) to the training data,
+The function 'svm' fits a support vector regression model from the e1071 package by Meyer and Chih-Chung (2017) to the training data,
+The function 'rf' fits a random forest regression model by by Breiman (2001) to the training data}
 
 \item{nfoldCrossvalidation}{# folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.}
 }

@@ -50,8 +50,8 @@ Homogenizer.function <- function(TrainObject, TestObject, HomogenizationMethod) 
   TestObject_homogenized$GeneExpression <- homogenizedTrainAndTestGex[[2]]
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_homogenized
-  TestObject <<- TestObject_homogenized
+  assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
+  assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
 
 
@@ -92,8 +92,8 @@ Homogenizer.ComBat <- function(TrainObject, TestObject, HomogenizationMethod){
   print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_homogenized
-  TestObject <<- TestObject_homogenized
+  assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
+  assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
 
 
@@ -133,8 +133,8 @@ Homogenizer.quantile <- function(TrainObject, TestObject, HomogenizationMethod){
   print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_homogenized
-  TestObject <<- TestObject_homogenized
+  assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
+  assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
 
 
@@ -173,8 +173,8 @@ Homogenizer.limma <- function(TrainObject, TestObject, HomogenizationMethod){
   print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_homogenized
-  TestObject <<- TestObject_homogenized
+  assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
+  assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
 
 
@@ -244,8 +244,8 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
   print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_homogenized
-  TestObject <<- TestObject_homogenized
+  assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
+  assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
 
 ################################################################################
@@ -320,8 +320,6 @@ Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
   print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
-  # TrainObject <<- TrainObject_homogenized
-  # TestObject <<- TestObject_homogenized
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
   assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
@@ -352,8 +350,8 @@ Homogenizer.none <- function(TrainObject, TestObject, HomogenizationMethod){
   print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_homogenized
-  TestObject <<- TestObject_homogenized
+  assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
+  assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
 
 ################################################################################

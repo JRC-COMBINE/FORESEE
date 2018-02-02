@@ -9,8 +9,9 @@
 #' The function 'lasso' fits a lasso regression model from the glmnet package by Friedman et al. (2008) to the training data,
 #' The function 'elasticnet' fits an elastic net regression model from the glmnet package by Friedman et al. (2008) to the training data,
 #' The function 'svm' fits a support vector regression model from the e1071 package by Meyer and Chih-Chung (2017) to the training data,
-#' The function 'rf' fits a random forest regression model by by Breiman (2001) to the training data
-
+#' The function 'rf' fits a random forest regression model by Breiman (2001) to the training data
+#' The function 'rf_ranger' fits a fast random forest regression model by Marvin N. Wright (2018) to the training data
+#'
 #' @param nfoldCrossvalidation # folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.
 
 #' @return \item{ForeseeModel}{A black box model trained on the TrainObject data that can be applied to new test data.}
@@ -25,10 +26,6 @@
 
 BlackBoxFilter <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   UseMethod("BlackBoxFilter", object = BlackBox)
-  # Update Objects in the Environment
-  TrainObject <<- TrainObject
-  ForeseeModel <<- ForeseeModel
-
 }
 
 BlackBoxFilter.character <- function(TrainObject, BlackBox, nfoldCrossvalidation){
@@ -55,8 +52,9 @@ BlackBoxFilter.linear <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   lm_fit <- lm(formula = DrugResponse~., TrainObject_train)
 
   # Update Objects in the Environment
-  TrainObject[["TrainFrame"]] <<- TrainObject_train
-  ForeseeModel <<- lm_fit
+  TrainObject[["TrainFrame"]] <- TrainObject_train
+  assign("TrainObject", value = TrainObject, envir = parent.frame())
+  assign("ForeseeModel", value = lm_fit, envir = parent.frame())
 }
 
 
@@ -78,8 +76,9 @@ BlackBoxFilter.ridge <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   ridge_fit <- linearRidge(formula = DrugResponse~., TrainObject_train)
 
   # Update Objects in the Environment
-  TrainObject[["TrainFrame"]] <<- TrainObject_train
-  ForeseeModel <<- ridge_fit
+  TrainObject[["TrainFrame"]] <- TrainObject_train
+  assign("TrainObject", value = TrainObject, envir = parent.frame())
+  assign("ForeseeModel", value = ridge_fit, envir = parent.frame())
 }
 
 
@@ -95,8 +94,9 @@ BlackBoxFilter.lasso <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   lasso_fit <- glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse, alpha = 1)
 
   # Update Objects in the Environment
-  TrainObject[["TrainFrame"]] <<- TrainObject_train
-  ForeseeModel <<- lasso_fit
+  TrainObject[["TrainFrame"]] <- TrainObject_train
+  assign("TrainObject", value = TrainObject, envir = parent.frame())
+  assign("ForeseeModel", value = lasso_fit, envir = parent.frame())
 }
 
 
@@ -118,8 +118,9 @@ BlackBoxFilter.elasticnet <- function(TrainObject, BlackBox, nfoldCrossvalidatio
   elasticnet_fit <- glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse, alpha = 0.5)
 
   # Update Objects in the Environment
-  TrainObject[["TrainFrame"]] <<- TrainObject_train
-  ForeseeModel <<- elasticnet_fit
+  TrainObject[["TrainFrame"]] <- TrainObject_train
+  assign("TrainObject", value = TrainObject, envir = parent.frame())
+  assign("ForeseeModel", value = elasticnet_fit, envir = parent.frame())
 }
 
 
@@ -140,8 +141,9 @@ BlackBoxFilter.svm <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   svm_fit <- svm(formula = DrugResponse~., data=data.frame(TrainObject_train))
 
   # Update Objects in the Environment
-  TrainObject[["TrainFrame"]] <<- TrainObject_train
-  ForeseeModel <<- svm_fit
+  TrainObject[["TrainFrame"]] <- TrainObject_train
+  assign("TrainObject", value = TrainObject, envir = parent.frame())
+  assign("ForeseeModel", value = svm_fit, envir = parent.frame())
 }
 
 
@@ -163,8 +165,32 @@ BlackBoxFilter.rf <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   rf_fit <- randomForest(formula = DrugResponse~., data.frame(TrainObject_train))
 
   # Update Objects in the Environment
-  TrainObject[["TrainFrame"]] <<- TrainObject_train
-  ForeseeModel <<- rf_fit
+  TrainObject[["TrainFrame"]] <- TrainObject_train
+  assign("TrainObject", value = TrainObject, envir = parent.frame())
+  assign("ForeseeModel", value = rf_fit, envir = parent.frame())
 }
 
+################################################################################
+### Function "rf" to train a random forest regression model
+BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation){
+
+  TrainObject_train<- as.matrix(cbind(t(TrainObject$GeneExpression),TrainObject$DrugResponse))
+  colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
+
+  # For some weird reason the object still contains duplicates? Check duplication handler
+  # Just take the first occuring gene name (here: in columns!) for now
+  TrainObject_train <- as.data.frame(TrainObject_train)
+  TrainObject_train <- TrainObject_train[,!duplicated(colnames(TrainObject_train))]
+  TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
+
+  # Random Forest Package by Marvin N. Wright (2018)
+  require(ranger)
+  rf_ranger_fit <- ranger(formula = DrugResponse~., data.frame(TrainObject_train))
+
+  # Update Objects in the Environment
+  TrainObject[["TrainFrame"]] <- TrainObject_train
+  assign("TrainObject", value = TrainObject, envir = parent.frame())
+  assign("ForeseeModel", value = rd_ranger_fit, envir = parent.frame())
+
+}
 

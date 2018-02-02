@@ -9,8 +9,17 @@
 #' @export
 
 Foreseer <- function(TestObject, ForeseeModel){
-  Foreseen<-0
+
+  TestObject_test<- as.data.frame(as.matrix(t(TestObject$GeneExpression)))
+  # For some weird reason the object still contains duplicates? Check duplication handler
+  # Just take the first occuring gene name (here: in columns!) for now
+  TestObject_test <- TestObject_test[,!duplicated(colnames(TestObject_test))]
+
+  Foreseen <- predict(object = ForeseeModel, newdata = TestObject_test)
+
+  # Plots
+
+  # Update Object in the Environment
   return(Foreseen)
 }
-
 

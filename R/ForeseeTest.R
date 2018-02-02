@@ -15,15 +15,21 @@
 
 ForeseeTest <- function(TestObject, ForeseeModel, BlackBox, Evaluation){
 
-  TestObject_test<- as.data.frame(as.matrix(t(TestObject$GeneExpression)))
-  # For some weird reason the object still contains duplicates? Check duplication handler
-  # Just take the first occuring gene name (here: in columns!) for now
-  TestObject_test <- TestObject_test[,!duplicated(colnames(TestObject_test))]
 
-  Foreseen <- predict(object = ForeseeModel, newdata = TestObject_test)
-  # Update Objects in the Environment
-  Foreseen <<- Foreseen
-  Performance <<- 0
-  # Plots
+    #################################################################################################################################
+    # 1. Applying the model to test data
+
+    Foreseen <- Foreseer(TestObject, ForeseeModel)
+    #################################################################################################################################
+
+
+    # 1. Applying the model to test data
+
+    # Validation <- Validator(Foreseen,...  )
+    #################################################################################################################################
+
+
+
+
 }
 

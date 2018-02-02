@@ -134,14 +134,15 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, Ce
   # The function 'elasticnet' fits an elastic net regression model from the glmnet package by Friedman et al. (2008) to the training data,
   # The function 'svm' fits a support vector regression model ffrom the e1071 package by Meyer and Chih-Chung (2017) to the training data,
   # The function 'rf' fits a random forest regression model by by Breiman (2001) to the training data
+  # The function 'rf_ranger' fits a fast random forest regression model by Marvin N. Wright (2018) to the training data
 
-  # BlackBox_options <- c("linear", "ridge", "lasso", "elasticnet", "svm", "rf")
+  # BlackBox_options <- c("linear", "ridge", "lasso", "elasticnet", "svm", "rf", "rf_ranger")
 
   BlackBoxFilter(TrainObject, BlackBox, nfoldCrossvalidation)
 
-  ForeseeModel <<- ForeseeModel
-  TrainObject <<- TrainObject
-  TestObject <<- TestObject
 
-
+  # Update Objects in the Environment
+  assign("TrainObject", value = TrainObject, envir = parent.frame())
+  assign("TestObject", value = TestObject, envir = parent.frame())
+  assign("ForeseeModel", value = ForeseeModel, envir = parent.frame())
 }

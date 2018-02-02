@@ -21,9 +21,6 @@
 
 FeaturePreprocessor <- function(TrainObject, TestObject, FeaturePreprocessing){
   UseMethod("FeaturePreprocessor", object = FeaturePreprocessing)
-  # Update Objects in the Environment
-  TrainObject <<- TrainObject_processedfeatures
-  TestObject <<- TestObject_processedfeatures
 }
 
 
@@ -52,8 +49,9 @@ FeaturePreprocessor.zscore_genewise <- function(TrainObject, TestObject, Feature
   }
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_processedfeatures
-  TestObject <<- TestObject_processedfeatures
+  assign("TrainObject", value = TrainObject_processedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_processedfeatures, envir = parent.frame())
+
 }
 
 ################################################################################
@@ -74,8 +72,8 @@ FeaturePreprocessor.zscore_sample <- function(TrainObject, TestObject, FeaturePr
   }
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_processedfeatures
-  TestObject <<- TestObject_processedfeatures
+  assign("TrainObject", value = TrainObject_processedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_processedfeatures, envir = parent.frame())
 }
 
 
@@ -104,8 +102,8 @@ FeaturePreprocessor.pca <- function(TrainObject, TestObject, FeaturePreprocessin
   ## WRONG!!! TestObject_x_10PCs <- ((TestObject_processedfeatures$GeneExpression - TrainObject_pca_center)%*%TrainObject_rotation)[,1:10]
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_processedfeatures
-  TestObject <<- TestObject_processedfeatures
+  assign("TrainObject", value = TrainObject_processedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_processedfeatures, envir = parent.frame())
 }
 
 ################################################################################
@@ -119,8 +117,8 @@ FeaturePreprocessor.physio <- function(TrainObject, TestObject, FeaturePreproces
   # PhysioSpace for the Test Object
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_processedfeatures
-  TestObject <<- TestObject_processedfeatures
+  assign("TrainObject", value = TrainObject_processedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_processedfeatures, envir = parent.frame())
 }
 
 ################################################################################
@@ -133,6 +131,6 @@ FeaturePreprocessor.none <- function(TrainObject, TestObject, FeaturePreprocessi
   # Don't do anything
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_processedfeatures
-  TestObject <<- TestObject_processedfeatures
+  assign("TrainObject", value = TrainObject_processedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_processedfeatures, envir = parent.frame())
 }

@@ -83,8 +83,8 @@ FeatureSelector.variance <- function(TrainObject, TestObject, GeneFilter){
   TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[features,]
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_selectedfeatures
-  TestObject <<- TestObject_selectedfeatures
+  assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
 }
 
 ################################################################################
@@ -125,8 +125,8 @@ FeatureSelector.landmarkgenes <- function(TrainObject, TestObject, GeneFilter){
   TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[rownames(TestObject_selectedfeatures$GeneExpression) %in% LM_genes_entrez,]
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_selectedfeatures
-  TestObject <<- TestObject_selectedfeatures
+  assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
 }
 
 ################################################################################
@@ -139,8 +139,8 @@ FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter){
   # Ali's implementation
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_selectedfeatures
-  TestObject <<- TestObject_selectedfeatures
+  assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
 }
 
 ################################################################################
@@ -153,8 +153,8 @@ FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter){
   # Ali's implementation
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_selectedfeatures
-  TestObject <<- TestObject_selectedfeatures
+  assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
 }
 
 ################################################################################
@@ -167,7 +167,7 @@ FeatureSelector.all <- function(TrainObject, TestObject, GeneFilter){
   # Don't remove any genes
 
   # Update Objects in the Environment
-  TrainObject <<- TrainObject_selectedfeatures
-  TestObject <<- TestObject_selectedfeatures
+  assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
 }
 

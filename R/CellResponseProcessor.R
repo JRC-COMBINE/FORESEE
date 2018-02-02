@@ -58,10 +58,8 @@ CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResp
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
 
   # Do powertransform of drug response data
-
   TransForm <- powerTransform(Object_withDrugResponse$DrugResponse)$lambda
   Object_withDrugResponse$DrugResponse <- Object_withDrugResponse$DrugResponse^TransForm
-
 
   # Number of Cell Lines after adjusting with drug response data
   dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
@@ -71,7 +69,7 @@ CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResp
   print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
-  TrainObject <<- Object_withDrugResponse
+  assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
 }
 
 
@@ -96,7 +94,7 @@ CellResponseProcessor.logarithm <- function(TrainObject, DrugName, CellResponseT
   print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
-  TrainObject <<- Object_withDrugResponse
+  assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
 }
 
 
@@ -126,7 +124,7 @@ CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, Cel
   print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
-  TrainObject <<- Object_withDrugResponse
+  assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
 }
 
 ################################################################################
@@ -155,7 +153,7 @@ CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, Cel
   print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
-  TrainObject <<- Object_withDrugResponse
+  assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
 }
 
 
@@ -179,5 +177,5 @@ CellResponseProcessor.none <- function(TrainObject, DrugName, CellResponseType, 
   print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
-  TrainObject <<- Object_withDrugResponse
+  assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
 }

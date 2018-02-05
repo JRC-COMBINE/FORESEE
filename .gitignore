@@ -4,5 +4,5 @@
 .Ruserdata
 data-raw/*
 data/*
-.DS_Store
 .gitignore
+.DS_store

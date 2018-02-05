@@ -33,6 +33,7 @@ Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
     message("Annotation of the test set is binarized for calculating ROC")
     ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
   }
-  ##Not complete here!
-  return(Performance)
+  require(pROC)
+  AUCofROC <- pROC::auc(pROC::roc(ANNOTATIONS, Foreseen))[[1]]
+  return(AUCofROC)
 }

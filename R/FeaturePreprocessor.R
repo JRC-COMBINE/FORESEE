@@ -15,7 +15,6 @@
 #'         \item{TestObject}{The TestObject with preprocessed features.}
 #' @export
 
-#ToDo1: PCA Implementation (How many components should we take? How is projection done) [not working at the moment!]
 #ToDo2: PhysioSpace Implementation
 #ToDo3: User-defined function
 
@@ -84,27 +83,30 @@ FeaturePreprocessor.pca <- function(TrainObject, TestObject, FeaturePreprocessin
   TrainObject_processedfeatures <- TrainObject
   TestObject_processedfeatures <- TestObject
 
+  # Number of how many PCs should be used for the projection
+  number_pcs <- 10
+
   # PCA for the Train Object
   TrainObject_pca <- prcomp(t(TrainObject_processedfeatures$GeneExpression))
-  TrainObject_rotation<- TrainObject_pca$rotation
-  TrainObject_x_10PCs<- TrainObject_pca$x[,1:10]
-  TrainObject_pca_center <- TrainObject_pca$center
-  TrainObject_processedfeatures$GeneExpression <- TrainObject_x_10PCs
-  # Is this correct?
 
-  ## WRONG!!! Gives scores of genes on pcs, but should give scores of cell lines!
-  # PCA for the Train Object
-  # TrainObject_pca <- princomp(TrainObject_processedfeatures$GeneExpression)
-  # TrainObject_loadings_10PCs<- TrainObject_pca$loadings[,1:10]
-  # TrainObject_scores_10PCs<- TrainObject_pca$scores[,1:10]
+  # Rotated training data
+  TrainObject_x <- TrainObject_pca$x
+  # Should be the same as: TrainObject_x <- scale(t(TrainObject_processedfeatures$GeneExpression), TrainObject_pca$center, TrainObject_pca$scale) %*% TrainObject_pca$rotation
+  TrainObject_x_nPCs<- TrainObject_x[,1:number_pcs]
 
-  # PCA for the Train Object
-  ## WRONG!!! TestObject_x_10PCs <- ((TestObject_processedfeatures$GeneExpression - TrainObject_pca_center)%*%TrainObject_rotation)[,1:10]
+  # Rotate test data (project new data onto the PCA space)
+  TestObject_x <- scale(t(TestObject_processedfeatures$GeneExpression), TrainObject_pca$center, TrainObject_pca$scale) %*% TrainObject_pca$rotation
+  TestObject_x_nPCs<-TestObject_x[,1:number_pcs]
+
+  # Update Gene Expression values with the projected data
+  TrainObject_processedfeatures$GeneExpression <- TrainObject_x_nPCs
+  TestObject_processedfeatures$GeneExpression <- TestObject_x_nPCs
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_processedfeatures, envir = parent.frame())
   assign("TestObject", value = TestObject_processedfeatures, envir = parent.frame())
 }
+
 
 ################################################################################
 ### Function "physio" to calculate the physiospace similarities

@@ -7,13 +7,12 @@
 #' @param TestObject Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
 #' @param ForeseeModel Model that has been trained on a TrainObject with ForeseeTrain.
 #' @param Evaluation Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.
-#' @param BlackBox Modeling algorithm for training, such as linear regression, elastic net, lasso regression, ridge regression, tandem, support vector machines, random forests, user defined functions, etc.
-
+#'
 #' @return \item{Performance}{Evaluation Measure of the Predictability of the ForeseeModel trained on the TrainObject and tested on the TestObject.}
 #'         \item{Foreseen}{Predicted drug response of the TestObject obtained by applying the ForeseeModel.}
 #' @export
 
-ForeseeTest <- function(TestObject, ForeseeModel, BlackBox, Evaluation){
+ForeseeTest <- function(TestObject, ForeseeModel, Evaluation){
 
 
     #################################################################################################################################
@@ -23,12 +22,14 @@ ForeseeTest <- function(TestObject, ForeseeModel, BlackBox, Evaluation){
     #################################################################################################################################
 
 
-    # 1. Applying the model to test data
+    # 2. Calculating Performance
 
-    # Validation <- Validator(Foreseen,...  )
+    Performance <- Validator(Foreseen, TestObject, Evaluation)
+
     #################################################################################################################################
 
-
+    assign("Performance", value = Performance, envir = parent.frame())
+    assign("Foreseen", value = Foreseen, envir = parent.frame())
 
 
 }

@@ -7,7 +7,7 @@
 ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
   CellResponseTransformation, InputDataTypes, DuplicationHandling,
   HomogenizationMethod, GeneFilter, FeaturePreprocessing, BlackBox,
-  nfoldCrossvalidation)
+  nfoldCrossvalidation, ...)
 }
 \arguments{
 \item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}

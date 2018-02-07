@@ -4,14 +4,12 @@
 \alias{ForeseeTest}
 \title{Test a Drug Efficacy Prediction Model on a TestObject}
 \usage{
-ForeseeTest(TestObject, ForeseeModel, BlackBox, Evaluation)
+ForeseeTest(TestObject, ForeseeModel, Evaluation)
 }
 \arguments{
 \item{TestObject}{Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
 
 \item{ForeseeModel}{Model that has been trained on a TrainObject with ForeseeTrain.}
-
-\item{BlackBox}{Modeling algorithm for training, such as linear regression, elastic net, lasso regression, ridge regression, tandem, support vector machines, random forests, user defined functions, etc.}
 
 \item{Evaluation}{Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.}
 }

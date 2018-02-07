@@ -17,8 +17,6 @@
 #' @export
 
 
-#ToDo1: make variance nicer! (use implemented function)
-#ToDo2: p-value
 #ToDo3: Ontologies
 #ToDo4: Pathways
 #ToDo5: User-defined gene lists
@@ -70,7 +68,6 @@ FeatureSelector.variance <- function(TrainObject, TestObject, GeneFilter){
   TestObject_selectedfeatures <- TestObject
 
   # Calculate variance of each gene across all samples in TrainObject
-  # A MESS! USE SOME IMPLEMENTED ANOVA METHOD INSTEAD!
   variance_TrainObject<-c()
   for (i in 1:dim(TrainObject_selectedfeatures$GeneExpression)[1]){
     variance_TrainObject[i] <- var(TrainObject_selectedfeatures$GeneExpression[i,])
@@ -94,13 +91,23 @@ FeatureSelector.pvalue <- function(TrainObject, TestObject, GeneFilter){
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
 
-  # Calculate ttest-p-value of each gene between all samples in TrainObject and TestObject
+  # Calculate ttest-p-value of each gene between sensitive and resistant samples in TrainObject
+
+  # Order samples in TrainObject according to their DrugResponse
+  num <- 50
+  sensInd <- order(TrainObject$DrugResponse)[1:num]
+  resInd <- order(TrainObject$DrugResponse)[(length(TrainObject$DrugResponse)-num):length(TrainObject$DrugResponse)]
+
+  # Calculate t-test between most sensitive and most resistant samples to find significant genes
   pvalue_TrainObject<-c()
+  # for each gene:
   for (i in 1:dim(TrainObject_selectedfeatures$GeneExpression)[1]){
-    pvalue_TrainObject[i] <- t.test(TrainObject_selectedfeatures$GeneExpression[i,],
-                                    TestObject_selectedfeatures$GeneExpression[i,])$p.value
+    pvalue_TrainObject[i] <- t.test(TrainObject$GeneExpression[i,sensInd],
+                                    TrainObject$GeneExpression[i,resInd])$p.value
   }
-  names(pvalue_TrainObject) <- rownames(TrainObject_selectedfeatures$GeneExpression)
+
+  # Get names of genes with lowest p-value:
+  names(pvalue_TrainObject) <- rownames(TrainObject$GeneExpression)
   lowest_pvalued_genes <- sort(pvalue_TrainObject,decreasing = FALSE)
   features <- names(lowest_pvalued_genes[1:(0.8*length(lowest_pvalued_genes))])
 

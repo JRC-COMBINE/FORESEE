@@ -24,8 +24,69 @@
 # ToDo: Tandem
 
 
-BlackBoxFilter <- function(TrainObject, BlackBox, nfoldCrossvalidation){
-  UseMethod("BlackBoxFilter", object = BlackBox)
+BlackBoxFilter <- function(TrainObject, BlackBox, nfoldCrossvalidation, ...){
+  if (nfoldCrossvalidation==1 && class(nfoldCrossvalidation)=="numeric"){
+    UseMethod("BlackBoxFilter", object = BlackBox)
+  }
+
+  else if (nfoldCrossvalidation>1 && class(nfoldCrossvalidation)=="numeric"){
+
+    # Establish backup in environment
+    TrainObject_backup<-TrainObject
+    assign("TrainObject_backup", value = TrainObject, envir = parent.frame())
+
+    train <- TrainObject
+    test  <- TrainObject
+
+    # Shuffle the data
+    sample <- sample.int(n = ncol(TrainObject_backup$GeneExpression))
+    TrainObject$GeneExpression<-TrainObject_backup$GeneExpression[,sample]
+
+    # Create n equally size folds
+    folds <- cut(seq(1,ncol(TrainObject_backup$GeneExpression)),breaks=nfoldCrossvalidation,labels=FALSE)
+
+    Performance_bestfold <- 0
+    ForeseeModel_bestfold <- list()
+    test_ids_bestfold <- integer()
+    # Perform 10 fold cross validation
+    for (i in 1:nfoldCrossvalidation){
+
+      #Segement data
+      test_ids <-  which(folds==i,arr.ind=TRUE)
+      test$GeneExpression <- TrainObject_backup$GeneExpression[,test_ids]
+      test$DrugResponse <- TrainObject_backup$DrugResponse[test_ids]
+      train$GeneExpression <- TrainObject_backup$GeneExpression[,-test_ids]
+      train$DrugResponse <- TrainObject_backup$DrugResponse[-test_ids]
+
+      # Update TrainObject in environment
+      assign("TrainObject", value = train, envir = parent.frame())
+
+      #Train on subset of data (as the TrainObject is now updated in the environment)
+      UseMethod("BlackBoxFilter", object = BlackBox)
+
+      # Apply Model to cross-validation test set
+      ForeseeTest(test, ForeseeModel, BlackBox, Evaluation=Crossvalidation_Criterion)
+      # Compare current performance to previous once to just keep the best one in the environment
+      if (Performance>Performance_bestfold){
+        # Update objects in the environment
+        assign("Performance_bestfold", value = Performance, envir = parent.frame())
+        assign("ForeseeModel_bestfold", value = ForeseeModel, envir = parent.frame())
+        assign("test_ids_bestfold", value = test_ids, envir = parent.frame())
+      }
+
+      TrainObject$GeneExpression <- TrainObject_backup$GeneExpression[,!test_ids_bestfold]
+      TrainObject$DrugResponse <- TrainObject_backup$DrugResponse[!test_ids_bestfold]
+
+      assign("ForeseeModel", value = ForeseeModel_bestfold, envir = parent.frame())
+      assign("TrainObject", value = TrainObject, envir = parent.frame())
+
+    }
+
+  }
+
+  else {
+    stop("nfoldCrossvalidation needs to be a positive integer")
+  }
 }
 
 BlackBoxFilter.character <- function(TrainObject, BlackBox, nfoldCrossvalidation){

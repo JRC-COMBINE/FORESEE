@@ -29,7 +29,7 @@
 #' @export
 
 ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, CellResponseTransformation, InputDataTypes,
-                         DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing, BlackBox, nfoldCrossvalidation){
+                         DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing, BlackBox, nfoldCrossvalidation,...){
 
 
   TrainObject <- TrainObject

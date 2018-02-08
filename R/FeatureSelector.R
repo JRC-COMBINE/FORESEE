@@ -135,12 +135,32 @@ FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter){
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
+  if(!any(GDSC$DrugInfo$Drug.Name == DrugName)){
+    stop("Matching DrugName failed!!")
+  } else {
+    TargetGene <- GDSC$DrugInfo$Target[GDSC$DrugInfo$Drug.Name == DrugName]
+  }
+  if(!any(ConvTableGo2Sym$hgnc_symbol == TargetGene)){
+    stop("Matching TargetGene failed!!")
+  } else {
+    TargetGos <- ConvTableGo2Sym$go_id[ConvTableGo2Sym$hgnc_symbol == TargetGene]
+    TargetGos <- TargetGos[TargetGos!=""] #removing empty match(es)
+    GenesWithRelevantGos <- sort(table(ConvTableGo2Sym$hgnc_symbol[ConvTableGo2Sym$go_id == TargetGos]))
+  }
+  if(length(GenesWithRelevantGos) < 1000){ ## ToDo: Have this 1000 as a variable user feeds
+    warning("Not enough features matched, returning all features...")
+    # Update Objects in the Environment
+    assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+    assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
+  } else {
+    FirstFewEntrezGenesWithRelevantGos <- ConvTableSym2Entrez$entrezgene[match(names(GenesWithRelevantGos)[1:1000],ConvTableSym2Entrez$hgnc_symbol,nomatch = 0)]## ToDo: Have this 1000 as a variable user feeds
+    TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[rownames(TrainObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantGos,]
+    TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[rownames(TestObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantGos,]
+    # Update Objects in the Environment
+    assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+    assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
+  }
 
-  # Ali's implementation
-
-  # Update Objects in the Environment
-  assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
-  assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
 }
 
 ################################################################################
@@ -149,12 +169,32 @@ FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter){
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
+  if(!any(GDSC$DrugInfo$Drug.Name == DrugName)){
+    stop("Matching DrugName failed!!")
+  } else {
+    TargetGene <- GDSC$DrugInfo$Target[GDSC$DrugInfo$Drug.Name == DrugName]
+    TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
+  }
+  if(!any(names(Entrez2PathID) == TargetGeneEntrez)){
+    stop("Matching TargetGene failed!!")
+  } else {
+    TargetPaths <- Entrez2PathID[[TargetGeneEntrez]]
+    GenesWithRelevantPaths <- sort(table(unlist(PathID2Entrez[TargetPaths])))
+  }
+  if(length(GenesWithRelevantPaths) < 1000){ ## ToDo: Have this 1000 as a variable user feeds
+    warning("Not enough features matched, returning all features...")
+    # Update Objects in the Environment
+    assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+    assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
+  } else {
+    FirstFewEntrezGenesWithRelevantPaths <- names(GenesWithRelevantPaths)[1:1000]## ToDo: Have this 1000 as a variable user feeds
+    TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[rownames(TrainObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantPaths,]
+    TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[rownames(TestObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantPaths,]
+    # Update Objects in the Environment
+    assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+    assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
+  }
 
-  # Ali's implementation
-
-  # Update Objects in the Environment
-  assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
-  assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
 }
 
 ################################################################################

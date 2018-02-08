@@ -1,4 +1,4 @@
-## Script that will download, process and add GDSC to this package
+## Script that will (download,) process (and add) GDSC to this package
 # by esfahani@aices.rwth-aachen.de, 19.1.2018
 
 ##Downloading files directly from sanger ftp server seemed to be buggy and unstable, so for now we assume user downloaded the last versions of:
@@ -184,6 +184,11 @@ rownames(MethylsWithMatchedGenes) <- ConvTabelle$entrezgene[match(rownames(Methy
 MethylsWithMatchedGenes <- MethylsWithMatchedGenes[!is.na(rownames(MethylsWithMatchedGenes)),]
 colnames(MethylsWithMatchedGenes) <- as.character(as.matrix(CellLineNames))
 
+#Remove TCGAs from data types I got from Iorio's paper:
+CNAsWithMatchedGenesGainSignleGenes <- CNAsWithMatchedGenesGainSignleGenes[,1:1001]
+CNAsWithMatchedGenesLossSignleGenes <- CNAsWithMatchedGenesLossSignleGenes[,1:1001]
+Muts <- Muts[,1:1001]
+MethylsWithMatchedGenes <- MethylsWithMatchedGenes[,1:1001]
 
 #Making the Foresee object:
 GDSC <- list()

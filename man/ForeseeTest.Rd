@@ -4,7 +4,7 @@
 \alias{ForeseeTest}
 \title{Test a Drug Efficacy Prediction Model on a TestObject}
 \usage{
-ForeseeTest(TestObject, ForeseeModel, Evaluation)
+ForeseeTest(TestObject, ForeseeModel, Evaluation, BlackBox)
 }
 \arguments{
 \item{TestObject}{Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}

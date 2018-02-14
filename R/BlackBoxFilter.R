@@ -152,7 +152,7 @@ BlackBoxFilter.lasso <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
   require(glmnet)
-  lasso_fit <- glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse, alpha = 1)
+  lasso_fit <- glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse, alpha = 1,lambda=cv.glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse, alpha = 1)$lambda.min)
 
   # Update Objects in the Environment
   TrainObject[["TrainFrame"]] <- TrainObject_train
@@ -176,7 +176,8 @@ BlackBoxFilter.elasticnet <- function(TrainObject, BlackBox, nfoldCrossvalidatio
 
   # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
   require(glmnet)
-  elasticnet_fit <- glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse, alpha = 0.5)
+  require(glmnetUtils)
+  elasticnet_fit <- glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse,  alpha = 0.5 ,lambda=cv.glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse, alpha = 0.5)$lambda.min)
 
   # Update Objects in the Environment
   TrainObject[["TrainFrame"]] <- TrainObject_train

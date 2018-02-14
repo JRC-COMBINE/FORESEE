@@ -4,7 +4,7 @@
 \alias{Foreseer}
 \title{Apply the trained ForeseeModel on a TestObject}
 \usage{
-Foreseer(TestObject, ForeseeModel)
+Foreseer(TestObject, ForeseeModel, BlackBox)
 }
 \arguments{
 \item{TestObject}{Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}

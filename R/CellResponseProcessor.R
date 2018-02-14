@@ -58,6 +58,13 @@ CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResp
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
 
   # Do powertransform of drug response data
+
+  # Powertransform needs all inputs to be positive
+    if(min(Object_withDrugResponse$DrugResponse, na.rm = TRUE) < 0) {
+      offset <- -min(Object_withDrugResponse$DrugResponse, na.rm = TRUE) + 1
+      Object_withDrugResponse$DrugResponse <- Object_withDrugResponse$DrugResponse + offset
+    }
+
   TransForm <- powerTransform(Object_withDrugResponse$DrugResponse)$lambda
   Object_withDrugResponse$DrugResponse <- Object_withDrugResponse$DrugResponse^TransForm
 
@@ -82,6 +89,13 @@ CellResponseProcessor.logarithm <- function(TrainObject, DrugName, CellResponseT
 
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
+
+
+  # Log needs all inputs to be positive, otherwise only NAs are returned
+  if(min(Object_withDrugResponse$DrugResponse, na.rm = TRUE) < 0) {
+    offset <- -min(Object_withDrugResponse$DrugResponse, na.rm = TRUE) + 1
+    Object_withDrugResponse$DrugResponse <- Object_withDrugResponse$DrugResponse + offset
+  }
 
   # Do logarithm of drug response data
   Object_withDrugResponse$DrugResponse <- log(Object_withDrugResponse$DrugResponse)

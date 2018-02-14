@@ -12,13 +12,13 @@
 #'         \item{Foreseen}{Predicted drug response of the TestObject obtained by applying the ForeseeModel.}
 #' @export
 
-ForeseeTest <- function(TestObject, ForeseeModel, Evaluation){
+ForeseeTest <- function(TestObject, ForeseeModel, Evaluation, BlackBox){
 
 
     #################################################################################################################################
     # 1. Applying the model to test data
 
-    Foreseen <- Foreseer(TestObject, ForeseeModel)
+    Foreseen <- Foreseer(TestObject, ForeseeModel, BlackBox)
     #################################################################################################################################
 
 

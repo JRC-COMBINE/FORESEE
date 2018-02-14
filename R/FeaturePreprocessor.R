@@ -55,17 +55,17 @@ FeaturePreprocessor.zscore_genewise <- function(TrainObject, TestObject, Feature
 
 ################################################################################
 ### Function "zscore_samplewise" to calculate the zscore normalizing each gene over all samples
-FeaturePreprocessor.zscore_sample <- function(TrainObject, TestObject, FeaturePreprocessing){
+FeaturePreprocessor.zscore_samplewise <- function(TrainObject, TestObject, FeaturePreprocessing){
 
   TrainObject_processedfeatures <- TrainObject
   TestObject_processedfeatures <- TestObject
 
-  # Calculate gene-wise zscore for TrainObject
+  # Calculate sample-wise zscore for TrainObject
   for (i in 1:dim(TrainObject_processedfeatures$GeneExpression)[2]){
     TrainObject_processedfeatures$GeneExpression[,i]<-(TrainObject_processedfeatures$GeneExpression[,i]-mean(TrainObject_processedfeatures$GeneExpression[,i]))/sd(TrainObject_processedfeatures$GeneExpression[,i])
   }
 
-  # Calculate gene-wise zscore for TrainObject
+  # Calculate sample-wise zscore for TrainObject
   for (i in 1:dim(TestObject_processedfeatures$GeneExpression)[2]){
     TestObject_processedfeatures$GeneExpression[,i]<-(TestObject_processedfeatures$GeneExpression[,i]-mean(TestObject_processedfeatures$GeneExpression[,i]))/sd(TestObject_processedfeatures$GeneExpression[,i])
   }

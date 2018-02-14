@@ -16,6 +16,7 @@ Validator <- function(Foreseen, TestObject, Evaluation){
 Validator.character <- function(Foreseen, TestObject, Evaluation){
   class(Evaluation) <- Evaluation;
   UseMethod("Validator", object = Evaluation)
+  return(Performance)
 }
 
 ################################################################################
@@ -28,12 +29,25 @@ Validator.function <- function(Foreseen, TestObject, Evaluation) {
 ################################################################################
 ### Function "function" applies the function in "Evaluation" to predicted values
 Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
-  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$annotation)
+  ANNOTATIONS <-TestObject$Annotation
   if(is.numeric(ANNOTATIONS)){
     message("Annotation of the test set is binarized for calculating ROC")
     ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
   }
   require(pROC)
+  ROCObj <- roc(-(as.numeric(ANNOTATIONS)), Foreseen, direction="<")
   AUCofROC <- pROC::auc(pROC::roc(ANNOTATIONS, Foreseen))[[1]]
   return(AUCofROC)
+
+  ### Plot ROC Curve
+  jpeg(filename = filename_roc, width=10, height=10, units="in", res=600)
+  plot(ROCObj, main = "Prediction of Patient Response after Training on Cell Line Data",legacy.axes = TRUE, print.auc = TRUE)
+  dev.off()
+
+
 }
+
+
+
+
+

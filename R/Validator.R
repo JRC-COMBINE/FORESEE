@@ -22,12 +22,12 @@ Validator.character <- function(Foreseen, TestObject, Evaluation){
 ################################################################################
 ### Function "function" applies the function in "Evaluation" to predicted values
 Validator.function <- function(Foreseen, TestObject, Evaluation) {
-
-  return(Performance)
+  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$Annotation)
+  return(Evaluation(Foreseen, ANNOTATIONS))
 }
 
 ################################################################################
-### Function "function" applies the function in "Evaluation" to predicted values
+### Function "rocauc" calculates the AUC of the ROC curve (binarizes TestObj annotation on median if they have continues values)
 Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <-TestObject$Annotation
   if(is.numeric(ANNOTATIONS)){
@@ -40,14 +40,110 @@ Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
   return(AUCofROC)
 
   ### Plot ROC Curve
-  jpeg(filename = filename_roc, width=10, height=10, units="in", res=600)
-  plot(ROCObj, main = "Prediction of Patient Response after Training on Cell Line Data",legacy.axes = TRUE, print.auc = TRUE)
-  dev.off()
+  #jpeg(filename = filename_roc, width=10, height=10, units="in", res=600)
+  #plot(ROCObj, main = "Prediction of Patient Response after Training on Cell Line Data",legacy.axes = TRUE, print.auc = TRUE)
+  #dev.off()
 
 
 }
 
+################################################################################
+### Function "rocpvalue" calculates the t.test p value of the ROC curve AUC (binarizes TestObj annotation on median if they have continues values)
+## versus the 10000 permutated annotation values
+Validator.rocpvalue <- function(Foreseen, TestObject, Evaluation) {
+  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$Annotation)
+  if(is.numeric(ANNOTATIONS)){
+    message("Annotation of the test set is binarized for calculating ROC")
+    ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
+  }
+  require(pROC)
+  AUCofROC <- pROC::auc(pROC::roc(ANNOTATIONS, Foreseen))[[1]]
+  AUCofROCRandom <- numeric(length = 10000)
+  for(K in 1:10000){
+    set.seed(0)
+    AUCofROCRandom <- pROC::auc(pROC::roc(sample(ANNOTATIONS), Foreseen))[[1]]
+  }
+  return(sum(AUCofROC<=AUCofROCRandom)/length(AUCofROCRandom))
+}
 
+################################################################################
+### Function "rsquared" calculates the fraction of variance explained by a linear model between predictions and
+## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+Validator.rsquared <- function(Foreseen, TestObject, Evaluation) {
+  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$Annotation)
+  if(is.logical(ANNOTATIONS)){
+    warning(paste("Annotation of the test set is binary! Is", Evaluation,"the correct validation method?"))
+    ANNOTATIONS <- as.numeric(ANNOTATIONS)
+  }
+  return(summary(lm(ANNOTATIONS~Foreseen))$r.squared)
+}
 
+################################################################################
+### Function "rsquared_adjusted" calculates the fraction of variance explained by a linear model between predictions and
+## actual annotations, corrected by the p-value of F-test,
+##!! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+Validator.rsquared_adjusted <- function(Foreseen, TestObject, Evaluation) {
+  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$Annotation)
+  if(is.logical(ANNOTATIONS)){
+    warning(paste("Annotation of the test set is binary! Is", Evaluation,"the correct validation method?"))
+    ANNOTATIONS <- as.numeric(ANNOTATIONS)
+  }
+  return(summary(lm(ANNOTATIONS~Foreseen))$adj.r.squared)
+}
 
+################################################################################
+### Function "fpvalue" calculates the p value of an F test on a linear model between predictions and
+## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+Validator.fpvalue <- function(Foreseen, TestObject, Evaluation) {
+  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$Annotation)
+  if(is.logical(ANNOTATIONS)){
+    warning(paste("Annotation of the test set is binary! Is", Evaluation,"the correct validation method?"))
+    ANNOTATIONS <- as.numeric(ANNOTATIONS)
+  }
+  FStats <- summary(lm(ANNOTATIONS~Foreseen))$fstatistic
+  return(pf(FStats[1],FStats[2],FStats[3],lower.tail=F))
+}
 
+################################################################################
+### Function "mse" calculates the mean square error of a linear model between predictions and
+## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+Validator.mse <- function(Foreseen, TestObject, Evaluation) {
+  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$Annotation)
+  if(is.logical(ANNOTATIONS)){
+    warning(paste("Annotation of the test set is binary! Is", Evaluation,"the correct validation method?"))
+    ANNOTATIONS <- as.numeric(ANNOTATIONS)
+  }
+  WholeSummary <- summary(lm(ANNOTATIONS~Foreseen))
+  return(mean(WholeSummary$residuals^2))
+}
+
+################################################################################
+### Function "spearman" calculates the spearman correlation between predictions and
+## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+Validator.spearman <- function(Foreseen, TestObject, Evaluation) {
+  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$Annotation)
+  if(is.logical(ANNOTATIONS)){
+    warning(paste("Annotation of the test set is binary! Is", Evaluation,"the correct validation method?"))
+    ANNOTATIONS <- as.numeric(ANNOTATIONS)
+  }
+  return(cor(ANNOTATIONS,Foreseen,method = Evaluation))
+}
+
+################################################################################
+### Function "pearson" calculates the spearman correlation between predictions and
+## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+Validator.pearson <- function(Foreseen, TestObject, Evaluation) {
+  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$Annotation)
+  if(is.logical(ANNOTATIONS)){
+    warning(paste("Annotation of the test set is binary! Is", Evaluation,"the correct validation method?"))
+    ANNOTATIONS <- as.numeric(ANNOTATIONS)
+  }
+  return(cor(ANNOTATIONS,Foreseen,method = Evaluation))
+}
+
+################################################################################
+### Function "default" is called in case method in "Evaluation" is
+# unknown to Validator
+Validator.default <- function(Foreseen, TestObject, Evaluation){
+  stop(paste("Method",Evaluation,"is not defined as an evaluation method!"))
+}

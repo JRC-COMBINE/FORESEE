@@ -115,8 +115,12 @@ FeaturePreprocessor.physio <- function(TrainObject, TestObject, FeaturePreproces
   TrainObject_processedfeatures <- TrainObject
   TestObject_processedfeatures <- TestObject
 
-  # PhysioSpace for the Train Object
-  # PhysioSpace for the Test Object
+  require(PhysioSpace)
+  Similarities <- calculatePhysioMap(InputData = cbind(TrainObject_processedfeatures$GeneExpression,
+                                        TestObject_processedfeatures$GeneExpression),
+                     References = TrainObject_processedfeatures$GeneExpression)
+  TrainObject_processedfeatures$GeneExpression <- Similarities[,1:ncol(TrainObject)]
+  TestObject_processedfeatures$GeneExpression <- Similarities[,(ncol(TrainObject)+1):(ncol(TrainObject)+ncol(TestObject))]
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_processedfeatures, envir = parent.frame())

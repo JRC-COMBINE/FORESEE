@@ -11,6 +11,8 @@
 #' The function 'svm' fits a support vector regression model from the e1071 package by Meyer and Chih-Chung (2017) to the training data,
 #' The function 'rf' fits a random forest regression model by Breiman (2001) to the training data
 #' The function 'rf_ranger' fits a fast random forest regression model by Marvin N. Wright (2018) to the training data
+#' The function 'tandem' fits a two-stage regression model by Nanne Aben (2017) to the training data
+#'
 #'
 #' @param nfoldCrossvalidation # folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.
 
@@ -18,8 +20,7 @@
 #'         \item{TrainObject}{The TrainObject that was used to train the model.}
 #' @export
 
-# ToDo: nfoldCrossvalidation!
-# ToDo: Check why objects still contain duplicates!
+
 # ToDo: User-defined function
 # ToDo: Tandem
 
@@ -256,3 +257,23 @@ BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation
 
 }
 
+
+################################################################################
+### Function "tandem" to train a lasso regression model
+BlackBoxFilter.tandem <- function(TrainObject, BlackBox, nfoldCrossvalidation){
+
+  TrainObject_train<- as.matrix(t(TrainObject$GeneExpression))
+  upstream_index <-c()
+
+  # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
+  require(TANDEM)
+  require(glmnet)
+
+  tandem_fit <- tandem(x = TrainObject_train, y=TrainObject$DrugResponse, upstream=upstream_index)
+
+  # Update Objects in the Environment
+  TrainObject[["TrainFrame"]] <- TrainObject_train
+  TrainObject[["UpstreamIndex"]] <- upstream_index
+  assign("TrainObject", value = TrainObject, envir = parent.frame())
+  assign("ForeseeModel", value = tandem_fit, envir = parent.frame())
+}

@@ -16,7 +16,8 @@ The function 'lasso' fits a lasso regression model from the glmnet package by Fr
 The function 'elasticnet' fits an elastic net regression model from the glmnet package by Friedman et al. (2008) to the training data,
 The function 'svm' fits a support vector regression model from the e1071 package by Meyer and Chih-Chung (2017) to the training data,
 The function 'rf' fits a random forest regression model by Breiman (2001) to the training data
-The function 'rf_ranger' fits a fast random forest regression model by Marvin N. Wright (2018) to the training data}
+The function 'rf_ranger' fits a fast random forest regression model by Marvin N. Wright (2018) to the training data
+The function 'tandem' fits a two-stage regression model by Nanne Aben (2017) to the training data}
 
 \item{nfoldCrossvalidation}{# folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.}
 }

@@ -8,6 +8,7 @@
 #' The function 'ComBat' uses the batch effect removal ComBat of the sva package,
 #' The function 'quantile' uses the quantile normalization of the preprocessCore package,
 #' The function 'limma' uses the removeBatchEffect function of the limma package,
+#' The function 'YuGene' uses the function of the YuGene package by Le Cao,
 #' The function 'RUV' regresses out unwanted variation using the 10 principal components of negative control genes (here: list of human housekeeping by Eisenberg and Levanon (2013))
 #' The function 'none' doesn't do any batch effect correction,
 #' If the user wants to implement a user-defined batch effect removal function, the input should be the function.
@@ -177,11 +178,50 @@ Homogenizer.limma <- function(TrainObject, TestObject, HomogenizationMethod){
   assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
 
+################################################################################
+### Function "YuGene"
+Homogenizer.YuGene <- function(TrainObject, TestObject, HomogenizationMethod){
+
+  # Load package
+  require(YuGene)
+
+  TrainObject_homogenized <- TrainObject
+  TestObject_homogenized <- TestObject
+
+  # Counts the number of gene names in the objects' gene expression matrices
+  dim_before_train <- dim(TrainObject_homogenized$GeneExpression)[1]
+  dim_before_test <- dim(TestObject_homogenized$GeneExpression)[1]
+
+  # Removes gene expression matrices to common gene names only
+  CommonGenes <- rownames(TrainObject_homogenized$GeneExpression)[rownames(TrainObject_homogenized$GeneExpression) %in% rownames(TestObject_homogenized$GeneExpression)]
+  TrainObject_homogenized$GeneExpression <- TrainObject_homogenized$GeneExpression[CommonGenes,]
+  TestObject_homogenized$GeneExpression <- TestObject_homogenized$GeneExpression[CommonGenes,]
+
+  # Homogenizes both gene expression Data sets
+  BothBatches <- cbind(TrainObject_homogenized$GeneExpression,TestObject_homogenized$GeneExpression)
+  BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
+  YuGeneObject <- YuGene(data.prop = BothBatches, progressBar = TRUE)
+
+  TrainObject_homogenized$GeneExpression <-YuGeneObject[, BatchIndex=="trainobject"]
+  TestObject_homogenized$GeneExpression <- YuGeneObject[, BatchIndex=="testobject"]
+
+  # Counts the number of gene names in the objects' gene expression matrices after homogenization
+  dim_after_train <- dim(TrainObject_homogenized$GeneExpression)[1]
+  dim_after_test <- dim(TestObject_homogenized$GeneExpression)[1]
+
+  # Prints the reduction of gene names
+  print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
+
+  # Update Objects in the Environment
+  assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
+  assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
+}
 
 ################################################################################
 ### Function "RUV"
 Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
 
+  require(ruv)
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
 
@@ -252,6 +292,7 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
 ### Function "RUV", based on RUV4 in package "ruv"
 Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
 
+  require(ruv)
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
 
@@ -353,6 +394,8 @@ Homogenizer.none <- function(TrainObject, TestObject, HomogenizationMethod){
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
   assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
+
+
 
 ################################################################################
 ### Function "default" is called in case method in "HomogenizationMethod" is

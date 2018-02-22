@@ -90,8 +90,9 @@ FeaturePreprocessor.pca <- function(TrainObject, TestObject, FeaturePreprocessin
   TrainObject_pca <- prcomp(t(TrainObject_processedfeatures$GeneExpression))
 
   # Rotated training data
-  TrainObject_x <- TrainObject_pca$x
-  # Should be the same as: TrainObject_x <- scale(t(TrainObject_processedfeatures$GeneExpression), TrainObject_pca$center, TrainObject_pca$scale) %*% TrainObject_pca$rotation
+
+  TrainObject_x <- scale(t(TrainObject_processedfeatures$GeneExpression), TrainObject_pca$center, TrainObject_pca$scale) %*% TrainObject_pca$rotation
+  # TrainObject_x <- TrainObject_pca$x should be the same as: TrainObject_x <- scale(t(TrainObject_processedfeatures$GeneExpression), TrainObject_pca$center, TrainObject_pca$scale) %*% TrainObject_pca$rotation
   TrainObject_x_nPCs<- TrainObject_x[,1:number_pcs]
 
   # Rotate test data (project new data onto the PCA space)
@@ -99,8 +100,8 @@ FeaturePreprocessor.pca <- function(TrainObject, TestObject, FeaturePreprocessin
   TestObject_x_nPCs<-TestObject_x[,1:number_pcs]
 
   # Update Gene Expression values with the projected data
-  TrainObject_processedfeatures$GeneExpression <- TrainObject_x_nPCs
-  TestObject_processedfeatures$GeneExpression <- TestObject_x_nPCs
+  TrainObject_processedfeatures$GeneExpression <- t(TrainObject_x_nPCs)
+  TestObject_processedfeatures$GeneExpression <- t(TestObject_x_nPCs)
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_processedfeatures, envir = parent.frame())
@@ -118,9 +119,11 @@ FeaturePreprocessor.physio <- function(TrainObject, TestObject, FeaturePreproces
   require(PhysioSpace)
   Similarities <- calculatePhysioMap(InputData = cbind(TrainObject_processedfeatures$GeneExpression,
                                         TestObject_processedfeatures$GeneExpression),
-                     References = TrainObject_processedfeatures$GeneExpression)
-  TrainObject_processedfeatures$GeneExpression <- Similarities[,1:ncol(TrainObject)]
-  TestObject_processedfeatures$GeneExpression <- Similarities[,(ncol(TrainObject)+1):(ncol(TrainObject)+ncol(TestObject))]
+                     References = TrainObject_processedfeatures$GeneExpression, PARALLEL = TRUE)
+  TrainObject_processedfeatures$GeneExpression <- Similarities[,1:ncol(TrainObject$GeneExpression)]
+  diag(TrainObject_processedfeatures$GeneExpression)<- 0
+
+  TestObject_processedfeatures$GeneExpression <- Similarities[,(ncol(TrainObject$GeneExpression)+1):(ncol(TrainObject$GeneExpression)+ncol(TestObject$GeneExpression))]
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_processedfeatures, envir = parent.frame())

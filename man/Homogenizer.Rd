@@ -15,6 +15,7 @@ Homogenizer(TrainObject, TestObject, HomogenizationMethod)
 The function 'ComBat' uses the batch effect removal ComBat of the sva package,
 The function 'quantile' uses the quantile normalization of the preprocessCore package,
 The function 'limma' uses the removeBatchEffect function of the limma package,
+The function 'YuGene' uses the function of the YuGene package by Le Cao,
 The function 'RUV' regresses out unwanted variation using the 10 principal components of negative control genes (here: list of human housekeeping by Eisenberg and Levanon (2013))
 The function 'none' doesn't do any batch effect correction,
 If the user wants to implement a user-defined batch effect removal function, the input should be the function.}

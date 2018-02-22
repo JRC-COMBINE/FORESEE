@@ -6,8 +6,8 @@
 \title{Genomics of Drug Sensitivity in Cancer or GDSC}
 \format{ForeseeCell object
 \describe{
-  \item{price}{price, in US dollars}
-  \item{carat}{weight of the diamond, in carats}
+  \item{GeneExpression}{Gene Expression Matrix}
+  \item{AUC}{...}
   ...
 }}
 \source{

@@ -4,10 +4,12 @@
 \alias{ForeseeTrain}
 \title{Train a Drug Efficacy Prediction Model}
 \usage{
-ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
-  CellResponseTransformation, InputDataTypes, DuplicationHandling,
-  HomogenizationMethod, GeneFilter, FeaturePreprocessing, BlackBox,
-  nfoldCrossvalidation, ...)
+ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType = "IC50",
+  CellResponseTransformation = "powertransform",
+  InputDataTypes = "GeneExpression", DuplicationHandling = "first",
+  HomogenizationMethod = "ComBat", GeneFilter = "all",
+  FeaturePreprocessing = "none", BlackBox = "ridge",
+  nfoldCrossvalidation = 1, ...)
 }
 \arguments{
 \item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
@@ -32,7 +34,7 @@ ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
 
 \item{BlackBox}{Modeling algorithm for training, such as linear regression, elastic net, lasso regression, ridge regression, tandem, support vector machines, random forests, user defined functions, etc.}
 
-\item{nfoldCrossvalidation}{# folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.}
+\item{nfoldCrossvalidation}{# folds to use for crossvalidation while training the model. If put to one, the complete data of the TrainObject is used for training.}
 }
 \value{
 \item{ForeseeModel}{A black box model trained on the TrainObject data that can be applied to new test data.}

@@ -28,8 +28,9 @@
 #'         \item{TestObject}{The TestObject with preprocessed and filtered features.}
 #' @export
 
-ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, CellResponseTransformation, InputDataTypes,
-                         DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing, BlackBox, nfoldCrossvalidation,...){
+ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "IC50", CellResponseTransformation = "powertransform",
+                         InputDataTypes = "GeneExpression", DuplicationHandling = "first", HomogenizationMethod = "ComBat",
+                         GeneFilter = "all", FeaturePreprocessing = "none", BlackBox = "ridge", nfoldCrossvalidation = 1,...){
 
 
   TrainObject <- TrainObject

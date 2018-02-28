@@ -123,6 +123,9 @@ Homogenizer.quantile <- function(TrainObject, TestObject, HomogenizationMethod){
   BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
   quantileObject <- normalize.quantiles(BothBatches)
 
+  # "normalize.quantiles" doesn't keep dimnames, have to transfer row and column names manually:
+  dimnames(quantileObject) <- dimnames(BothBatches)
+
   TrainObject_homogenized$GeneExpression <- quantileObject[, BatchIndex=="trainobject"]
   TestObject_homogenized$GeneExpression <- quantileObject[, BatchIndex=="testobject"]
 

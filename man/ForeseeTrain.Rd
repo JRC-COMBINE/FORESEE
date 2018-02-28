@@ -32,7 +32,7 @@ ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
 
 \item{BlackBox}{Modeling algorithm for training, such as linear regression, elastic net, lasso regression, ridge regression, tandem, support vector machines, random forests, user defined functions, etc.}
 
-\item{nfoldCrossvalidation}{# folds to use for crossvalidation while training the model. If put to one, the complete data of the TrainObject is used for training.}
+\item{nfoldCrossvalidation}{# folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.}
 }
 \value{
 \item{ForeseeModel}{A black box model trained on the TrainObject data that can be applied to new test data.}

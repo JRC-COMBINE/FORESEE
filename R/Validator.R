@@ -10,7 +10,7 @@
 #' @export
 
 Validator <- function(Foreseen, TestObject, Evaluation){
-  UseMethod("Validator", object = HomogenizationMethod)
+  UseMethod("Validator", object = Evaluation)
 }
 
 Validator.character <- function(Foreseen, TestObject, Evaluation){

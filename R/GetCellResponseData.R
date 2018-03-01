@@ -18,9 +18,9 @@ GetCellResponseData <- function(TrainObject, DrugName, CellResponseType){
       if(sum(colnames(tolower(TrainObject[[CellResponseType]]))==tolower(DrugName)) > 1){
         stop("More than one drug were matched! Can not continue with more than one drug to access!")
       } else {
-        DrugName <- colnames(TrainObject[[CellResponseType]])[colnames(tolower(TrainObject[[CellResponseType]]))==tolower(DrugName)]
+        DrugName <- colnames(TrainObject[[CellResponseType]])[tolower(colnames(TrainObject[[CellResponseType]]))==tolower(DrugName)]
       }
-      message(paste(DrugName,"was found!"))
+      message(paste(DrugName,"was found! Will continue with",DrugName,"..."))
     } else {
       stop(paste("No drugs were found in TrainObject matching",DrugName,", Try listDrugs(TrainObject) to get all acceptable DrugNames in your TrainObject"))
     }

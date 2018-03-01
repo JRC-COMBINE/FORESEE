@@ -17,3 +17,9 @@ Check the help of Foreseetrain and ForeseeTest for more info.}
 listInputOptions returns possible input values in ForeseeTrain (CellResponseTransformation, DuplicationHandling,
 HomogenizationMethod, GeneFilter, FeaturePreprocessing and BlackBox) and in ForeseeTest (Evaluation).
 }
+\examples{
+listInputOptions("CellResponseProcessor")
+listInputOptions("DuplicationHandler")
+listInputOptions("Homogenizer")
+listInputOptions("Validator")
+}

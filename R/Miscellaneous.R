@@ -7,6 +7,11 @@
 #' Check the help of Foreseetrain and ForeseeTest for more info.
 #'
 #' @return \item{Character vector of all possible inputs}
+#' @examples
+#' listInputOptions("CellResponseProcessor")
+#' listInputOptions("DuplicationHandler")
+#' listInputOptions("Homogenizer")
+#' listInputOptions("Validator")
 #' @export
 
 listInputOptions <- function(METHOD){

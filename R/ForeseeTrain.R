@@ -47,7 +47,7 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
   # CellResponseTransformation_options <- c("powertransform", "logarithm", "binarization_kmeans", "binarization_cutoff", "none")
 
   # Process Cell Response
-  CellResponseProcessor(TrainObject, DrugName, CellResponseType, CellResponseTransformation)
+  TrainObject <- CellResponseProcessor(TrainObject, DrugName, CellResponseType, CellResponseTransformation)
 
 #################################################################################################################################
 # 2. Remove Duplicates in gene names

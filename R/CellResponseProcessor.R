@@ -34,7 +34,7 @@ CellResponseProcessor.character <- function(TrainObject, DrugName, CellResponseT
 ### NOT WORKING YET
 # CellResponseProcessor.function <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 #   UseMethod("CellResponseProcessor", object = CellResponseTransformation)
-#   print("The used-defined function is applied")
+#   message("The used-defined function is applied")
 #
 #   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
 #   # ...
@@ -72,8 +72,8 @@ CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResp
   dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
 
   # Prints the reduction of gene names
-  print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes power transformed ",CellResponseType," response information about ",DrugName,"."))
-  print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes power transformed ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
   assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
@@ -104,8 +104,8 @@ CellResponseProcessor.logarithm <- function(TrainObject, DrugName, CellResponseT
   dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
 
   # Prints the reduction of gene names
-  print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes natural logarithmic ",CellResponseType," response information about ",DrugName,"."))
-  print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes natural logarithmic ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
   assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
@@ -134,8 +134,8 @@ CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, Cel
   dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
 
   # Prints the reduction of gene names
-  print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
-  print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
   assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
@@ -163,8 +163,8 @@ CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, Cel
   dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
 
   # Prints the reduction of gene names
-  print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
-  print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
   assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
@@ -187,8 +187,8 @@ CellResponseProcessor.none <- function(TrainObject, DrugName, CellResponseType, 
   dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
 
   # Prints the reduction of gene names
-  print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
-  print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
   assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())

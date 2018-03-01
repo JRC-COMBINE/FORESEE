@@ -42,7 +42,7 @@ DuplicationHandler.function <- function(Object, DuplicationHandling){
   dim_after<- dim(Object_withoutDuplicates$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
+  message(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
   return(Object_withoutDuplicates)
@@ -65,7 +65,7 @@ DuplicationHandler.first <- function(Object, DuplicationHandling){
   dim_after <- dim(Object_withoutDuplicates$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
+  message(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
 
@@ -90,7 +90,7 @@ DuplicationHandler.none <- function(Object, DuplicationHandling){
   dim_after<- dim(Object_withoutDuplicates$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
+  message(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
 
@@ -118,7 +118,7 @@ DuplicationHandler.mean <- function(Object, DuplicationHandling){
   dim_after<- dim(Object_withoutDuplicates$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
+  message(paste0("The removal of duplicates reduced the number of genes in the Foresee Object from ", dim_before, " to ", dim_after))
 
   # Update Object in the Environment
   Object <- Object_withoutDuplicates

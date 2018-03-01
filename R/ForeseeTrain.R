@@ -32,21 +32,6 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
                          InputDataTypes = "GeneExpression", DuplicationHandling = "first", HomogenizationMethod = "ComBat",
                          GeneFilter = "all", FeaturePreprocessing = "none", BlackBox = "ridge", nfoldCrossvalidation = 1,...){
 
-
-  TrainObject <- TrainObject
-  TestObject <- TestObject
-  DrugName <- DrugName
-  CellResponseType <- CellResponseType
-  CellResponseTransformation <- CellResponseTransformation
-  InputDataTypes <- InputDataTypes
-  DuplicationHandling <- DuplicationHandling
-  HomogenizationMethod <- HomogenizationMethod
-  GeneFilter <- GeneFilter
-  FeaturePreprocessing <- FeaturePreprocessing
-  BlackBox <- BlackBox
-  nfoldCrossvalidation <- nfoldCrossvalidation
-  ForeseeModel <- 0
-
 #################################################################################################################################
 # 1. Cell Response Processing
 

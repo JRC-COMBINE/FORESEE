@@ -12,7 +12,8 @@ ForeseeTest(TestObject, ForeseeModel, Evaluation = "rocauc",
 
 \item{ForeseeModel}{Model that has been trained on a TrainObject with ForeseeTrain.}
 
-\item{Evaluation}{Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.}
+\item{Evaluation}{Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.
+Get all possible values with listInputOptions("Validator").}
 }
 \value{
 \item{Performance}{Evaluation Measure of the Predictability of the ForeseeModel trained on the TrainObject and tested on the TestObject.}

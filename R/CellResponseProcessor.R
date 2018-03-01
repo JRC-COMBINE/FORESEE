@@ -18,7 +18,6 @@
 
 # ToDo
 # User-defined input not implemented yet (see commented, not-working part CellResponseProcessor.function)
-# Include cutoff binarization for transformation type (remove package, simply divide input vector at median)
 # Inlude options for other response types (what if user choses values other than AUC or IC50?)
 
 CellResponseProcessor <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
@@ -31,19 +30,6 @@ CellResponseProcessor.character <- function(TrainObject, DrugName, CellResponseT
   UseMethod("CellResponseProcessor", object = CellResponseTransformation)
 }
 
-### NOT WORKING YET
-# CellResponseProcessor.function <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
-#   UseMethod("CellResponseProcessor", object = CellResponseTransformation)
-#   print("The used-defined function is applied")
-#
-#   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
-#   # ...
-#   # Update TrainObject in the Environment
-#   TrainObject <<- Object_withDrugResponse
-# }
-
-
-
 ################################################################################
 ### Function "powertransform" to powertransform the chosen drug response data
 CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
@@ -51,13 +37,8 @@ CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResp
   # Load Package for Power Transform
   require(car)
 
-  # Number of Cell Lines before adjusting with drug response data
-  dim_before <- dim(TrainObject$GeneExpression)[2]
-
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
-
-  # Do powertransform of drug response data
 
   # Powertransform needs all inputs to be positive
     if(min(Object_withDrugResponse$DrugResponse, na.rm = TRUE) < 0) {
@@ -65,15 +46,12 @@ CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResp
       Object_withDrugResponse$DrugResponse <- Object_withDrugResponse$DrugResponse + offset
     }
 
+  # Do powertransform of drug response data
   TransForm <- powerTransform(Object_withDrugResponse$DrugResponse)$lambda
   Object_withDrugResponse$DrugResponse <- Object_withDrugResponse$DrugResponse^TransForm
 
-  # Number of Cell Lines after adjusting with drug response data
-  dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
-
-  # Prints the reduction of gene names
+  # Prints the action
   print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes power transformed ",CellResponseType," response information about ",DrugName,"."))
-  print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
   assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
@@ -84,12 +62,8 @@ CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResp
 ### Function "logarithm" to logarithm the chosen drug response data
 CellResponseProcessor.logarithm <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
-  # Number of Cell Lines before adjusting with drug response data
-  dim_before <- dim(TrainObject$GeneExpression)[2]
-
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
-
 
   # Log needs all inputs to be positive, otherwise only NAs are returned
   if(min(Object_withDrugResponse$DrugResponse, na.rm = TRUE) < 0) {
@@ -100,12 +74,8 @@ CellResponseProcessor.logarithm <- function(TrainObject, DrugName, CellResponseT
   # Do logarithm of drug response data
   Object_withDrugResponse$DrugResponse <- log(Object_withDrugResponse$DrugResponse)
 
-  # Number of Cell Lines after adjusting with drug response data
-  dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
-
-  # Prints the reduction of gene names
+  # Prints the action
   print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes natural logarithmic ",CellResponseType," response information about ",DrugName,"."))
-  print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
   assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
@@ -120,22 +90,14 @@ CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, Cel
 
   require(Binarize)
 
-  # Number of Cell Lines before adjusting with drug response data
-  dim_before <- dim(TrainObject$GeneExpression)[2]
-
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
 
   # Do kmeans binarization of drug response data
   Object_withDrugResponse$DrugResponse <- binarize.kMeans(Object_withDrugResponse$DrugResponse)@binarizedMeasurements
 
-
-  # Number of Cell Lines after adjusting with drug response data
-  dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
-
-  # Prints the reduction of gene names
+  # Prints the action
   print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
-  print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
   assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
@@ -149,22 +111,14 @@ CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, Cel
 
   require(bootnet)
 
-  # Number of Cell Lines before adjusting with drug response data
-  dim_before <- dim(TrainObject$GeneExpression)[2]
-
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
 
   # Do binarization of drug response data with median as cutoff
   Object_withDrugResponse$DrugResponse <- binarize(x=Object_withDrugResponse$DrugResponse, split = "median", removeNArows = TRUE)$x
 
-
-  # Number of Cell Lines after adjusting with drug response data
-  dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
-
-  # Prints the reduction of gene names
+  # Prints the action
   print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
-  print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
   # Update TrainObject in the Environment
   assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
@@ -175,21 +129,14 @@ CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, Cel
 ### Function "none" to use the raw drug response data
 CellResponseProcessor.none <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
-  # Number of Cell Lines before adjusting with drug response data
-  dim_before <- dim(TrainObject$GeneExpression)[2]
-
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
 
   # Don't do anything to drug response data
 
-  # Number of Cell Lines after adjusting with drug response data
-  dim_after <- dim(Object_withDrugResponse$GeneExpression)[2]
-
-  # Prints the reduction of gene names
+  # Prints the action
   print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
-  print(paste0("The number of cell lines in the ForeseeCell Object was reduced from ",dim_before," to ",dim_after,"."))
 
-  # Update TrainObject in the Environment
+    # Update TrainObject in the Environment
   assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
 }

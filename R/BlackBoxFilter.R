@@ -22,7 +22,6 @@
 
 
 # ToDo: User-defined function
-# ToDo: Tandem
 
 
 BlackBoxFilter <- function(TrainObject, BlackBox, nfoldCrossvalidation, ...){
@@ -40,11 +39,11 @@ BlackBoxFilter <- function(TrainObject, BlackBox, nfoldCrossvalidation, ...){
     test  <- TrainObject
 
     # Shuffle the data
-    sample <- sample.int(n = ncol(TrainObject_backup$GeneExpression))
-    TrainObject$GeneExpression<-TrainObject_backup$GeneExpression[,sample]
+    sample <- sample.int(n = ncol(TrainObject_backup$Features))
+    TrainObject$Features<-TrainObject_backup$Features[,sample]
 
     # Create n equally size folds
-    folds <- cut(seq(1,ncol(TrainObject_backup$GeneExpression)),breaks=nfoldCrossvalidation,labels=FALSE)
+    folds <- cut(seq(1,ncol(TrainObject_backup$Features)),breaks=nfoldCrossvalidation,labels=FALSE)
 
     Performance_bestfold <- 0
     ForeseeModel_bestfold <- list()
@@ -54,9 +53,9 @@ BlackBoxFilter <- function(TrainObject, BlackBox, nfoldCrossvalidation, ...){
 
       #Segement data
       test_ids <-  which(folds==i,arr.ind=TRUE)
-      test$GeneExpression <- TrainObject_backup$GeneExpression[,test_ids]
+      test$Features <- TrainObject_backup$Features[,test_ids]
       test$DrugResponse <- TrainObject_backup$DrugResponse[test_ids]
-      train$GeneExpression <- TrainObject_backup$GeneExpression[,-test_ids]
+      train$Features <- TrainObject_backup$Features[,-test_ids]
       train$DrugResponse <- TrainObject_backup$DrugResponse[-test_ids]
 
       # Update TrainObject in environment
@@ -75,7 +74,7 @@ BlackBoxFilter <- function(TrainObject, BlackBox, nfoldCrossvalidation, ...){
         assign("test_ids_bestfold", value = test_ids, envir = parent.frame())
       }
 
-      TrainObject$GeneExpression <- TrainObject_backup$GeneExpression[,!test_ids_bestfold]
+      TrainObject$Features <- TrainObject_backup$Features[,!test_ids_bestfold]
       TrainObject$DrugResponse <- TrainObject_backup$DrugResponse[!test_ids_bestfold]
 
       assign("ForeseeModel", value = ForeseeModel_bestfold, envir = parent.frame())
@@ -103,7 +102,7 @@ BlackBoxFilter.character <- function(TrainObject, BlackBox, nfoldCrossvalidation
 ### Function "linear" to train a linear regression model
 BlackBoxFilter.linear <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
-  TrainObject_train<- as.matrix(cbind(t(TrainObject$GeneExpression),TrainObject$DrugResponse))
+  TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
   # For some weird reason the object still contains duplicates? Check duplication handler
@@ -124,7 +123,7 @@ BlackBoxFilter.linear <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 ### Function "ridge" to train a linear ridge regression model
 BlackBoxFilter.ridge <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
-  TrainObject_train<- as.matrix(cbind(t(TrainObject$GeneExpression),TrainObject$DrugResponse))
+  TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
   # For some weird reason the object still contains duplicates? Check duplication handler
@@ -148,12 +147,12 @@ BlackBoxFilter.ridge <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 ### Function "lasso" to train a lasso regression model
 BlackBoxFilter.lasso <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
-  TrainObject_train<- as.matrix(cbind(t(TrainObject$GeneExpression),TrainObject$DrugResponse))
+  TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
   # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
   require(glmnet)
-  lasso_fit <- glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse, alpha = 1,lambda=cv.glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse, alpha = 1)$lambda.min)
+  lasso_fit <- glmnet(x = t(TrainObject$Features), y=TrainObject$DrugResponse, alpha = 1,lambda=cv.glmnet(x = t(TrainObject$Features), y=TrainObject$DrugResponse, alpha = 1)$lambda.min)
 
   # Update Objects in the Environment
   TrainObject[["TrainFrame"]] <- TrainObject_train
@@ -166,7 +165,7 @@ BlackBoxFilter.lasso <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 ### Function "elasticnet" to train a elasticnet regression model
 BlackBoxFilter.elasticnet <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
-  TrainObject_train<- as.matrix(cbind(t(TrainObject$GeneExpression),TrainObject$DrugResponse))
+  TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
   # For some weird reason the object still contains duplicates? Check duplication handler
@@ -178,7 +177,7 @@ BlackBoxFilter.elasticnet <- function(TrainObject, BlackBox, nfoldCrossvalidatio
   # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
   require(glmnet)
   require(glmnetUtils)
-  elasticnet_fit <- glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse,  alpha = 0.5 ,lambda=cv.glmnet(x = t(TrainObject$GeneExpression), y=TrainObject$DrugResponse, alpha = 0.5)$lambda.min)
+  elasticnet_fit <- glmnet(x = t(TrainObject$Features), y=TrainObject$DrugResponse,  alpha = 0.5 ,lambda=cv.glmnet(x = t(TrainObject$Features), y=TrainObject$DrugResponse, alpha = 0.5)$lambda.min)
 
   # Update Objects in the Environment
   TrainObject[["TrainFrame"]] <- TrainObject_train
@@ -191,7 +190,7 @@ BlackBoxFilter.elasticnet <- function(TrainObject, BlackBox, nfoldCrossvalidatio
 ### Function "svm" to train a support vector regression model
 BlackBoxFilter.svm <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
-  TrainObject_train<- as.matrix(cbind(t(TrainObject$GeneExpression),TrainObject$DrugResponse))
+  TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
   # For some weird reason the object still contains duplicates? Check duplication handler
@@ -214,7 +213,7 @@ BlackBoxFilter.svm <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 ### Function "rf" to train a random forest regression model
 BlackBoxFilter.rf <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
-  TrainObject_train<- as.matrix(cbind(t(TrainObject$GeneExpression),TrainObject$DrugResponse))
+  TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
   # For some weird reason the object still contains duplicates? Check duplication handler
@@ -237,7 +236,7 @@ BlackBoxFilter.rf <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 ### Function "rf" to train a random forest regression model
 BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
-  TrainObject_train<- as.matrix(cbind(t(TrainObject$GeneExpression),TrainObject$DrugResponse))
+  TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
   # For some weird reason the object still contains duplicates? Check duplication handler
@@ -262,8 +261,8 @@ BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation
 ### Function "tandem" to train a lasso regression model
 BlackBoxFilter.tandem <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
-  TrainObject_train<- as.matrix(t(TrainObject$GeneExpression))
-  upstream_index <-c()
+  TrainObject_train<- as.matrix(t(TrainObject$Features))
+  upstream_index <- (TrainObject$FeatureTypes[1,])!="GeneExpression"
 
   # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
   require(TANDEM)

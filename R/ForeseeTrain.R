@@ -18,6 +18,7 @@
 #' @param InputDataTypes Data types of the TrainObject that are to be used to train the model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
 #' @param DuplicationHandling Method for handling duplicates of gene names, such as taking none, the average, the first hit, etc.
 #' @param HomogenizationMethod Method for homogenizing data of the TrainObject and TestObject, such as ComBat, quantile normalization, limma, RUV, etc.
+#' @param TrainingTissue Tissue type that the cell lines of the TrainObject should be of, such as skin or lung. Default should be "all" for pancancer analysis.
 #' @param GeneFilter Set of genes to be considered for training the model, such as all, a certain percantage based on variance or p-value, specific gene sets like landmark genes, gene ontologies or pathways, etc.
 #' @param FeaturePreprocessing Method for preprocessing the inputs of the model, such as z-score, principal component analysis, PhysioSpace similarity, etc.
 #' @param BlackBox Modeling algorithm for training, such as linear regression, elastic net, lasso regression, ridge regression, tandem, support vector machines, random forests, user defined functions, etc.
@@ -28,7 +29,7 @@
 #'         \item{TestObject}{The TestObject with preprocessed and filtered features.}
 #' @export
 
-ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, CellResponseTransformation, InputDataTypes,
+ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, CellResponseTransformation, InputDataTypes, TrainingTissue,
                          DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing, BlackBox, nfoldCrossvalidation,...){
 
 
@@ -41,13 +42,15 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, Ce
   DuplicationHandling <- DuplicationHandling
   HomogenizationMethod <- HomogenizationMethod
   GeneFilter <- GeneFilter
+  TrainingTissue <-TrainingTissue
   FeaturePreprocessing <- FeaturePreprocessing
   BlackBox <- BlackBox
   nfoldCrossvalidation <- nfoldCrossvalidation
   ForeseeModel <- 0
 
-#################################################################################################################################
-# 1. Cell Response Processing
+
+  #################################################################################################################################
+  # 1. Cell Response Processing
 
   # Do CellResponseProcessor in the beginning to avoid doing the rest on duplicated cell line names etc.
   # the function 'powertransform' power transforms the drug response data,
@@ -61,71 +64,98 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, Ce
   # CellResponseTransformation_options <- c("powertransform", "logarithm", "binarization_kmeans", "binarization_cutoff", "none")
 
   # Process Cell Response
-  CellResponseProcessor(TrainObject, DrugName, CellResponseType, CellResponseTransformation)
+  CellResponseProcessor(TrainObject=TrainObject, DrugName=DrugName, CellResponseType=CellResponseType, CellResponseTransformation=CellResponseTransformation)
+
+
+  # If FORESEE is used to do cell2cell prediction, the drug response data of the TestObject is processed in the same manner as the TrainObject
+  if (class(TestObject)=="ForeseeCell"){
+    CellResponseProcessor(TestObject=TestObject, DrugName=DrugName, CellResponseType=CellResponseType, CellResponseTransformation=CellResponseTransformation)
+  }
+
+  #################################################################################################################################
+  # 2. Selecting Samples
+
+  # SampleSelector_options <- c("all",as.character(unique(TrainObject$TissueInfo$Site)))
+
+  SampleSelector(TrainObject=TrainObject,TrainingTissue=TrainingTissue, InputDataTypes=InputDataTypes)
+
+  #################################################################################################################################
+  # 3. Preprocess Gene Expression Data
+
+  if (("GeneExpression" %in% InputDataTypes)==TRUE){
+
+
+    #################################################################################################################################
+    # 3a. Remove Duplicates in gene names
+    # Options
+      # The function 'mean' calculates the mean of all rows that have the same gene name,
+      # The function 'first' chooses the first occuring row of duplicated genes only,
+      # The function 'none' removes all genes that occur more than once.
+
+      # DuplicationHandling_options <- c("first", "mean", "none")
+
+    # Train matrix
+      TrainObject <- DuplicationHandler(Object=TrainObject, DuplicationHandling=DuplicationHandling)
+    # Test matrix
+      TestObject <- DuplicationHandler(Object=TestObject, DuplicationHandling=DuplicationHandling)
+
+    #################################################################################################################################
+    # 3b. Homogenize training and test data set
+      # Options
+      # The function 'ComBat' uses the batch effect removal ComBat of the sva package,
+      # The function 'quantile' uses the quantile normalization of the preprocessCore package,
+      # The function 'limma' uses the removeBatchEffect function of the limma package,
+      # The function 'RUV' uses the RUV normalization, requiring a set of negative control genes,
+      # The function 'none' doesn't do any batch effect correction,
+      # If the user wants to implement a user-defined function batch effect removal function, the input should be the function.
+
+      #   HomogenizationMethod_options <- c("ComBat", "quantile", "limma", "YuGene", "RUV", "RUV4", "none")
+
+      # Homogenize
+      Homogenizer(TrainObject=TrainObject, TestObject=TestObject, HomogenizationMethod=HomogenizationMethod)
+
+    #################################################################################################################################
+    # 3c. Feature Selection
+
+      # Options
+      # The option 'variance' removes the 20 % genes of lowest variance across samples in the TrainObject
+      # The option 'pvalue' removes the 20 % genes of lowest p-value (ttest) across samples in the TrainObject
+      # The option 'landmarkgenes' uses the L1000 gene set downloaded from CLUE Command App
+      # The option 'ontology' uses a specific set of genes included in the chosen ontology? -> Ali
+      # The option 'pathway' uses a specific set of genes included in the chosen pathway? -> Ali
+      # The option 'all' keeps all genes as features
+      # If the user inserts a list as an input, the list is considered as chosen features.
+
+      # FeatureSelector_options <- c("variance", "pvalue", "landmarkgenes", "ontology", "pathway", "all")
+
+      FeatureSelector(TrainObject=TrainObject,TestObject=TestObject, GeneFilter=GeneFilter)
+
+    #################################################################################################################################
+    # 3d. Feature Preprocessing
+
+      # Options
+      # The function 'zscore_genewise' calculates the zscore normalizing each gene over all samples,
+      # The function 'zscore_samplewise' calculates the zscore normalizing each sample over all genes,
+      # The function 'pca' does principal component analysis,
+      # The function 'physio' does physiospace analysis with the samples using cell line gene expression of the gdsc data base as physiological references,
+      # The function 'none' keeps the gene expression values unchanged,
+      # If the user wants to implement a user-defined function batch effect removal function, the input should be the function.
+
+      # FeaturePreprocessing_options <- c("zscore_genewise", "zscore_samplewise", "pca", "physio", "none")
+
+      FeaturePreprocessor(TrainObject=TrainObject, TestObject=TestObject, FeaturePreprocessing=FeaturePreprocessing)
+
+
+  }
+
+
+  #################################################################################################################################
+  # 4. Creating the Feature Matrix
+
+  FeatureCombiner(TrainObject=TrainObject, TestObject=TestObject, InputDataTypes=InputDataTypes)
 
 #################################################################################################################################
-# 2. Remove Duplicates in gene names
-# Options
-  # The function 'mean' calculates the mean of all rows that have the same gene name,
-  # The function 'first' chooses the first occuring row of duplicated genes only,
-  # The function 'none' removes all genes that occur more than once.
-
-  # DuplicationHandling_options <- c("first", "mean", "none")
-
-# Train matrix
-  TrainObject <- DuplicationHandler(TrainObject, DuplicationHandling)
-# Test matrix
-  TestObject <- DuplicationHandler(TestObject, DuplicationHandling)
-
-#################################################################################################################################
-# 3. Homogenize training and test data set
-  # Options
-  # The function 'ComBat' uses the batch effect removal ComBat of the sva package,
-  # The function 'quantile' uses the quantile normalization of the preprocessCore package,
-  # The function 'limma' uses the removeBatchEffect function of the limma package,
-  # The function 'RUV' uses the RUV normalization, requiring a set of negative control genes,
-  # The function 'none' doesn't do any batch effect correction,
-  # If the user wants to implement a user-defined function batch effect removal function, the input should be the function.
-
-  # HomogenizationMethod_options <- c("ComBat", "quantile", "limma", "RUV", "none")
-
-  # Homogenize
-  Homogenizer(TrainObject, TestObject, HomogenizationMethod)
-
-#################################################################################################################################
-# 4. Feature Selection
-
-  # Options
-  # The option 'variance' removes the 20 % genes of lowest variance across samples in the TrainObject
-  # The option 'pvalue' removes the 20 % genes of lowest p-value (ttest) across samples in the TrainObject
-  # The option 'landmarkgenes' uses the L1000 gene set downloaded from CLUE Command App
-  # The option 'ontology' uses a specific set of genes included in the chosen ontology? -> Ali
-  # The option 'pathway' uses a specific set of genes included in the chosen pathway? -> Ali
-  # The option 'all' keeps all genes as features
-  # If the user inserts a list as an input, the list is considered as chosen features.
-
-  # FeatureSelector_options <- c("variance", "pvalue", "landmarkgenes", "ontology", "pathway", "all")
-
-  FeatureSelector(TrainObject,TestObject, GeneFilter)
-
-#################################################################################################################################
-# 5. Feature Preprocessing
-
-  # Options
-  # The function 'zscore_genewise' calculates the zscore normalizing each gene over all samples,
-  # The function 'zscore_samplewise' calculates the zscore normalizing each sample over all genes,
-  # The function 'pca' does principal component analysis,
-  # The function 'physio' does physiospace analysis with the samples using cell line gene expression of the gdsc data base as physiological references,
-  # The function 'none' keeps the gene expression values unchanged,
-  # If the user wants to implement a user-defined function batch effect removal function, the input should be the function.
-
-  # FeaturePreprocessing_options <- c("zscore_genewise", "zscore_samplewise", "pca", "physio", "none")
-
-  FeaturePreprocessor(TrainObject, TestObject, FeaturePreprocessing)
-
-
-#################################################################################################################################
-# 6. Black Box Filter
+# 5. Black Box Filter
 
   # Options
   # The function 'linear' fits a linear regression model to the training data,
@@ -138,7 +168,7 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, Ce
 
   # BlackBox_options <- c("linear", "ridge", "lasso", "elasticnet", "svm", "rf", "rf_ranger")
 
-  BlackBoxFilter(TrainObject, BlackBox, nfoldCrossvalidation)
+  BlackBoxFilter(TrainObject=TrainObject, BlackBox=BlackBox, nfoldCrossvalidation=nfoldCrossvalidation)
 
 
   # Update Objects in the Environment

@@ -1,0 +1,95 @@
+#' FeatureCombiner
+#'
+#' The Feature Combiner combines all selected Input Data Types into a Feature Matrix
+#'
+#' @param TrainObject Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
+#' @param TestObject Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
+#' @param InputDataTypes Data types of the TrainObject that are to be used to train the model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
+#' @return \item{TrainObject}{The TrainObject with a new Feature matrix combining all specified input data types and a Featuretype Vector indicating the molecular data type of each feature}
+#'         \item{TestObject}{The TestObject with a new Feature matrix combining all specified input data types and a Featuretype Vector indicating the molecular data type of each feature}
+#' @export
+
+
+FeatureCombiner<- function(TrainObject, TestObject, InputDataTypes){
+
+  ################################################################################
+  # Check if both objects include the specified InputDataTypes
+
+  missing_data_train <- c()
+  missing_data_index_train <- c()
+  missing_data_test <- c()
+  missing_data_index_test <- c()
+
+  for (m in 1:length(InputDataTypes)){
+
+
+    if(is.null(TrainObject[[InputDataTypes[m]]])==TRUE){
+      warning(paste0("The ForeseeTrainObject does not comprise data of the type '",InputDataTypes[m],"'. Therefore, the training will proceed without that data type."))
+      missing_data_index_train <- m
+
+    }
+
+    if(is.null(TestObject[[InputDataTypes[m]]])==TRUE){
+    warning(paste0("The ForeseeTest Object does not comprise data of the type '",InputDataTypes[m],"'. Therefore, the training will proceed without that data type."))
+    missing_data_index_test <- m
+      }
+
+
+    missing_data_train <- cbind(missing_data_train,missing_data_index_train)
+    missing_data_test <- cbind(missing_data_test,missing_data_index_test)
+  }
+
+  missing_data<-Reduce(union,c(missing_data_train,missing_data_test))
+  InputDataTypes<-InputDataTypes[-missing_data]
+
+  ################################################################################
+  # Reduce data types to the features that are common in TrainObject and TestObjecct
+
+  JointExtractedFeatures_Train<-c()
+  JointExtractedFeatures_Test<-c()
+
+  for (m in 1:length(InputDataTypes)){
+
+    FeatureType <- InputDataTypes[m]
+    ExtractedFeatures_Train <- rownames(TrainObject[[FeatureType]])
+    ExtractedFeatures_Test <- rownames(TestObject[[FeatureType]])
+    JointExtractedFeatures <- Reduce(intersect, list(ExtractedFeatures_Train,ExtractedFeatures_Test))
+
+    TrainObject[[FeatureType]]<-TrainObject[[FeatureType]][JointExtractedFeatures,]
+    TestObject[[FeatureType]]<-TestObject[[FeatureType]][JointExtractedFeatures,]
+  }
+
+
+  ################################################################################
+  # Create Feature Matrices
+  Features_Train <- c()
+  FeatureTypes_Train  <- c()
+
+  for (i in 1:length(InputDataTypes)){
+    FeatureType <- InputDataTypes[i]
+    Features_i <- TrainObject[[FeatureType]]
+    FeatureTypes_Train  <- cbind(FeatureTypes_Train, rbind(rep(x=FeatureType,times=dim(Features_i)[1])))
+    Features_Train  <- rbind(Features_Train,Features_i)
+  }
+
+  Features_Test <- c()
+  FeatureTypes_Test  <- c()
+
+  for (i in 1:length(InputDataTypes)){
+    FeatureType <- InputDataTypes[i]
+    Features_i <- TestObject[[FeatureType]]
+    FeatureTypes_Test  <- cbind(FeatureTypes_Test, rbind(rep(x=FeatureType,times=dim(Features_i)[1])))
+    Features_Test  <- rbind(Features_Test,Features_i)
+  }
+
+################################################################################
+# Create new feature matrices and feature type vectors in Foresee objects
+TrainObject[["Features"]] <- Features_Train
+TrainObject[["FeatureTypes"]] <- FeatureTypes_Train
+TestObject[["Features"]] <- Features_Test
+TestObject[["FeatureTypes"]] <- FeatureTypes_Test
+
+# Update Objects in the Environment
+assign("TrainObject", value = TrainObject, envir = parent.frame())
+assign("TestObject", value = TestObject, envir = parent.frame())
+}

@@ -15,10 +15,5 @@ GetCellResponseData <- function(TrainObject, DrugName, CellResponseType){
   DrugResponse <- DrugResponse[is.na(DrugResponse)==FALSE]
   TrainObject[["DrugResponse"]] <- DrugResponse
 
-  # Return gene expression of only those cell lines that have drug response values
-  CommonCelllines <- colnames(TrainObject$GeneExpression)[colnames(TrainObject$GeneExpression) %in% names(TrainObject$DrugResponse)]
-  TrainObject$GeneExpression <- TrainObject$GeneExpression[,CommonCelllines]
-  TrainObject$DrugResponse <- TrainObject$DrugResponse[CommonCelllines]
-
   return(TrainObject)
 }

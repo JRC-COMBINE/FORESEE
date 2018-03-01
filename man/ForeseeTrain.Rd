@@ -5,9 +5,9 @@
 \title{Train a Drug Efficacy Prediction Model}
 \usage{
 ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
-  CellResponseTransformation, InputDataTypes, DuplicationHandling,
-  HomogenizationMethod, GeneFilter, FeaturePreprocessing, BlackBox,
-  nfoldCrossvalidation, ...)
+  CellResponseTransformation, InputDataTypes, TrainingTissue,
+  DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing,
+  BlackBox, nfoldCrossvalidation, ...)
 }
 \arguments{
 \item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
@@ -21,6 +21,8 @@ ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
 \item{CellResponseTransformation}{Method that is to be used to transform the drug response data of the TrainObject, such as power transform, logarithm, binarization, user defined functions, etc.}
 
 \item{InputDataTypes}{Data types of the TrainObject that are to be used to train the model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+
+\item{TrainingTissue}{Tissue type that the cell lines of the TrainObject should be of, such as skin or lung. Default should be "all" for pancancer analysis.}
 
 \item{DuplicationHandling}{Method for handling duplicates of gene names, such as taking none, the average, the first hit, etc.}
 

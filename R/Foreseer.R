@@ -12,18 +12,18 @@ Foreseer <- function(TestObject, ForeseeModel, BlackBox){
 
   if (BlackBox=="lasso"){
 
-    TestObject_test<- t(TestObject$GeneExpression)
+    TestObject_test<- t(TestObject$Features)
     Foreseen <- predict(object=ForeseeModel, newx=TestObject_test)
 
   }
   else if (BlackBox=="elasticnet"){
 
-    TestObject_test<- t(TestObject$GeneExpression)
+    TestObject_test<- t(TestObject$Features)
     Foreseen <- predict(object=ForeseeModel, newx=TestObject_test)
 
   }
   else{
-  TestObject_test<- as.data.frame(as.matrix(t(TestObject$GeneExpression)))
+  TestObject_test<- as.data.frame(as.matrix(t(TestObject$Features)))
   # For some weird reason the object still contains duplicates? Check duplication handler
   # Just take the first occuring gene name (here: in columns!) for now
   TestObject_test <- TestObject_test[,!duplicated(colnames(TestObject_test))]

@@ -15,13 +15,19 @@
 #' @param DrugName Name of the drug whose efficacy is supposed to be predicted with the model
 #' @param CellResponseType Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc.
 #' @param CellResponseTransformation Method that is to be used to transform the drug response data of the TrainObject, such as power transform, logarithm, binarization, user defined functions, etc.
+#' Get all possible values with listInputOptions("CellResponseProcessor").
 #' @param InputDataTypes Data types of the TrainObject that are to be used to train the model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
 #' @param DuplicationHandling Method for handling duplicates of gene names, such as taking none, the average, the first hit, etc.
+#' Get all possible values with listInputOptions("DuplicationHandler").
 #' @param HomogenizationMethod Method for homogenizing data of the TrainObject and TestObject, such as ComBat, quantile normalization, limma, RUV, etc.
+#' Get all possible values with listInputOptions("Homogenizer").
 #' @param TrainingTissue Tissue type that the cell lines of the TrainObject should be of, such as skin or lung. Default should be "all" for pancancer analysis.
 #' @param GeneFilter Set of genes to be considered for training the model, such as all, a certain percantage based on variance or p-value, specific gene sets like landmark genes, gene ontologies or pathways, etc.
+#' Get all possible values with listInputOptions("FeatureSelector").
 #' @param FeaturePreprocessing Method for preprocessing the inputs of the model, such as z-score, principal component analysis, PhysioSpace similarity, etc.
+#' Get all possible values with listInputOptions("FeaturePreprocessor").
 #' @param BlackBox Modeling algorithm for training, such as linear regression, elastic net, lasso regression, ridge regression, tandem, support vector machines, random forests, user defined functions, etc.
+#' Get all possible values with listInputOptions("BlackBoxFilter").
 #' @param nfoldCrossvalidation # folds to use for crossvalidation while training the model. If put to one, the complete data of the TrainObject is used for training.
 
 #' @return \item{ForeseeModel}{A black box model trained on the TrainObject data that can be applied to new test data.}
@@ -29,24 +35,9 @@
 #'         \item{TestObject}{The TestObject with preprocessed and filtered features.}
 #' @export
 
-ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, CellResponseTransformation, InputDataTypes, TrainingTissue,
-                         DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing, BlackBox, nfoldCrossvalidation,...){
-
-
-  TrainObject <- TrainObject
-  TestObject <- TestObject
-  DrugName <- DrugName
-  CellResponseType <- CellResponseType
-  CellResponseTransformation <- CellResponseTransformation
-  InputDataTypes <- InputDataTypes
-  DuplicationHandling <- DuplicationHandling
-  HomogenizationMethod <- HomogenizationMethod
-  GeneFilter <- GeneFilter
-  TrainingTissue <-TrainingTissue
-  FeaturePreprocessing <- FeaturePreprocessing
-  BlackBox <- BlackBox
-  nfoldCrossvalidation <- nfoldCrossvalidation
-  ForeseeModel <- 0
+ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "IC50", CellResponseTransformation = "powertransform",
+                         InputDataTypes = "GeneExpression", TrainingTissue = "all", DuplicationHandling = "first", HomogenizationMethod = "ComBat",
+                         GeneFilter = "all", FeaturePreprocessing = "none", BlackBox = "ridge", nfoldCrossvalidation = 1,...){
 
 
   #################################################################################################################################
@@ -64,7 +55,7 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, Ce
   # CellResponseTransformation_options <- c("powertransform", "logarithm", "binarization_kmeans", "binarization_cutoff", "none")
 
   # Process Cell Response
-  CellResponseProcessor(TrainObject=TrainObject, DrugName=DrugName, CellResponseType=CellResponseType, CellResponseTransformation=CellResponseTransformation)
+  TrainObject <- CellResponseProcessor(TrainObject, DrugName, CellResponseType, CellResponseTransformation)
 
 
   # If FORESEE is used to do cell2cell prediction, the drug response data of the TestObject is processed in the same manner as the TrainObject

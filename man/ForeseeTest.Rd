@@ -4,14 +4,16 @@
 \alias{ForeseeTest}
 \title{Test a Drug Efficacy Prediction Model on a TestObject}
 \usage{
-ForeseeTest(TestObject, ForeseeModel, Evaluation, BlackBox)
+ForeseeTest(TestObject, ForeseeModel, Evaluation = "rocauc",
+  BlackBox = "ridge")
 }
 \arguments{
 \item{TestObject}{Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
 
 \item{ForeseeModel}{Model that has been trained on a TrainObject with ForeseeTrain.}
 
-\item{Evaluation}{Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.}
+\item{Evaluation}{Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.
+Get all possible values with listInputOptions("Validator").}
 }
 \value{
 \item{Performance}{Evaluation Measure of the Predictability of the ForeseeModel trained on the TrainObject and tested on the TestObject.}

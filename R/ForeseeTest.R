@@ -7,12 +7,13 @@
 #' @param TestObject Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
 #' @param ForeseeModel Model that has been trained on a TrainObject with ForeseeTrain.
 #' @param Evaluation Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.
+#' Get all possible values with listInputOptions("Validator").
 #'
 #' @return \item{Performance}{Evaluation Measure of the Predictability of the ForeseeModel trained on the TrainObject and tested on the TestObject.}
 #'         \item{Foreseen}{Predicted drug response of the TestObject obtained by applying the ForeseeModel.}
 #' @export
 
-ForeseeTest <- function(TestObject, ForeseeModel, Evaluation, BlackBox){
+ForeseeTest <- function(TestObject, ForeseeModel, Evaluation = "rocauc", BlackBox = "ridge"){
 
 
     #################################################################################################################################

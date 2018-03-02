@@ -90,7 +90,7 @@ Homogenizer.ComBat <- function(TrainObject, TestObject, HomogenizationMethod){
   dim_after_test <- dim(TestObject_homogenized$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
+  message(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
@@ -134,7 +134,7 @@ Homogenizer.quantile <- function(TrainObject, TestObject, HomogenizationMethod){
   dim_after_test <- dim(TestObject_homogenized$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
+  message(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
@@ -174,7 +174,7 @@ Homogenizer.limma <- function(TrainObject, TestObject, HomogenizationMethod){
   dim_after_test <- dim(TestObject_homogenized$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
+  message(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
@@ -213,7 +213,7 @@ Homogenizer.YuGene <- function(TrainObject, TestObject, HomogenizationMethod){
   dim_after_test <- dim(TestObject_homogenized$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
+  message(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
@@ -284,7 +284,7 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
   dim_after_test <- dim(TestObject_homogenized$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
+  message(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
@@ -361,7 +361,7 @@ Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
   dim_after_test <- dim(TestObject_homogenized$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
+  message(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
@@ -391,7 +391,7 @@ Homogenizer.none <- function(TrainObject, TestObject, HomogenizationMethod){
   dim_after_test <- dim(TestObject_homogenized$GeneExpression)[1]
 
   # Prints the reduction of gene names
-  print(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
+  message(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 
   # Update Objects in the Environment
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())

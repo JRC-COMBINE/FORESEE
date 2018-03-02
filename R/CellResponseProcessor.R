@@ -30,6 +30,17 @@ CellResponseProcessor.character <- function(TrainObject, DrugName, CellResponseT
   UseMethod("CellResponseProcessor", object = CellResponseTransformation)
 }
 
+### NOT WORKING YET
+# CellResponseProcessor.function <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
+#   UseMethod("CellResponseProcessor", object = CellResponseTransformation)
+#   message("The used-defined function is applied")
+#
+#   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
+#   # ...
+#   # Update TrainObject in the Environment
+#   TrainObject <<- Object_withDrugResponse
+# }
+
 ################################################################################
 ### Function "powertransform" to powertransform the chosen drug response data
 CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
@@ -51,10 +62,10 @@ CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResp
   Object_withDrugResponse$DrugResponse <- Object_withDrugResponse$DrugResponse^TransForm
 
   # Prints the action
-  print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes power transformed ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes power transformed ",CellResponseType," response information about ",DrugName,"."))
 
-  # Update TrainObject in the Environment
-  assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
+  # Returns the new TrainObj
+  return(Object_withDrugResponse)
 }
 
 
@@ -75,10 +86,10 @@ CellResponseProcessor.logarithm <- function(TrainObject, DrugName, CellResponseT
   Object_withDrugResponse$DrugResponse <- log(Object_withDrugResponse$DrugResponse)
 
   # Prints the action
-  print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes natural logarithmic ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes natural logarithmic ",CellResponseType," response information about ",DrugName,"."))
 
-  # Update TrainObject in the Environment
-  assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
+  # Returns the new TrainObj
+  return(Object_withDrugResponse)
 }
 
 
@@ -97,10 +108,10 @@ CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, Cel
   Object_withDrugResponse$DrugResponse <- binarize.kMeans(Object_withDrugResponse$DrugResponse)@binarizedMeasurements
 
   # Prints the action
-  print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
 
-  # Update TrainObject in the Environment
-  assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
+  # Returns the new TrainObj
+  return(Object_withDrugResponse)
 }
 
 ################################################################################
@@ -118,10 +129,10 @@ CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, Cel
   Object_withDrugResponse$DrugResponse <- binarize(x=Object_withDrugResponse$DrugResponse, split = "median", removeNArows = TRUE)$x
 
   # Prints the action
-  print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
 
-  # Update TrainObject in the Environment
-  assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
+  # Returns the new TrainObj
+  return(Object_withDrugResponse)
 }
 
 
@@ -135,8 +146,8 @@ CellResponseProcessor.none <- function(TrainObject, DrugName, CellResponseType, 
   # Don't do anything to drug response data
 
   # Prints the action
-  print(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
 
-    # Update TrainObject in the Environment
-  assign("TrainObject", value = Object_withDrugResponse, envir = parent.frame())
+  # Returns the new TrainObj
+  return(Object_withDrugResponse)
 }

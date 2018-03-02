@@ -11,7 +11,21 @@
 
 GetCellResponseData <- function(TrainObject, DrugName, CellResponseType){
 
-  DrugResponse <- TrainObject[[CellResponseType]][,grep(DrugName,colnames(TrainObject[[CellResponseType]]))]
+  #Checking to see user's DrugName is available:
+  if(!any(colnames(TrainObject[[CellResponseType]])==DrugName)){
+    message(paste(DrugName,"wasn't found, trying to match case-insensitive..."))
+    if(any(tolower(colnames(TrainObject[[CellResponseType]]))==tolower(DrugName))){
+      if(sum(colnames(tolower(TrainObject[[CellResponseType]]))==tolower(DrugName)) > 1){
+        stop("More than one drug were matched! Can not continue with more than one drug to access!")
+      } else {
+        DrugName <- colnames(TrainObject[[CellResponseType]])[tolower(colnames(TrainObject[[CellResponseType]]))==tolower(DrugName)]
+      }
+      message(paste(DrugName,"was found! Will continue with",DrugName,"..."))
+    } else {
+      stop(paste("No drugs were found in TrainObject matching",DrugName,", Try listDrugs(TrainObject) to get all acceptable DrugNames in your TrainObject"))
+    }
+  }
+  DrugResponse <- TrainObject[[CellResponseType]][,DrugName]
   DrugResponse <- DrugResponse[is.na(DrugResponse)==FALSE]
   TrainObject[["DrugResponse"]] <- DrugResponse
 

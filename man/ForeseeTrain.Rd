@@ -4,10 +4,12 @@
 \alias{ForeseeTrain}
 \title{Train a Drug Efficacy Prediction Model}
 \usage{
-ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
-  CellResponseTransformation, InputDataTypes, TrainingTissue,
-  DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing,
-  BlackBox, nfoldCrossvalidation, ...)
+ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType = "IC50",
+  CellResponseTransformation = "powertransform",
+  InputDataTypes = "GeneExpression", TrainingTissue = "all",
+  DuplicationHandling = "first", HomogenizationMethod = "ComBat",
+  GeneFilter = "all", FeaturePreprocessing = "none", BlackBox = "ridge",
+  nfoldCrossvalidation = 1, ...)
 }
 \arguments{
 \item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
@@ -18,23 +20,29 @@ ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
 
 \item{CellResponseType}{Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc.}
 
-\item{CellResponseTransformation}{Method that is to be used to transform the drug response data of the TrainObject, such as power transform, logarithm, binarization, user defined functions, etc.}
+\item{CellResponseTransformation}{Method that is to be used to transform the drug response data of the TrainObject, such as power transform, logarithm, binarization, user defined functions, etc.
+Get all possible values with listInputOptions("CellResponseProcessor").}
 
 \item{InputDataTypes}{Data types of the TrainObject that are to be used to train the model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
 
 \item{TrainingTissue}{Tissue type that the cell lines of the TrainObject should be of, such as skin or lung. Default should be "all" for pancancer analysis.}
 
-\item{DuplicationHandling}{Method for handling duplicates of gene names, such as taking none, the average, the first hit, etc.}
+\item{DuplicationHandling}{Method for handling duplicates of gene names, such as taking none, the average, the first hit, etc.
+Get all possible values with listInputOptions("DuplicationHandler").}
 
-\item{HomogenizationMethod}{Method for homogenizing data of the TrainObject and TestObject, such as ComBat, quantile normalization, limma, RUV, etc.}
+\item{HomogenizationMethod}{Method for homogenizing data of the TrainObject and TestObject, such as ComBat, quantile normalization, limma, RUV, etc.
+Get all possible values with listInputOptions("Homogenizer").}
 
-\item{GeneFilter}{Set of genes to be considered for training the model, such as all, a certain percantage based on variance or p-value, specific gene sets like landmark genes, gene ontologies or pathways, etc.}
+\item{GeneFilter}{Set of genes to be considered for training the model, such as all, a certain percantage based on variance or p-value, specific gene sets like landmark genes, gene ontologies or pathways, etc.
+Get all possible values with listInputOptions("FeatureSelector").}
 
-\item{FeaturePreprocessing}{Method for preprocessing the inputs of the model, such as z-score, principal component analysis, PhysioSpace similarity, etc.}
+\item{FeaturePreprocessing}{Method for preprocessing the inputs of the model, such as z-score, principal component analysis, PhysioSpace similarity, etc.
+Get all possible values with listInputOptions("FeaturePreprocessor").}
 
-\item{BlackBox}{Modeling algorithm for training, such as linear regression, elastic net, lasso regression, ridge regression, tandem, support vector machines, random forests, user defined functions, etc.}
+\item{BlackBox}{Modeling algorithm for training, such as linear regression, elastic net, lasso regression, ridge regression, tandem, support vector machines, random forests, user defined functions, etc.
+Get all possible values with listInputOptions("BlackBoxFilter").}
 
-\item{nfoldCrossvalidation}{# folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.}
+\item{nfoldCrossvalidation}{# folds to use for crossvalidation while training the model. If put to one, the complete data of the TrainObject is used for training.}
 }
 \value{
 \item{ForeseeModel}{A black box model trained on the TrainObject data that can be applied to new test data.}

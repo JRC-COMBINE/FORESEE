@@ -40,7 +40,7 @@ FeatureCombiner<- function(TrainObject, TestObject, InputDataTypes){
   }
 
   missing_data<-Reduce(union,c(missing_data_train,missing_data_test))
-  InputDataTypes<-InputDataTypes[-missing_data]
+  if(length(missing_data)>0) InputDataTypes<-InputDataTypes[-missing_data]
 
   ################################################################################
   # Reduce data types to the features that are common in TrainObject and TestObjecct

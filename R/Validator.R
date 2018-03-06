@@ -22,7 +22,7 @@ Validator.character <- function(Foreseen, TestObject, Evaluation){
 ################################################################################
 ### Function "function" applies the function in "Evaluation" to predicted values
 Validator.function <- function(Foreseen, TestObject, Evaluation) {
-  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$Annotation)
+  ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$IC50 else TestObject$Annotation
   return(Evaluation(Foreseen, ANNOTATIONS))
 }
 
@@ -121,7 +121,7 @@ Validator.mse <- function(Foreseen, TestObject, Evaluation) {
 ### Function "spearman" calculates the spearman correlation between predictions and
 ## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
 Validator.spearman <- function(Foreseen, TestObject, Evaluation) {
-  ANNOTATIONS <- ifelse(CellorPatient(TestObject), yes = TestObject$IC50, no = TestObject$Annotation)
+  ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$IC50 else TestObject$Annotation
   if(is.logical(ANNOTATIONS)){
     warning(paste("Annotation of the test set is binary! Is", Evaluation,"the correct validation method?"))
     ANNOTATIONS <- as.numeric(ANNOTATIONS)

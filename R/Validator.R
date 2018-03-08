@@ -34,8 +34,8 @@ Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
     message("Annotation of the test set is binarized for calculating ROC")
     ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
   }
-  require(pROC)
-  ROCObj <- roc(-(as.numeric(ANNOTATIONS)), Foreseen, direction="<")
+  # require(pROC) ## glmnet masks auc so had to use functions of pROC as pROC::function (pROC::roc and pROC::auc)
+  ROCObj <- pROC::roc(-(as.numeric(ANNOTATIONS)), Foreseen, direction="<")
   AUCofROC <- pROC::auc(pROC::roc(ANNOTATIONS, Foreseen))[[1]]
   return(AUCofROC)
 
@@ -56,7 +56,7 @@ Validator.rocpvalue <- function(Foreseen, TestObject, Evaluation) {
     message("Annotation of the test set is binarized for calculating ROC")
     ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
   }
-  require(pROC)
+  # require(pROC) ## glmnet masks auc so had to use functions of pROC as pROC::function (pROC::roc and pROC::auc)
   AUCofROC <- pROC::auc(pROC::roc(ANNOTATIONS, Foreseen))[[1]]
   AUCofROCRandom <- numeric(length = 10000)
   for(K in 1:10000){

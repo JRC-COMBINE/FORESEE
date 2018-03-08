@@ -252,7 +252,7 @@ BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation
   # Update Objects in the Environment
   TrainObject[["TrainFrame"]] <- TrainObject_train
   assign("TrainObject", value = TrainObject, envir = parent.frame())
-  assign("ForeseeModel", value = rd_ranger_fit, envir = parent.frame())
+  assign("ForeseeModel", value = rf_ranger_fit, envir = parent.frame())
 
 }
 

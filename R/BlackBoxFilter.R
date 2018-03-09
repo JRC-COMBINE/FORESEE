@@ -224,7 +224,7 @@ BlackBoxFilter.rf <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   # Random Forest Package by Breiman, L. (2001), Random Forests, Machine Learning 45(1), 5-32.
   require(randomForest)
-  rf_fit <- randomForest(formula = DrugResponse~., data.frame(TrainObject_train))
+  rf_fit <- randomForest(formula = DrugResponse~., data=data.frame(TrainObject_train)) #randomForest has a problem with features that are named starting with an integer (Like Entrez IDs we used), hence the data.frame(TrainObject_train) rather than just TrainObject_train.
 
   # Update Objects in the Environment
   TrainObject[["TrainFrame"]] <- TrainObject_train
@@ -247,7 +247,9 @@ BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation
 
   # Random Forest Package by Marvin N. Wright (2018)
   require(ranger)
-  rf_ranger_fit <- ranger(formula = DrugResponse~., data.frame(TrainObject_train))
+  rf_ranger_fit <- ranger(formula = DrugResponse~., TrainObject_train, write.forest = TRUE,
+                          importance = "permutation", num.trees = 10000,
+                          scale.permutation.importance=TRUE,probability = TRUE,mtry=10)
 
   # Update Objects in the Environment
   TrainObject[["TrainFrame"]] <- TrainObject_train

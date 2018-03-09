@@ -247,9 +247,9 @@ BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation
 
   # Random Forest Package by Marvin N. Wright (2018)
   require(ranger)
-  rf_ranger_fit <- ranger(formula = DrugResponse~., TrainObject_train, write.forest = TRUE,
-                          importance = "permutation", num.trees = 10000,
-                          scale.permutation.importance=TRUE,probability = TRUE,mtry=10)
+  #ranger, like randomForest, has a problem with features that are named starting with an integer, quick fix:
+  names(TrainObject_train) <- make.names(names(TrainObject_train))
+  rf_ranger_fit <- ranger(formula = DrugResponse~., TrainObject_train, write.forest = TRUE, num.trees = 10000)
 
   # Update Objects in the Environment
   TrainObject[["TrainFrame"]] <- TrainObject_train

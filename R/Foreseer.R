@@ -21,8 +21,29 @@ Foreseer <- function(TestObject, ForeseeModel, BlackBox){
     TestObject_test<- t(TestObject$Features)
     Foreseen <- predict(object=ForeseeModel, newx=TestObject_test)
 
-  }
-  else{
+  } else if(BlackBox=="rf"){
+    TestObject_test<- as.data.frame(as.matrix(t(TestObject$Features)))
+    # For some weird reason the object still contains duplicates? Check duplication handler
+    # Just take the first occuring gene name (here: in columns!) for now
+    TestObject_test <- TestObject_test[,!duplicated(colnames(TestObject_test))]
+
+    ##randomForest and ranger have a problem with features that are named starting with an integer, like Entrez IDs that we used
+    #Have to fix the names:
+    names(TestObject_test) <- make.names(names(TestObject_test))
+
+    Foreseen <- predict(ForeseeModel, TestObject_test)
+  } else if(BlackBox=="rf_ranger"){
+    TestObject_test<- as.data.frame(as.matrix(t(TestObject$Features)))
+    # For some weird reason the object still contains duplicates? Check duplication handler
+    # Just take the first occuring gene name (here: in columns!) for now
+    TestObject_test <- TestObject_test[,!duplicated(colnames(TestObject_test))]
+
+    ##randomForest and ranger have a problem with features that are named starting with an integer, like Entrez IDs that we used
+    #Have to fix the names:
+    names(TestObject_test) <- make.names(names(TestObject_test))
+
+    Foreseen <- predict(ForeseeModel, TestObject_test)$predictions
+  } else{
   TestObject_test<- as.data.frame(as.matrix(t(TestObject$Features)))
   # For some weird reason the object still contains duplicates? Check duplication handler
   # Just take the first occuring gene name (here: in columns!) for now

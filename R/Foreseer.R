@@ -21,7 +21,7 @@ Foreseer <- function(TestObject, ForeseeModel, BlackBox){
     TestObject_test<- t(TestObject$Features)
     Foreseen <- predict(object=ForeseeModel, newx=TestObject_test)
 
-  } else if(BlackBox=="rf"){
+  } else if(any(BlackBox==c("rf","svm"))){
     TestObject_test<- as.data.frame(as.matrix(t(TestObject$Features)))
     # For some weird reason the object still contains duplicates? Check duplication handler
     # Just take the first occuring gene name (here: in columns!) for now

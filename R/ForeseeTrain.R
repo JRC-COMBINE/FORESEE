@@ -60,7 +60,7 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
 
   # If FORESEE is used to do cell2cell prediction, the drug response data of the TestObject is processed in the same manner as the TrainObject
   if (class(TestObject)=="ForeseeCell"){
-    CellResponseProcessor(TestObject=TestObject, DrugName=DrugName, CellResponseType=CellResponseType, CellResponseTransformation=CellResponseTransformation)
+    TestObject <- CellResponseProcessor(TestObject, DrugName=DrugName, CellResponseType=CellResponseType, CellResponseTransformation=CellResponseTransformation)
   }
 
   #################################################################################################################################

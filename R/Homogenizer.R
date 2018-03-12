@@ -312,8 +312,6 @@ Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
   # Load list of housekeeping genes
   # "Human housekeeping genes revisited", E. Eisenberg and E.Y. Levanon, Trends in Genetics, 29 (2013)
   # load("./data/HK_genes_entrez.rda")
-  warning("Didn't have housekeeping gene list, made a dummy list for now")
-  HK_genes_entrez <- rownames(TestObject_homogenized$GeneExpression)[1:200]
   NegativeControl <-  rownames(TestObject_homogenized$GeneExpression) %in% HK_genes_entrez
 
   # Create Data out of both batches

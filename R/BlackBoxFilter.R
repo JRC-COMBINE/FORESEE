@@ -200,7 +200,7 @@ BlackBoxFilter.svm <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
 
   require(e1071)
-  svm_fit <- svm(formula = DrugResponse~., data=data.frame(TrainObject_train))
+  svm_fit <- svm(formula = DrugResponse~., data=TrainObject_train)
 
   # Update Objects in the Environment
   TrainObject[["TrainFrame"]] <- TrainObject_train

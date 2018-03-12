@@ -24,7 +24,7 @@
 # ToDo: User-defined function
 
 
-BlackBoxFilter <- function(TrainObject, BlackBox, nfoldCrossvalidation, ...){
+BlackBoxFilter <- function(TrainObject, BlackBox = "ridge", nfoldCrossvalidation = 1, ...){
   if (nfoldCrossvalidation==1 && class(nfoldCrossvalidation)=="numeric"){
     UseMethod("BlackBoxFilter", object = BlackBox)
   }

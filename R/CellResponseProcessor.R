@@ -105,7 +105,9 @@ CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, Cel
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
 
   # Do kmeans binarization of drug response data
+  names_drugresponse <- names(Object_withDrugResponse$DrugResponse)
   Object_withDrugResponse$DrugResponse <- binarize.kMeans(Object_withDrugResponse$DrugResponse)@binarizedMeasurements
+  names(Object_withDrugResponse$DrugResponse) <- names_drugresponse
 
   # Prints the action
   message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
@@ -126,7 +128,10 @@ CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, Cel
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
 
   # Do binarization of drug response data with median as cutoff
-  Object_withDrugResponse$DrugResponse <- binarize(x=Object_withDrugResponse$DrugResponse, split = "median", removeNArows = TRUE)$x
+  names_drugresponse <- names(Object_withDrugResponse$DrugResponse)
+  Object_withDrugResponse$DrugResponse <- binarize(x=Object_withDrugResponse$DrugResponse, split = "median", removeNArows = FALSE)$x
+  names(Object_withDrugResponse$DrugResponse) <- names_drugresponse
+
 
   # Prints the action
   message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))

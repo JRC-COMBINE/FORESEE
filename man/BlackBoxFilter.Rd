@@ -4,7 +4,8 @@
 \alias{BlackBoxFilter}
 \title{Train a Black Box Model for Drug Efficacy Prediction}
 \usage{
-BlackBoxFilter(TrainObject, BlackBox, nfoldCrossvalidation, ...)
+BlackBoxFilter(TrainObject, BlackBox = "ridge", nfoldCrossvalidation = 1,
+  ...)
 }
 \arguments{
 \item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}

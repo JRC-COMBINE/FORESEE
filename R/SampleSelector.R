@@ -10,9 +10,6 @@
 
 SampleSelector<- function(TrainObject,TrainingTissue, InputDataTypes){
 
-  TrainingTissue <- TrainingTissue
-  InputDataTypes <- InputDataTypes
-
   #################################################################################################################################
   # Check user's choice: Use all cell lines for training or only those of a specific tissue
   #################################################################################################################################
@@ -103,13 +100,14 @@ SampleSelector<- function(TrainObject,TrainingTissue, InputDataTypes){
   if (length(InputDataTypes)>1){
 
     JointSamples<-c()
+
     for (i in 1:length(InputDataTypes)){
 
-       FeatureType <- InputDataTypes[i]
-       JointSamples[[paste0("Samples_Features_",i)]] <- colnames(TrainObject[[FeatureType]])
+      FeatureType <- InputDataTypes[i]
+      JointSamples[[paste0("Samples_Features_",i)]] <- as.list(colnames(TrainObject[[FeatureType]]))
     }
 
-    JointSamples <- Reduce(intersect, JointSamples)
+    JointSamples <- as.character(Reduce(intersect, JointSamples))
 
     for (i in 1:length(InputDataTypes)){
       FeatureType <- InputDataTypes[i]

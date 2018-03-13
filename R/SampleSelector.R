@@ -44,8 +44,8 @@ SampleSelector<- function(TrainObject,TrainingTissue, InputDataTypes){
   TrainObject$CancerType <- TrainObject$CancerType[,CommonSamples]
   TrainObject$DrugResponse <- TrainObject$DrugResponse[CommonSamples]
   }
-    # Update TrainObject in the Environment
-    assign("TrainObject", value = TrainObject, envir = parent.frame())
+    # Returning the new object
+    return(TrainObject)
   }
 
   # Check if the user wants to train on cell linesof a specific tissue
@@ -83,8 +83,8 @@ SampleSelector<- function(TrainObject,TrainingTissue, InputDataTypes){
       TrainObject$DrugResponse <- TrainObject$DrugResponse[TissueSamples]
     }
 
-    # Update TrainObject in the Environment
-    assign("TrainObject", value = TrainObject, envir = parent.frame())
+    # Returning the new object
+    return(TrainObject)
   }
 
   # Stop if specified tissue is not part of the tissue types listed in the Foresee TrainObject
@@ -117,8 +117,8 @@ SampleSelector<- function(TrainObject,TrainingTissue, InputDataTypes){
   TrainObject$DrugResponse <- TrainObject$DrugResponse[JointSamples]
 
     if (length(JointSamples)>1){
-      # Update TrainObject in the Environment
-      assign("TrainObject", value = TrainObject, envir = parent.frame())
+      # Returning the new object
+      return(TrainObject)
       }
     # Stop if samples for the selected input data types do not overlap
     else{

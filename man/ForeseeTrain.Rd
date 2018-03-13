@@ -7,8 +7,9 @@
 ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType = "IC50",
   CellResponseTransformation = "powertransform",
   InputDataTypes = "GeneExpression", TrainingTissue = "all",
-  DuplicationHandling = "first", HomogenizationMethod = "ComBat",
-  GeneFilter = "all", FeaturePreprocessing = "none", BlackBox = "ridge",
+  TestingTissue = "all", DuplicationHandling = "first",
+  HomogenizationMethod = "ComBat", GeneFilter = "all",
+  FeaturePreprocessing = "none", BlackBox = "ridge",
   nfoldCrossvalidation = 1, ...)
 }
 \arguments{

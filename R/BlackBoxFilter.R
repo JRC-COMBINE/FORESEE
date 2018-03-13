@@ -266,7 +266,7 @@ BlackBoxFilter.tandem <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   TrainObject_train<- as.matrix(t(TrainObject$Features))
   upstream_index <- (TrainObject$FeatureTypes[1,])!="GeneExpression"
 
-  if(all(!upstream_index)) stop("For using Tandem you need at least one other type of data than 'GeneExpression'")
+  if(all(!upstream_index) | all(upstream_index)) stop("For using Tandem you need at least one downstream feature (GeneExpression) and one upstream feature")
 
   # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
   require(TANDEM)

@@ -9,14 +9,21 @@
 #' @export
 
 Foreseer <- function(TestObject, ForeseeModel, BlackBox){
+  if (is.function(BlackBox)){
+    TestObject_test<- as.data.frame(as.matrix(t(TestObject$Features)))
+    # For some weird reason the object still contains duplicates? Check duplication handler
+    # Just take the first occuring gene name (here: in columns!) for now
+    TestObject_test <- TestObject_test[,!duplicated(colnames(TestObject_test))]
 
-  if (any(BlackBox==c("lasso","elasticnet"))){
+    Foreseen <- BlackBox(ForeseeModel, TestObject_test)
+  }
+  else if (any(BlackBox==c("lasso","elasticnet"))){
 
     TestObject_test<- t(TestObject$Features)
     Foreseen <- predict(object=ForeseeModel, newx=TestObject_test)
 
   }
-  else if(any(BlackBox=="tandem")){
+  else if(BlackBox=="tandem"){
 
     TestObject_test<- t(TestObject$Features)
     ForeseenTmp <- predict(object=ForeseeModel, newx=TestObject_test)
@@ -24,7 +31,7 @@ Foreseer <- function(TestObject, ForeseeModel, BlackBox){
     names(Foreseen) <- ForeseenTmp@Dimnames[[1]]
 
   }
-  else if(any(BlackBox=="rf")){
+  else if(BlackBox=="rf"){
     TestObject_test<- as.data.frame(as.matrix(t(TestObject$Features)))
     # For some weird reason the object still contains duplicates? Check duplication handler
     # Just take the first occuring gene name (here: in columns!) for now

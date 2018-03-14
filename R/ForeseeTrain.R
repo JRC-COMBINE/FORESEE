@@ -36,7 +36,8 @@
 #' @export
 
 ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "IC50", CellResponseTransformation = "powertransform",
-                         InputDataTypes = "GeneExpression", TrainingTissue = "all", DuplicationHandling = "first", HomogenizationMethod = "ComBat",
+                         InputDataTypes = "GeneExpression", TrainingTissue = "all", TestingTissue = "all",
+                         DuplicationHandling = "first", HomogenizationMethod = "ComBat",
                          GeneFilter = "all", FeaturePreprocessing = "none", BlackBox = "ridge", nfoldCrossvalidation = 1,...){
 
 
@@ -68,7 +69,12 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
 
   # SampleSelector_options <- c("all",as.character(unique(TrainObject$TissueInfo$Site)))
 
-  SampleSelector(TrainObject=TrainObject,TrainingTissue=TrainingTissue, InputDataTypes=InputDataTypes)
+  TrainObject <- SampleSelector(TrainObject=TrainObject,TrainingTissue=TrainingTissue, InputDataTypes=InputDataTypes)
+
+  # If FORESEE is used to do cell2cell prediction, relevant samples of the TestObject is extracted in the same manner as the TrainObject
+  if (class(TestObject)=="ForeseeCell"){
+    TestObject <- SampleSelector(TrainObject=TestObject,TrainingTissue=TestingTissue, InputDataTypes=InputDataTypes)
+  }
 
   #################################################################################################################################
   # 3. Preprocess Gene Expression Data

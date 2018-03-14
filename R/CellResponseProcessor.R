@@ -30,16 +30,20 @@ CellResponseProcessor.character <- function(TrainObject, DrugName, CellResponseT
   UseMethod("CellResponseProcessor", object = CellResponseTransformation)
 }
 
-### NOT WORKING YET
-# CellResponseProcessor.function <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
-#   UseMethod("CellResponseProcessor", object = CellResponseTransformation)
-#   message("The used-defined function is applied")
-#
-#   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
-#   # ...
-#   # Update TrainObject in the Environment
-#   TrainObject <<- Object_withDrugResponse
-# }
+CellResponseProcessor.function <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
+  message("The used-defined function is applied")
+
+  Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
+
+  # User-defined function:
+  Object_withDrugResponse$DrugResponse <- CellResponseTransformation(Object_withDrugResponse$DrugResponse)
+
+  # Prints the action
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes transformed ",CellResponseType," response information about ",DrugName," by user-defined function."))
+
+  # Returns the new TrainObj
+  return(Object_withDrugResponse)
+}
 
 ################################################################################
 ### Function "powertransform" to powertransform the chosen drug response data

@@ -177,6 +177,7 @@ BlackBoxFilter.elasticnet <- function(TrainObject, BlackBox, nfoldCrossvalidatio
   # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
   require(glmnet)
   require(glmnetUtils)
+
   elasticnet_fit <- glmnet(x = t(TrainObject$Features), y=TrainObject$DrugResponse,  alpha = 0.5 ,lambda=cv.glmnet(x = t(TrainObject$Features), y=TrainObject$DrugResponse, alpha = 0.5)$lambda.min)
 
   # Update Objects in the Environment

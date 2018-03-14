@@ -101,7 +101,13 @@ Validator.fpvalue <- function(Foreseen, TestObject, Evaluation) {
     ANNOTATIONS <- as.numeric(ANNOTATIONS)
   }
   FStats <- summary(lm(ANNOTATIONS~Foreseen))$fstatistic
+
+  if (is.null(FStats)==TRUE){
+  return(NA)
+  }
+  else{
   return(pf(FStats[1],FStats[2],FStats[3],lower.tail=F))
+  }
 }
 
 ################################################################################

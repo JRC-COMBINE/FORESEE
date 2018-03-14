@@ -180,7 +180,8 @@ FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter){
     stop("Matching DrugName failed!!")
   } else {
     TargetGene <- GDSC$DrugInfo$Target[GDSC$DrugInfo$Drug.Name == DrugName]
-    TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
+    TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(levels(TargetGene),ConvTableSym2Entrez$hgnc_symbol)]
+    #TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
   }
   if(!any(names(Entrez2PathID) == TargetGeneEntrez)){
     stop("Matching TargetGene failed!!")

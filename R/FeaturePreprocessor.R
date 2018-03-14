@@ -28,7 +28,21 @@ FeaturePreprocessor.character <- function(TrainObject, TestObject, FeaturePrepro
   UseMethod("FeaturePreprocessor", object = FeaturePreprocessing)
 }
 
+FeaturePreprocessor.function <- function(TrainObject, TestObject, FeaturePreprocessing){
 
+  TrainObject_processedfeatures <- TrainObject
+  TestObject_processedfeatures <- TestObject
+
+  TrainObject_processedfeatures$GeneExpression <-
+    FeaturePreprocessing(TrainObject_processedfeatures$GeneExpression)
+  TestObject_processedfeatures$GeneExpression <-
+    FeaturePreprocessing(TestObject_processedfeatures$GeneExpression)
+
+  # Update Objects in the Environment
+  assign("TrainObject", value = TrainObject_processedfeatures, envir = parent.frame())
+  assign("TestObject", value = TestObject_processedfeatures, envir = parent.frame())
+
+}
 
 ################################################################################
 ### Function "zscore_genewise" to calculate the zscore normalizing each gene over all samples

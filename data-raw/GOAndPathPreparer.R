@@ -10,4 +10,8 @@ require(reactome.db)
 PathID2Entrez <- as.list(reactomePATHID2EXTID)
 Entrez2PathID <- as.list(reactomeEXTID2PATHID)
 
-devtools::use_data(ConvTableSym2Entrez, ConvTableGo2Sym, PathID2Entrez, Entrez2PathID,internal = T)
+load("./data-raw/HK_genes_entrez.rda") #Need the script that made these lists
+load("./data-raw/LM_genes_entrez.rda") #Need the script that made these lists
+
+devtools::use_data(ConvTableSym2Entrez, ConvTableGo2Sym, PathID2Entrez, Entrez2PathID,
+                   HK_genes_entrez, LM_genes_entrez,internal = T)

@@ -126,8 +126,7 @@ FeatureSelector.landmarkgenes <- function(TrainObject, TestObject, GeneFilter){
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
 
-  # Load list of landmark genes
-  load("./data/LM_genes_entrez.rda")
+  # Using list of landmark genes save as LM_genes_entrez in package internal data:
   TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[rownames(TrainObject_selectedfeatures$GeneExpression) %in% LM_genes_entrez,]
   TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[rownames(TestObject_selectedfeatures$GeneExpression) %in% LM_genes_entrez,]
 

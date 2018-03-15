@@ -240,7 +240,7 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load list of housekeeping genes
   # "Human housekeeping genes revisited", E. Eisenberg and E.Y. Levanon, Trends in Genetics, 29 (2013)
-  load("./data/HK_genes_entrez.rda")
+  # saved as LM_genes_entrez in package internal data:
   NegativeControl <-  rownames(TestObject_homogenized$GeneExpression) %in% HK_genes_entrez
 
   # Create Data out of both batches

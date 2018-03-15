@@ -66,6 +66,22 @@ Validator.rocpvalue <- function(Foreseen, TestObject, Evaluation) {
   return(sum(AUCofROC<=AUCofROCRandom)/length(AUCofROCRandom))
 }
 
+
+################################################################################
+### Function "prauc" calculates the AUC of the precision-recall curve
+Validator.prauc <- function(Foreseen, TestObject, Evaluation) {
+  ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
+  if(is.numeric(ANNOTATIONS)){
+    message("Annotation of the test set is binarized for calculating ROC")
+    ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
+  }
+
+  require(PRROC)
+  PRObj <- PRROC::pr.curve(-(as.numeric(ANNOTATIONS)), Foreseen)
+  AUCofPR <- PRObj$auc.integral
+  return(AUCofPR)
+}
+
 ################################################################################
 ### Function "rsquared" calculates the fraction of variance explained by a linear model between predictions and
 ## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!

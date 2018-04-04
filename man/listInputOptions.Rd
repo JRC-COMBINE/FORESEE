@@ -11,7 +11,7 @@ listInputOptions(METHOD)
 Check the help of Foreseetrain and ForeseeTest for more info.}
 }
 \value{
-\item{Character vector of all possible inputs}
+\item{Character vector of all possible inputs}{}
 }
 \description{
 listInputOptions returns possible input values in ForeseeTrain (CellResponseTransformation, DuplicationHandling,

@@ -10,7 +10,7 @@ listDrugs(OBJ)
 \item{OBJ}{A ForeseeTrain object that you want to extract all possible drugs it has response information on.}
 }
 \value{
-\item{Character vector of all drug names in OBJ.}
+\item{Character vector of all drug names in OBJ.}{}
 }
 \description{
 listDrugs returns all possible drugs that were tested and has reponses available in a ForeseeTrain Object.

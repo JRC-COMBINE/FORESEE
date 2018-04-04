@@ -125,7 +125,7 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
 
       # FeatureSelector_options <- c("variance", "pvalue", "landmarkgenes", "ontology", "pathway", "all")
 
-      FeatureSelector(TrainObject=TrainObject,TestObject=TestObject, GeneFilter=GeneFilter)
+      FeatureSelector(TrainObject=TrainObject,TestObject=TestObject, GeneFilter=GeneFilter, DrugName=DrugName)
 
     #################################################################################################################################
     # 3d. Feature Preprocessing

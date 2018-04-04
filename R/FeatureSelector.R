@@ -159,7 +159,7 @@ FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter, DrugNa
     GenesWithRelevantGos <- sort(table(ConvTableGo2Sym$hgnc_symbol[ConvTableGo2Sym$go_id %in% TargetGos]), decreasing = T)
   }
   if(length(GenesWithRelevantGos) < 1000){ ## ToDo: Have this 1000 as a variable user feeds
-    warning("Not enough features matched, will continue will all features")
+    warning("Not enough features matched, will continue with all features")
     # Update Objects in the Environment
     assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
     assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
@@ -184,17 +184,22 @@ FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter, DrugNam
     stop("Matching DrugName failed!!")
   } else {
     TargetGene <- GDSC$DrugInfo$Target[GDSC$DrugInfo$Drug.Name == DrugName]
-    TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(levels(TargetGene),ConvTableSym2Entrez$hgnc_symbol)]
+    TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
     #TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
   }
-  if(!any(names(Entrez2PathID) == TargetGeneEntrez)){
-    stop("Matching TargetGene failed!!")
+  if(is.na(TargetGeneEntrez) | (!any(names(Entrez2PathID) == TargetGeneEntrez))){
+    warning(
+      paste0(
+        "Matching Target-Gene (to find the target pathway) failed, probably because the drug doesn't have a single target gene, the target we tried to match was '",TargetGene,"'"
+      )
+    )
+    GenesWithRelevantPaths <- 0
   } else {
-    TargetPaths <- Entrez2PathID[[TargetGeneEntrez]]
-    GenesWithRelevantPaths <- sort(table(unlist(PathID2Entrez[TargetPaths])))
+    TargetPaths <- Entrez2PathID[[as.character(TargetGeneEntrez)]] #TargetGeneEntrez is a factor, and indexing with a factor return weird stuff hence the 'as.character'
+    GenesWithRelevantPaths <- sort(table(unlist(PathID2Entrez[TargetPaths])), decreasing = T)
   }
   if(length(GenesWithRelevantPaths) < 1000){ ## ToDo: Have this 1000 as a variable user feeds
-    warning("Not enough features matched, will continue will all features")
+    warning("Not enough features matched, will continue with all features")
     # Update Objects in the Environment
     assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
     assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())

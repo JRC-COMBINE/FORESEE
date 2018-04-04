@@ -21,6 +21,13 @@ Foreseer <- function(TestObject, ForeseeModel, BlackBox){
 
     TestObject_test<- t(TestObject$Features)
     Foreseen <- predict(object=ForeseeModel, newx=TestObject_test)
+    #Fixing some warnings in Validator: Some functions in validation, e.g. pROC::roc expect a
+    #numeric vector, while predict of lasso and elasticnet return a matrix, so:
+    if(is.matrix(Foreseen) & ncol(Foreseen) == 1){
+      Foreseen <- as.numeric(Foreseen)
+    } else {
+      stop("Unexpected Foreseen class and/or dimensions!")
+    }
 
   }
   else if(BlackBox=="tandem"){

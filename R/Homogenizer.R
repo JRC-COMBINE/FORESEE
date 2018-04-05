@@ -224,7 +224,7 @@ Homogenizer.YuGene <- function(TrainObject, TestObject, HomogenizationMethod){
 ### Function "RUV"
 Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
 
-  require(ruv)
+  # require(ruv)
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
 
@@ -272,9 +272,9 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
   # BothBatches <- cbind(TrainObject_homogenized$GeneExpression,TestObject_homogenized$GeneExpression)
   # BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
   # # WRONG! RUVObject <- RUV4(Y=t(BothBatches), X=rownames(),Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k = 0)
-  RUVObject <- RUV4(Y=t(BothBatches), X=colnames(t(BothBatches)),Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl)
-
-  RUVObject <- RUV4(Y=t(BothBatches), X=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k=1)
+  # RUVObject <- RUV4(Y=t(BothBatches), X=colnames(t(BothBatches)),Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl)
+  #
+  # RUVObject <- RUV4(Y=t(BothBatches), X=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k=1)
 
   TrainObject_homogenized$GeneExpression <- LinearModel_RUV[, BatchIndex=="trainobject"]
   TestObject_homogenized$GeneExpression <- LinearModel_RUV[, BatchIndex=="testobject"]

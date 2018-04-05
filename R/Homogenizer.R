@@ -344,13 +344,16 @@ Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
   # BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
   # # WRONG! RUVObject <- RUV2(Y=t(BothBatches), Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k = 0)
 
-  RUVObject <- RUV4(Y=t(BothBatches), X=matrix(c(rep(0, ncol(TrainObject_homogenized$GeneExpression)),
-                                          rep(1, ncol(TestObject_homogenized$GeneExpression))),
+  RUVObject <- RUV4(Y=t(BothBatches), X=matrix(c(rep(1, ncol(TrainObject_homogenized$GeneExpression)),
+                                          rep(2, ncol(TestObject_homogenized$GeneExpression))),
                                           ncol = 1),
                     ctl = NegativeControl, k = 10)
 
-  BothBatchesHomogenized <- t(as.matrix(c(rep(0, ncol(TrainObject_homogenized$GeneExpression)),
-              rep(1, ncol(TestObject_homogenized$GeneExpression)))) %*% RUVObject$betahat)
+  # BothBatchesHomogenized <- t(as.matrix(c(rep(1, ncol(TrainObject_homogenized$GeneExpression)),
+  #             rep(2, ncol(TestObject_homogenized$GeneExpression)))) %*% RUVObject$betahat)
+  BothBatchesHomogenized <- t(matrix(1, nrow = ncol(TrainObject_homogenized$GeneExpression)+
+                                       ncol(TestObject_homogenized$GeneExpression), ncol = 1) %*% RUVObject$betahat) +
+                            t(RUVObject$W %*% RUVObject$alpha)
   TrainObject_homogenized$GeneExpression <- BothBatchesHomogenized[, BatchIndex=="trainobject"]
   TestObject_homogenized$GeneExpression <- BothBatchesHomogenized[, BatchIndex=="testobject"]
 

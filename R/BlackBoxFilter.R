@@ -15,7 +15,7 @@
 #'
 #'
 #' @param nfoldCrossvalidation # folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.
-
+#' @import ridge glmnet glmnetUtils e1071 randomForest ranger TANDEM
 #' @return \item{ForeseeModel}{A black box model trained on the TrainObject data that can be applied to new test data.}
 #'         \item{TrainObject}{The TrainObject that was used to train the model.}
 #' @export
@@ -150,7 +150,7 @@ BlackBoxFilter.ridge <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
 
   # Ridge package by Cule, E. and De Iorio, M., A semi-automatic method to guide the choice of ridge parameter in ridge regression. (2012) arXiv:1205.0686v1
-  require(ridge)
+  # require(ridge)
   ridge_fit <- linearRidge(formula = DrugResponse~., TrainObject_train)
 
   # Update Objects in the Environment
@@ -168,7 +168,7 @@ BlackBoxFilter.lasso <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
   # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
-  require(glmnet)
+  # require(glmnet)
   lasso_fit <- glmnet(x = t(TrainObject$Features), y=TrainObject$DrugResponse, alpha = 1,lambda=cv.glmnet(x = t(TrainObject$Features), y=TrainObject$DrugResponse, alpha = 1)$lambda.min)
 
   # Update Objects in the Environment
@@ -192,8 +192,8 @@ BlackBoxFilter.elasticnet <- function(TrainObject, BlackBox, nfoldCrossvalidatio
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
 
   # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
-  require(glmnet)
-  require(glmnetUtils)
+  # require(glmnet)
+  # require(glmnetUtils)
 
   elasticnet_fit <- glmnet(x = t(TrainObject$Features), y=TrainObject$DrugResponse,  alpha = 0.5 ,lambda=cv.glmnet(x = t(TrainObject$Features), y=TrainObject$DrugResponse, alpha = 0.5)$lambda.min)
 
@@ -217,7 +217,7 @@ BlackBoxFilter.svm <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   TrainObject_train <- TrainObject_train[,!duplicated(colnames(TrainObject_train))]
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
 
-  require(e1071)
+  # require(e1071)
   svm_fit <- svm(formula = DrugResponse~., data=TrainObject_train)
 
   # Update Objects in the Environment
@@ -241,7 +241,7 @@ BlackBoxFilter.rf <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
 
   # Random Forest Package by Breiman, L. (2001), Random Forests, Machine Learning 45(1), 5-32.
-  require(randomForest)
+  # require(randomForest)
   rf_fit <- randomForest(formula = DrugResponse~., data=data.frame(TrainObject_train)) #randomForest has a problem with features that are named starting with an integer (Like Entrez IDs we used), hence the data.frame(TrainObject_train) rather than just TrainObject_train.
 
   # Update Objects in the Environment
@@ -264,7 +264,7 @@ BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
 
   # Random Forest Package by Marvin N. Wright (2018)
-  require(ranger)
+  # require(ranger)
   #ranger, like randomForest, has a problem with features that are named starting with an integer, quick fix:
   names(TrainObject_train) <- make.names(names(TrainObject_train))
   rf_ranger_fit <- ranger(formula = DrugResponse~., TrainObject_train, write.forest = TRUE, num.trees = 10000)
@@ -287,8 +287,8 @@ BlackBoxFilter.tandem <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   if(all(!upstream_index) | all(upstream_index)) stop("For using Tandem you need at least one downstream feature (GeneExpression) and one upstream feature")
 
   # Package glmnet by Friedman, J., Hastie, T. and Tibshirani, R. (2008) Regularization Paths for Generalized Linear Models via Coordinate Descent, https://web.stanford.edu/~hastie/Papers/glmnet.pdf
-  require(TANDEM)
-  require(glmnet)
+  # require(TANDEM)
+  # require(glmnet)
 
   tandem_fit <- tandem(x = TrainObject_train, y=TrainObject$DrugResponse, upstream=upstream_index)
 

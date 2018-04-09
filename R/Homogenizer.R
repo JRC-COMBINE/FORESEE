@@ -12,7 +12,7 @@
 #' The function 'RUV' regresses out unwanted variation using the 10 principal components of negative control genes (here: list of human housekeeping by Eisenberg and Levanon (2013))
 #' The function 'none' doesn't do any batch effect correction,
 #' If the user wants to implement a user-defined batch effect removal function, the input should be the function.
-#' @import sva preprocessCore limma YuGene ruv
+
 #' @return \item{TrainObject}{The TrainObject with homogenized features according to the chosen TestObject.}
 #'         \item{TestObject}{The TestObject with homogenized features according to the chosen TrainObject.}
 #' @export
@@ -63,7 +63,7 @@ Homogenizer.function <- function(TrainObject, TestObject, HomogenizationMethod) 
 Homogenizer.ComBat <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
-  # require(sva)
+  require(sva)
 
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
@@ -104,7 +104,7 @@ Homogenizer.ComBat <- function(TrainObject, TestObject, HomogenizationMethod){
 Homogenizer.quantile <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
-  # require(preprocessCore)
+  require(preprocessCore)
 
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
@@ -147,7 +147,7 @@ Homogenizer.quantile <- function(TrainObject, TestObject, HomogenizationMethod){
 Homogenizer.limma <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
-  # require(limma)
+  require(limma)
 
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
@@ -186,7 +186,7 @@ Homogenizer.limma <- function(TrainObject, TestObject, HomogenizationMethod){
 Homogenizer.YuGene <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
-  # require(YuGene)
+  require(YuGene)
 
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
@@ -295,7 +295,7 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
 ### Function "RUV", based on RUV4 in package "ruv"
 Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
 
-  # require(ruv)
+  require(ruv)
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
 

@@ -11,7 +11,6 @@
 #' The function 'physio' does physiospace analysis with the samples using cell line gene expression of the gdsc data base as physiological references,
 #' The function 'none' keeps the gene expression values unchanged,
 #' If the user wants to implement a user-defined function batch effect removal function, the input should be the function.
-#' @import PhysioSpace
 #' @return \item{TrainObject}{The TrainObject with preprocessed features.}
 #'         \item{TestObject}{The TestObject with preprocessed features.}
 #' @export
@@ -131,7 +130,7 @@ FeaturePreprocessor.physio <- function(TrainObject, TestObject, FeaturePreproces
   TrainObject_processedfeatures <- TrainObject
   TestObject_processedfeatures <- TestObject
 
-  # require(PhysioSpace)
+  require(PhysioSpace)
   Similarities <- calculatePhysioMap(InputData = cbind(TrainObject_processedfeatures$GeneExpression,
                                         TestObject_processedfeatures$GeneExpression),
                      References = TrainObject_processedfeatures$GeneExpression, PARALLEL = TRUE)

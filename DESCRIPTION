@@ -4,27 +4,9 @@ Title: A Tool for the Systematic Comparison of Translational Drug Response Model
 Version: 0.1.0
 Author: Lisa-Katrin Turnhoff <turnhoff@combine.rwth-aachen.de> and Ali Hadizadeh Esfahani <hadizadeh@combine.rwth-aachen.de>
 Maintainer: The package maintainer <yourself@somewhere.net>
-Imports: car, Binarize, bootnet, ridge, glmnet, glmnetUtils, e1071, randomForest, ranger, TANDEM, PhysioSpace, sva, preprocessCore, limma, YuGene, ruv, pROC, PRROC
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
-Collate: 
-    'BlackBoxFilter.R'
-    'CellResponseProcessor.R'
-    'CellorPatient.R'
-    'DuplicationHandler.R'
-    'FeatureCombiner.R'
-    'FeaturePreprocessor.R'
-    'FeatureSelector.R'
-    'ForeseeTest.R'
-    'ForeseeTrain.R'
-    'Foreseer.R'
-    'GetCellResponseData.R'
-    'Homogenizer.R'
-    'Miscellaneous.R'
-    'SampleSelector.R'
-    'Validator.R'
-    'data.R'

@@ -12,7 +12,6 @@
 #' the function 'binarization_cutoff' returns a binarized drug response vector based on a cutoff at the median,
 #' the function 'none' returns the unchanged drug response data,
 #' the function 'user-defined function' is determined by the function in the input
-#' @import car Binarize bootnet
 #' @return \item{TrainObject}{The TrainObject with preprocessed drug response data.}
 #' @export
 
@@ -50,8 +49,8 @@ CellResponseProcessor.function <- function(TrainObject, DrugName, CellResponseTy
 ### Function "powertransform" to powertransform the chosen drug response data
 CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
-  # # Load Package for Power Transform
-  # require(car)
+  # Load Package for Power Transform
+  require(car)
 
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
@@ -104,7 +103,7 @@ CellResponseProcessor.logarithm <- function(TrainObject, DrugName, CellResponseT
 
 CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
-  # require(Binarize)
+  require(Binarize)
 
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
@@ -127,7 +126,7 @@ CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, Cel
 
 CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
-  # require(bootnet)
+  require(bootnet)
 
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)

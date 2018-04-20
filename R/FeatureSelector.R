@@ -22,23 +22,23 @@
 #ToDo5: User-defined gene lists
 
 
-FeatureSelector <- function(TrainObject,TestObject, GeneFilter){
+FeatureSelector <- function(TrainObject, TestObject, GeneFilter, DrugName){
   UseMethod("FeatureSelector", object = GeneFilter)
 }
 
-FeatureSelector.character <- function(TrainObject, TestObject, GeneFilter){
+FeatureSelector.character <- function(TrainObject, TestObject, GeneFilter, DrugName){
   class(GeneFilter) <- GeneFilter;
   UseMethod("FeatureSelector", object = GeneFilter)
 }
 
-# FeatureSelector.list <- function(TrainObject, TestObject, GeneFilter){
+# FeatureSelector.list <- function(TrainObject, TestObject, GeneFilter, DrugName){
 #   UseMethod("FeatureSelector", object = GeneFilter)
 # }
 
 ################################################################################
 ### Function "function" applies the function in "GeneFilter"
 # to Train and Test objects
-FeatureSelector.function <- function(TrainObject, TestObject, GeneFilter){
+FeatureSelector.function <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
@@ -62,7 +62,7 @@ FeatureSelector.function <- function(TrainObject, TestObject, GeneFilter){
 
 ################################################################################
 ### Option "variance" to keep variance genes as features in the TrainObject
-FeatureSelector.variance <- function(TrainObject, TestObject, GeneFilter){
+FeatureSelector.variance <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
@@ -86,7 +86,7 @@ FeatureSelector.variance <- function(TrainObject, TestObject, GeneFilter){
 
 ################################################################################
 ### Option "pvalue" to keep pvalue genes as features in the TrainObject
-FeatureSelector.pvalue <- function(TrainObject, TestObject, GeneFilter){
+FeatureSelector.pvalue <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
@@ -121,13 +121,12 @@ FeatureSelector.pvalue <- function(TrainObject, TestObject, GeneFilter){
 
 ################################################################################
 ### Option "landmarkgenes" to keep landmarkgenes genes as features in the TrainObject
-FeatureSelector.landmarkgenes <- function(TrainObject, TestObject, GeneFilter){
+FeatureSelector.landmarkgenes <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
 
-  # Load list of landmark genes
-  load("./data/LM_genes_entrez.rda")
+  # Using list of landmark genes save as LM_genes_entrez in package internal data:
   TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[rownames(TrainObject_selectedfeatures$GeneExpression) %in% LM_genes_entrez,]
   TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[rownames(TestObject_selectedfeatures$GeneExpression) %in% LM_genes_entrez,]
 
@@ -138,7 +137,7 @@ FeatureSelector.landmarkgenes <- function(TrainObject, TestObject, GeneFilter){
 
 ################################################################################
 ### Option "ontology" to keep ontology genes as features in the TrainObject
-FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter){
+FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
@@ -148,14 +147,19 @@ FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter){
     TargetGene <- GDSC$DrugInfo$Target[GDSC$DrugInfo$Drug.Name == DrugName]
   }
   if(!any(ConvTableGo2Sym$hgnc_symbol == TargetGene)){
-    stop("Matching TargetGene failed!!")
+    warning(
+      paste0(
+        "Matching Target-Gene failed, probably because the drug doesn't have a single target gene, the target we tried to match was '",TargetGene,"'"
+      )
+    )
+    GenesWithRelevantGos <- character(length = 0)
   } else {
     TargetGos <- ConvTableGo2Sym$go_id[ConvTableGo2Sym$hgnc_symbol == TargetGene]
     TargetGos <- TargetGos[TargetGos!=""] #removing empty match(es)
-    GenesWithRelevantGos <- sort(table(ConvTableGo2Sym$hgnc_symbol[ConvTableGo2Sym$go_id == TargetGos]))
+    GenesWithRelevantGos <- sort(table(ConvTableGo2Sym$hgnc_symbol[ConvTableGo2Sym$go_id %in% TargetGos]), decreasing = T)
   }
   if(length(GenesWithRelevantGos) < 1000){ ## ToDo: Have this 1000 as a variable user feeds
-    warning("Not enough features matched, returning all features...")
+    warning("Not enough features matched, will continue with all features")
     # Update Objects in the Environment
     assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
     assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
@@ -172,7 +176,7 @@ FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter){
 
 ################################################################################
 ### Option "pathway" to keep pathway genes as features in the TrainObject
-FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter){
+FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
@@ -180,17 +184,22 @@ FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter){
     stop("Matching DrugName failed!!")
   } else {
     TargetGene <- GDSC$DrugInfo$Target[GDSC$DrugInfo$Drug.Name == DrugName]
-    TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(levels(TargetGene),ConvTableSym2Entrez$hgnc_symbol)]
+    TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
     #TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
   }
-  if(!any(names(Entrez2PathID) == TargetGeneEntrez)){
-    stop("Matching TargetGene failed!!")
+  if(is.na(TargetGeneEntrez) | (!any(names(Entrez2PathID) == TargetGeneEntrez))){
+    warning(
+      paste0(
+        "Matching Target-Gene (to find the target pathway) failed, probably because the drug doesn't have a single target gene, the target we tried to match was '",TargetGene,"'"
+      )
+    )
+    GenesWithRelevantPaths <- 0
   } else {
-    TargetPaths <- Entrez2PathID[[TargetGeneEntrez]]
-    GenesWithRelevantPaths <- sort(table(unlist(PathID2Entrez[TargetPaths])))
+    TargetPaths <- Entrez2PathID[[as.character(TargetGeneEntrez)]] #TargetGeneEntrez is a factor, and indexing with a factor return weird stuff hence the 'as.character'
+    GenesWithRelevantPaths <- sort(table(unlist(PathID2Entrez[TargetPaths])), decreasing = T)
   }
   if(length(GenesWithRelevantPaths) < 1000){ ## ToDo: Have this 1000 as a variable user feeds
-    warning("Not enough features matched, returning all features...")
+    warning("Not enough features matched, will continue with all features")
     # Update Objects in the Environment
     assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
     assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
@@ -207,7 +216,7 @@ FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter){
 
 ################################################################################
 ### Option "all" to keep all genes as features in the TrainObject
-FeatureSelector.all <- function(TrainObject, TestObject, GeneFilter){
+FeatureSelector.all <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject

@@ -94,9 +94,26 @@ BlackBoxFilter.character <- function(TrainObject, BlackBox, nfoldCrossvalidation
   UseMethod("BlackBoxFilter", object = BlackBox)
 }
 
-# BlackBoxFilter.function <- function(TrainObject, BlackBox, nfoldCrossvalidation){
-#   UseMethod("BlackBoxFilter", object = BlackBox)
-# }
+BlackBoxFilter.function <- function(TrainObject, BlackBox, nfoldCrossvalidation){
+
+  TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
+  colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
+
+  # For some weird reason the object still contains duplicates? Check duplication handler
+  # Just take the first occuring gene name (here: in columns!) for now
+  TrainObject_train <- as.data.frame(TrainObject_train)
+  TrainObject_train <- TrainObject_train[,!duplicated(colnames(TrainObject_train))]
+  TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
+
+  # User-BlackBox modelling:
+  bb_fit <- BlackBox(formula = DrugResponse~., TrainObject_train)
+
+  # Update Objects in the Environment
+  TrainObject[["TrainFrame"]] <- TrainObject_train
+  assign("TrainObject", value = TrainObject, envir = parent.frame())
+  assign("ForeseeModel", value = bb_fit, envir = parent.frame())
+
+}
 
 ################################################################################
 ### Function "linear" to train a linear regression model

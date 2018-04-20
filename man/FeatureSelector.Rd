@@ -4,7 +4,7 @@
 \alias{FeatureSelector}
 \title{Select the Genes that are used as Model Features}
 \usage{
-FeatureSelector(TrainObject, TestObject, GeneFilter)
+FeatureSelector(TrainObject, TestObject, GeneFilter, DrugName)
 }
 \arguments{
 \item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}

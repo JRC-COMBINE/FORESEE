@@ -5,7 +5,7 @@
 #'
 #' @param METHOD Character string of the function corrisponding to the input of ForeseeTrain or ForeseeTest.
 #' Check the help of Foreseetrain and ForeseeTest for more info.
-#' @return \item{Character vector of all possible inputs}
+#' @return \item{Character vector of all possible inputs}{}
 #' @examples
 #' listInputOptions("CellResponseProcessor")
 #' listInputOptions("DuplicationHandler")
@@ -28,7 +28,7 @@ listInputOptions <- function(METHOD){
 #' listCellLines returns all cell lines available in a ForeseeTrain Object.
 #'
 #' @param OBJ A ForeseeTrain object that you want to extract its containing cell lines.
-#' @return \item{Character vector of all cell line names in OBJ.}
+#' @return \item{Character vector of all cell line names in OBJ.}{}
 #' @examples
 #' listCellLines(GDSC)
 #' @export
@@ -42,7 +42,7 @@ listCellLines <- function(OBJ){
 #' listDrugs returns all possible drugs that were tested and has reponses available in a ForeseeTrain Object.
 #'
 #' @param OBJ A ForeseeTrain object that you want to extract all possible drugs it has response information on.
-#' @return \item{Character vector of all drug names in OBJ.}
+#' @return \item{Character vector of all drug names in OBJ.}{}
 #' @examples
 #' listDrugs(GDSC)
 #' @export

@@ -151,7 +151,7 @@ CellResponseProcessor.none <- function(TrainObject, DrugName, CellResponseType, 
   # Don't do anything to drug response data
 
   # Prints the action
-  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes raw ",CellResponseType," response information about ",DrugName,"."))
 
   # Returns the new TrainObj
   return(Object_withDrugResponse)

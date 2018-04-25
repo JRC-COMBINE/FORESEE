@@ -7,8 +7,8 @@
 listInputOptions(METHOD)
 }
 \arguments{
-\item{METHOD}{Character string of the function corrisponding to the input of ForeseeTrain or ForeseeTest.
-Check the help of Foreseetrain and ForeseeTest for more info.}
+\item{METHOD}{Character string of the function corresponding to the input of ForeseeTrain or ForeseeTest.
+Check the help of ForeseeTrain and ForeseeTest for more information.}
 }
 \value{
 \item{Character vector of all possible inputs}{}

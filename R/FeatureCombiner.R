@@ -1,12 +1,14 @@
 #' FeatureCombiner
 #'
-#' The Feature Combiner combines all selected Input Data Types into a Feature Matrix
-#'
-#' @param TrainObject Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
-#' @param TestObject Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
+#' The Feature Combiner combines all selected Input Data Types into one Feature Matrix
+
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
+#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
 #' @param InputDataTypes Data types of the TrainObject that are to be used to train the model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
 #' @return \item{TrainObject}{The TrainObject with a new Feature matrix combining all specified input data types and a Featuretype Vector indicating the molecular data type of each feature}
 #'         \item{TestObject}{The TestObject with a new Feature matrix combining all specified input data types and a Featuretype Vector indicating the molecular data type of each feature}
+#' @examples
+#' FeatureCombiner(GDSC,GSE6434,c("GeneExpression", "Mutation"))
 #' @export
 
 

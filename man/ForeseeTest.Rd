@@ -8,16 +8,17 @@ ForeseeTest(TestObject, ForeseeModel, Evaluation = "rocauc",
   BlackBox = "ridge")
 }
 \arguments{
-\item{TestObject}{Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+\item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
 
-\item{ForeseeModel}{Model that has been trained on a TrainObject with ForeseeTrain.}
+\item{ForeseeModel}{Model that has been trained on a TrainObject with the function ForeseeTrain.}
 
 \item{Evaluation}{Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.
-Get all possible values with listInputOptions("Validator").}
+Get all possible values with listInputOptions("Validator").
+Instead of choosing one of the implemented options, a user-defined function can be used as an input.}
 }
 \value{
 \item{Performance}{Evaluation Measure of the Predictability of the ForeseeModel trained on the TrainObject and tested on the TestObject.}
-        \item{Foreseen}{Predicted drug response of the TestObject obtained by applying the ForeseeModel.}
+        \item{Foreseen}{Predicted drug response of the TestObject obtained by applying the ForeseeModel to the molecular data of the TestObject.}
 }
 \description{
 ForeseeTest applies the machine learning based model ForeseeModel that has been trained on the data of a FORESEE TrainObject to a FORESEE TestObject to evaluate the Predictability of Drug Efficacy.

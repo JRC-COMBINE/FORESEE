@@ -7,9 +7,9 @@
 SampleSelector(TrainObject, TrainingTissue, InputDataTypes)
 }
 \arguments{
-\item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
 
-\item{TrainingTissue}{Tissue type that the cell lines of the TrainObject should be of, such as skin or lung. Default should be "all" for pancancer analysis.}
+\item{TrainingTissue}{Tissue type that the cell lines of the TrainObject should be of, such as lung. Default should be "all" for pancancer analysis.}
 
 \item{InputDataTypes}{Data types of the TrainObject that are to be used to train the model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
 }
@@ -18,4 +18,8 @@ SampleSelector(TrainObject, TrainingTissue, InputDataTypes)
 }
 \description{
 The Sample Selector returns features of only those samples that have a specified drug response and are available for all chosen input data types. If a specific tissue is selected, the samples are reduced to cell lines of that tissue only.
+}
+\examples{
+SampleSelector(GDSC, "pancreas", "GeneExpression")
+SampleSelector(GDSC, "all", c("GeneExpression","Mutation"))
 }

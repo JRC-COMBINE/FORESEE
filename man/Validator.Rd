@@ -11,11 +11,16 @@ Validator(Foreseen, TestObject, Evaluation)
 
 \item{TestObject}{Object that contains all data that the model is to be tested on, especially the true, measured drug response.}
 
-\item{Evaluation}{Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.}
+\item{Evaluation}{Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.
+The function 'listInputOptions("Validator")' returns a list of the possible options.
+Instead of choosing one of the implemented options, a user-defined function can be used as an input.}
 }
 \value{
 \item{Performance}{Evaluation Measure of the Predictability of the ForeseeModel trained on the TrainObject and tested on the TestObject.}
 }
 \description{
 The Validator evaluates the performance of the model by comparing the predicted response Foreseen to the reported, true response from the TestObject's Annotation.
+}
+\examples{
+Validator(rep(1,length(GSE6434$Annotation)),GSE6434,"rocauc")
 }

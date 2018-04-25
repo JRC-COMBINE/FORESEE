@@ -8,23 +8,27 @@ CellResponseProcessor(TrainObject, DrugName, CellResponseType,
   CellResponseTransformation)
 }
 \arguments{
-\item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
 
 \item{DrugName}{Name of the drug whose efficacy is supposed to be predicted with the model}
 
-\item{CellResponseType}{Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc., that is used for prediction}
+\item{CellResponseType}{Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc., that is included in the TrainObject and to be used for prediction}
 
 \item{CellResponseTransformation}{Method that is to be used to transform the drug response data of the TrainObject:
 the function 'powertransform' power transforms the drug response data,
 the function 'logarithm' returns the natural logarithm of the drug response data,
 the function 'binarization_kmeans' returns a binarized drug response vector based on 2 kmeans clusters,
 the function 'binarization_cutoff' returns a binarized drug response vector based on a cutoff at the median,
-the function 'none' returns the unchanged drug response data,
-the function 'user-defined function' is determined by the function in the input}
+the function 'none' returns the unchanged drug response data.
+The function 'listInputOptions("CellResponseProcessor")' returns a list of the possible options.
+Instead of choosing one of the implemented options, a user-defined function can be used as an input.}
 }
 \value{
 \item{TrainObject}{The TrainObject with preprocessed drug response data.}
 }
 \description{
 The CellResponseProcessor transforms the response data of the TrainObject for prediction.
+}
+\examples{
+CellResponseProcessor(GDSC, "Docetaxel", "IC50", "powertransform")
 }

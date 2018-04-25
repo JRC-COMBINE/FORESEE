@@ -5,8 +5,11 @@
 #' @param TestObject Object that contains all data that the model is to be tested on, especially the true, measured drug response.
 #' @param Foreseen Predicted drug response of the TestObject obtained by applying the ForeseeModel.
 #' @param Evaluation Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.
-
+#' The function 'listInputOptions("Validator")' returns a list of the possible options.
+#' Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 #' @return \item{Performance}{Evaluation Measure of the Predictability of the ForeseeModel trained on the TrainObject and tested on the TestObject.}
+#' @examples
+#' Validator(rep(1,length(GSE6434$Annotation)),GSE6434,"rocauc")
 #' @export
 
 Validator <- function(Foreseen, TestObject, Evaluation){

@@ -7,7 +7,7 @@
 listCellLines(OBJ)
 }
 \arguments{
-\item{OBJ}{A ForeseeTrain object that you want to extract its containing cell lines.}
+\item{OBJ}{A ForeseeTrain object of which you want to extract its containing cell lines.}
 }
 \value{
 \item{Character vector of all cell line names in OBJ.}{}

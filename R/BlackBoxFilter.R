@@ -1,8 +1,8 @@
 #' Train a Black Box Model for Drug Efficacy Prediction
 #'
-#' The BlackBoxFilter applies a machine learning algorithm to the data of the TrainObject to create a model that is predictive of the drug response.
+#' The BlackBoxFilter applies a machine learning algorithm to the molecular data of the TrainObject to create a model that is predictive of the drug response.
 #'
-#' @param TrainObject Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
 #' @param BlackBox Modeling algorithm for training:
 #' The function 'linear' fits a linear regression model to the training data,
 #' The function 'ridge' fits a linear ridge regression model by Cule et al. (2012) to the training data,
@@ -11,11 +11,10 @@
 #' The function 'svm' fits a support vector regression model from the e1071 package by Meyer and Chih-Chung (2017) to the training data,
 #' The function 'rf' fits a random forest regression model by Breiman (2001) to the training data
 #' The function 'rf_ranger' fits a fast random forest regression model by Marvin N. Wright (2018) to the training data
-#' The function 'tandem' fits a two-stage regression model by Nanne Aben (2017) to the training data
-#'
-#'
+#' The function 'tandem' fits a two-stage regression model by Nanne Aben (2017) to the training data.
+#' The function 'listInputOptions("BlackBoxFilter")' returns a list of the possible options.
+#' Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 #' @param nfoldCrossvalidation # folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.
-
 #' @return \item{ForeseeModel}{A black box model trained on the TrainObject data that can be applied to new test data.}
 #'         \item{TrainObject}{The TrainObject that was used to train the model.}
 #' @export

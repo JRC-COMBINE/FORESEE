@@ -4,5 +4,7 @@
 .Ruserdata
 data-raw/*
 data/*
+documentation/*
 .gitignore
 .DS_store
+inst/doc

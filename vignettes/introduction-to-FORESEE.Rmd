@@ -1,0 +1,154 @@
+---
+title: "Introduction to FORESEE"
+author: "Lisa-Katrin Turnhoff and Ali Hadizadeh Esfahani"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## FORESEE: a Tool for the Systematic Comparison of Translational Drug Response Modeling Pipelines
+
+
+uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is a versatile open source software, implemented as R-package, that is designed to act as a scaffold in developing and benchmarking such computational drug response models. FORESEE not only introduces a uniform data format for public cell line and patient data sets, but also establishes a standardized environment for drug response prediction pipelines, incorporating state of the art preprocessing methods, model training algorithms and different validation techniques. A modular implementation of the different elements of the modeling pipeline facilitates a straightforward development of different combinatorial models, which can be used to re-evaluate and improve already existing modeling pipelines, as well as to develop and benchmark new ones.
+
+We recommend to install <a href="https://github.com/JRC-COMBINE/FORESEEData">FORESEEData</a> package alongside this package.
+
+### Table of Contents
+**[Installation Instructions](#installation-instructions)**<br>
+**[Usage Instructions](#usage-instructions)**<br>
+**[Troubleshooting](#troubleshooting)**<br>
+**[Compatibility](#compatibility)**<br>
+**[Notes and Miscellaneous](#notes-and-miscellaneous)**<br>
+**[Next Steps, Credits, Feedback, License](#next-steps)**<br>
+
+## Installation Instructions
+### Installing via Devtools (Recommended method):
+Easiest way to install FORESEE is via <a href="https://cran.r-project.org/web/packages/devtools/">Devtools</a>.
+After installing Devtools from cran, you can install FORESEE by:
+```r
+devtools::install_github(repo = "JRC-COMBINE/FORESEE")
+```
+
+### Alternative installation methods (Manual download):
+...
+```Shell
+cd [Your desired directory]
+git clone https://github.com/JRC-COMBINE/FORESEE.git
+```
+
+```Shell
+R -e "devtools::install_local('./FORESEE/')"
+```
+
+## Usage Instructions
+## ...
+## ...
+### ...
+## ...
+### Integrating User-defned Functions into FORESEE Pipeline
+FORESEE is designed to be easily expandable. While there are numerous different pipelines 
+already implemented in the package, user can conveniently change each part of the pipeline 
+with their own method. To be exact, in ForeseeTrain CellResponseTransformation, DuplicationHandling,
+HomogenizationMethod, GeneFilter, FeaturePreprocessing and BlackBox can be defined by the user. In this
+section we demonstrate this capability of FORESEE through some examples.
+
+#### User-defined CellResponseTransformation:
+The underlying distribution of 'Response' has a great impact on the fitted model using a blackbox. Here,
+the 'Response' is the cell line response to a drug, quantified by different measures, e.g. IC50. The 
+measured IC50s are not necessarily distributed for an optimum model fitiing, so it is quite common in
+preprocessing stage to 'transform' these Response values, for example by power transforming or changing 
+to logarithmic scale, which are already implemented in FORESEE and can be easily used by CellResponseTransformation="powertransform" and CellResponseTransformation="logarithm" respectively.
+
+But It is possible to implement your own transformation and pass your function 
+CellResponseTransformation=User_Transformation to be used in the FORESEE pipeline.
+
+FORESEE expects your transformation to be function which has one vector of numerics as input, and returns
+one vector of numerics.
+
+As an example, we implement a transformation that uniforms the Response and use it in FORESEE:
+```r
+Uniformer <- function(x){
+    sort(runif(n = length(x), min = min(x), max = max(x)))[rank(x)]
+}
+```
+
+Now we just have to pass Uniformer function to ForeseeTrain as the CellResponseTransformation:
+```r
+EnvForRunningUniformer <- new.env()
+EnvForRunningUniformer$Uniformer <- Uniformer()
+tmp <- with(EnvForRunningUniformer, {ForeseeTrain(TrainObject = GDSC,
+                                                TestObject = GSE6434, DrugName = "Docetaxel",
+                                                DuplicationHandling = "first", GeneFilter = "variance",
+                                                CellResponseTransformation = Uniformer);
+  ForeseeTest(TestObject = TestObject, ForeseeModel = ForeseeModel)}
+)
+```
+
+
+# Troubleshooting
+# Compatibility
+# Notes and Miscellaneous
+# Building the Extension Bundles
+# Next Steps, Credits, Feedback, License
+
+
+------------------------------------------------------------------------
+
+## Default Parts Made by DEVTOOLS, for Reference, Will Be Removed Later
+Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+
+- Never uses retina figures
+- Has a smaller default figure size
+- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+
+## Vignette Info
+
+Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+
+## Styles
+
+The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+
+    output: 
+      rmarkdown::html_vignette:
+        css: mystyles.css
+
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))

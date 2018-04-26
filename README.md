@@ -1,12 +1,46 @@
 # FORESEE: a Tool for the Systematic Comparison of Translational Drug Response Modeling Pipelines
 
 
-Getting started with git:
+uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is a versatile open source software, implemented as R-package, that is designed to act as a scaffold in developing and benchmarking such computational drug response models. FORESEE not only introduces a uniform data format for public cell line and patient data sets, but also establishes a standardized environment for drug response prediction pipelines, incorporating state of the art preprocessing methods, model training algorithms and different validation techniques. A modular implementation of the different elements of the modeling pipeline facilitates a straightforward development of different combinatorial models, which can be used to re-evaluate and improve already existing modeling pipelines, as well as to develop and benchmark new ones.
 
-1- https://tutorialzine.com/2016/06/learn-git-in-30-minutes -> fast and easy, contains all necessary things, we won't use anything more complicated that what they covered
+We recommended to install <a href="https://github.com/JRC-COMBINE/FORESEEData">FORESEEData</a> package alongside this package.
 
-2- https://git-scm.com/book/en/v2 -> Text book for git, for more detailed explanation, not really necessary unless your interested
+#### Table of Contents
+**[Installation Instructions](#installation-instructions)**<br>
+**[Usage Instructions](#usage-instructions)**<br>
+**[Troubleshooting](#troubleshooting)**<br>
+**[Compatibility](#compatibility)**<br>
+**[Notes and Miscellaneous](#notes-and-miscellaneous)**<br>
+**[Next Steps, Credits, Feedback, License](#next-steps)**<br>
 
-Getting started with R-package development:
+### Installation Instructions
+#### Installing via Devtools (Recommended method):
+Easiest way to install FORESEE is via <a href="https://cran.r-project.org/web/packages/devtools/">Devtools</a>.
+After installing Devtools from cran, you can install FORESEE by:
+```r
+devtools::install_github(repo = "JRC-COMBINE/FORESEE")
+```
 
-I don't think we need to learn anything as long as you use RSTUDIO, so you can just clone this repository, open it as a project in RSTUDIO, and add .R files with new functions you implemented in R folder, just like the hello.R example, and add corrsiponding documents to man folder
+#### Alternative installation methods (Manual download):
+...
+```Shell
+cd [Your desired directory]
+git clone https://github.com/JRC-COMBINE/FORESEE.git
+```
+
+```Shell
+R -e "devtools::install_local('./FORESEE/')"
+```
+
+### Usage Instructions
+Check the vignette of the package for instruction and tutorials:
+
+```r
+browseVignettes(package = "FORESEE")
+```
+
+### Troubleshooting
+### Compatibility
+### Notes and Miscellaneous
+### Building the Extension Bundles
+### Next Steps, Credits, Feedback, License

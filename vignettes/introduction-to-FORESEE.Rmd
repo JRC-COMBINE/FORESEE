@@ -4,7 +4,7 @@ author: "Lisa-Katrin Turnhoff and Ali Hadizadeh Esfahani"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Introduction to FORESEE}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -95,11 +95,11 @@ tmp <- with(EnvForRunningUniformer, {ForeseeTrain(TrainObject = GDSC,
 ```
 
 
-# Troubleshooting
-# Compatibility
-# Notes and Miscellaneous
-# Building the Extension Bundles
-# Next Steps, Credits, Feedback, License
+## Troubleshooting
+## Compatibility
+## Notes and Miscellaneous
+## Building the Extension Bundles
+## Next Steps, Credits, Feedback, License
 
 
 ------------------------------------------------------------------------

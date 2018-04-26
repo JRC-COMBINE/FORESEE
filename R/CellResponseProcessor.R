@@ -2,23 +2,23 @@
 #'
 #' The CellResponseProcessor transforms the response data of the TrainObject for prediction.
 #'
-#' @param TrainObject Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
 #' @param DrugName Name of the drug whose efficacy is supposed to be predicted with the model
-#' @param CellResponseType Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc., that is used for prediction
+#' @param CellResponseType Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc., that is included in the TrainObject and to be used for prediction
 #' @param CellResponseTransformation Method that is to be used to transform the drug response data of the TrainObject:
 #' the function 'powertransform' power transforms the drug response data,
 #' the function 'logarithm' returns the natural logarithm of the drug response data,
 #' the function 'binarization_kmeans' returns a binarized drug response vector based on 2 kmeans clusters,
 #' the function 'binarization_cutoff' returns a binarized drug response vector based on a cutoff at the median,
-#' the function 'none' returns the unchanged drug response data,
-#' the function 'user-defined function' is determined by the function in the input
+#' the function 'none' returns the unchanged drug response data.
+#' The function 'listInputOptions("CellResponseProcessor")' returns a list of the possible options.
+#' Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 #' @return \item{TrainObject}{The TrainObject with preprocessed drug response data.}
+#' @examples
+#' CellResponseProcessor(GDSC, "Docetaxel", "IC50", "powertransform")
 #' @export
 
 
-# ToDo
-# User-defined input not implemented yet (see commented, not-working part CellResponseProcessor.function)
-# Inlude options for other response types (what if user choses values other than AUC or IC50?)
 
 CellResponseProcessor <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
   UseMethod("CellResponseProcessor", object = CellResponseTransformation)
@@ -136,14 +136,12 @@ CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, Cel
   Object_withDrugResponse$DrugResponse <- binarize(x=Object_withDrugResponse$DrugResponse, split = "median", removeNArows = FALSE)$x
   names(Object_withDrugResponse$DrugResponse) <- names_drugresponse
 
-
   # Prints the action
   message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
 
   # Returns the new TrainObj
   return(Object_withDrugResponse)
 }
-
 
 ################################################################################
 ### Function "none" to use the raw drug response data
@@ -155,7 +153,7 @@ CellResponseProcessor.none <- function(TrainObject, DrugName, CellResponseType, 
   # Don't do anything to drug response data
 
   # Prints the action
-  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes binarized ",CellResponseType," response information about ",DrugName,"."))
+  message(paste0("CellResposeProcessor added the new matrix 'Drug Response' to the ForeseeCell Object, which includes raw ",CellResponseType," response information about ",DrugName,"."))
 
   # Returns the new TrainObj
   return(Object_withDrugResponse)

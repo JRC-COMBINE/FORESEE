@@ -7,9 +7,9 @@
 Homogenizer(TrainObject, TestObject, HomogenizationMethod)
 }
 \arguments{
-\item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
 
-\item{TestObject}{Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+\item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
 
 \item{HomogenizationMethod}{Method for homogenizing data of the TrainObject and TestObject.
 The function 'ComBat' uses the batch effect removal ComBat of the sva package,
@@ -17,8 +17,9 @@ The function 'quantile' uses the quantile normalization of the preprocessCore pa
 The function 'limma' uses the removeBatchEffect function of the limma package,
 The function 'YuGene' uses the function of the YuGene package by Le Cao,
 The function 'RUV' regresses out unwanted variation using the 10 principal components of negative control genes (here: list of human housekeeping by Eisenberg and Levanon (2013))
-The function 'none' doesn't do any batch effect correction,
-If the user wants to implement a user-defined batch effect removal function, the input should be the function.}
+The function 'none' doesn't do any batch effect correction.
+The function 'listInputOptions("Homogenizer")' returns a list of the possible options.
+Instead of choosing one of the implemented options, a user-defined function can be used as an input.}
 }
 \value{
 \item{TrainObject}{The TrainObject with homogenized features according to the chosen TestObject.}
@@ -26,4 +27,7 @@ If the user wants to implement a user-defined batch effect removal function, the
 }
 \description{
 The Homogenizer function removes batch effects and homogenizes the data of a given TrainObject and TestObject.
+}
+\examples{
+Homogenizer(GDSC,GSE6434,"quantile")
 }

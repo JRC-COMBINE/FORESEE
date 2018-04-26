@@ -13,9 +13,9 @@ ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType = "IC50",
   nfoldCrossvalidation = 1, ...)
 }
 \arguments{
-\item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
 
-\item{TestObject}{Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+\item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
 
 \item{DrugName}{Name of the drug whose efficacy is supposed to be predicted with the model}
 
@@ -24,11 +24,11 @@ ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType = "IC50",
 \item{CellResponseTransformation}{Method that is to be used to transform the drug response data of the TrainObject, such as power transform, logarithm, binarization, user defined functions, etc.
 Get all possible values with listInputOptions("CellResponseProcessor").}
 
-\item{InputDataTypes}{Data types of the TrainObject that are to be used to train the model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+\item{InputDataTypes}{Data types of the TrainObject that are to be used to train the model, such as GeneExpression, Mutation, CopyNumberVariation, Methylation, Cancertype, etc.}
 
-\item{TrainingTissue}{Tissue type that the cell lines of the TrainObject should be of, such as skin or lung. Default should be "all" for pancancer analysis.}
+\item{TrainingTissue}{Tissue type that the cell lines of the TrainObject should be of, such as pancreas or lung. Default should be "all" for pancancer analysis.}
 
-\item{DuplicationHandling}{Method for handling duplicates of gene names, such as taking none, the average, the first hit, etc.
+\item{DuplicationHandling}{Method for handling duplicates of gene names, such as considering none, the mean, the first hit, etc.
 Get all possible values with listInputOptions("DuplicationHandler").}
 
 \item{HomogenizationMethod}{Method for homogenizing data of the TrainObject and TestObject, such as ComBat, quantile normalization, limma, RUV, etc.
@@ -51,11 +51,11 @@ Get all possible values with listInputOptions("BlackBoxFilter").}
         \item{TestObject}{The TestObject with preprocessed and filtered features.}
 }
 \description{
-ForeseeTrain uses the data of the TrainObject to train a black box model that can later applied to new data in order to predict drug efficacy.
-First, duplicates in the gene names are removed using the Foresee DuplicationHandler.
-Second, the Homogenizer function removes batch effects and homogenizes train and test data.
-Third, the FeatureSelector filters the input and selects features to be used for the prediction.
-Fourth, the FeaturePreprocessor converts the original features into predictive features.
-Fifth, the CellResponseProcessor prepares the response data of the TrainObject for prediction.
-Last, a machine learning algorithm is applied to the data to create a model that is predictive of the drug response.
+ForeseeTrain uses the data of the TrainObject to train a black box model that can later be applied to new data in order to predict drug efficacy.
+Duplicates in the gene names are removed using the Foresee DuplicationHandler.
+The Homogenizer function removes batch effects and homogenizes train and test data.
+The FeatureSelector filters the input and selects features to be used for the prediction.
+The FeaturePreprocessor converts the original features into predictive features.
+The CellResponseProcessor prepares the response data of the TrainObject for prediction.
+A machine learning algorithm is applied to the preprocessed data to create a model that is predictive of drug response.
 }

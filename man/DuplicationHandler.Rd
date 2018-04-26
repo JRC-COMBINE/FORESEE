@@ -7,16 +7,20 @@
 DuplicationHandler(Object, DuplicationHandling)
 }
 \arguments{
-\item{Object}{FORESEE Object (ForeseeCell or ForeseeTrain) that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
-
 \item{DuplicationHandling}{Method for handling duplicates of gene names.
 The function 'mean' calculates the mean of all rows that have the same gene name,
-The function 'first' chooses the first occuring row of duplicated genes only,
-The function 'none' removes all genes that occur more than once.}
+The function 'first' chooses the first hit of duplicated genes and discards the rest of genes with the same name,
+The function 'none' removes all genes that occur more than once.
+The function 'listInputOptions("DuplicationHandler")' returns a list of the possible options.
+Instead of chosing one of the implemented options, a user-defined function can be used as an input.}
 }
 \value{
-\item{Object}{The object without duplicated gene names}
+\item{Object}{The object with unique gene names}
 }
 \description{
 DuplicationHandler removes duplicates in the gene names from the FORESEE Object.
+#' @param Object FORESEE Object (ForeseeCell or ForeseeTrain) that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
+}
+\examples{
+DuplicationHandler(GDSC,"first")
 }

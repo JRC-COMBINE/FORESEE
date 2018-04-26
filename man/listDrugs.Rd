@@ -13,7 +13,7 @@ listDrugs(OBJ)
 \item{Character vector of all drug names in OBJ.}{}
 }
 \description{
-listDrugs returns all possible drugs that were tested and has reponses available in a ForeseeTrain Object.
+listDrugs returns all possible drugs that were tested and have reponses available in a ForeseeTrain Object.
 }
 \examples{
 listDrugs(GDSC)

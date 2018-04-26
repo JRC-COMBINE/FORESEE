@@ -1,19 +1,24 @@
 #' Select the Genes that are used as Model Features
 #'
-#' The FeatureSelector selects features from all genes to be used for drug efficacy prediction.
+#' The FeatureSelector selects a subset of features from all genes to be used for drug efficacy prediction.
 #'
-#' @param TrainObject Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
-#' @param TestObject Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
+#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
 #' @param GeneFilter Set of genes to be considered for training the model, such as all, a certain percantage based on variance or p-value, specific gene sets like landmark genes, gene ontologies or pathways, etc.
 #' The option 'variance' removes the 20 % genes of lowest variance across samples in the TrainObject
 #' The option 'pvalue' removes the 20 % genes of lowest p-value (ttest) across samples in the TrainObject
 #' The option 'landmarkgenes' uses the L1000 gene set downloaded from CLUE Command App
-#' The option 'ontology' uses a specific set of genes included in the chosen ontology? -> Ali
-#' The option 'pathway' uses a specific set of genes included in the chosen pathway? -> Ali
+#' The option 'ontology' uses a specific set of genes included in the ontology associated with the drug
+#' The option 'pathway' uses a specific set of genes included in the pathway associated with the drug
 #' The option 'all' keeps all genes as features
+#' The function 'listInputOptions("FeatureSelector")' returns a list of the possible options.
+#' Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 #' If the user inserts a list as an input, the list is considered as chosen features.
 #' @return \item{TrainObject}{The TrainObject with the selected gene set as features.}
 #'         \item{TestObject}{The TestObject with homogenized features according to the chosen TrainObject.}
+#' @examples
+#' FeatureSelector(GDSC,GSE6434,"variance","Docetaxel")
+#' FeatureSelector(GDSC,GSE6434,"pathway","Tamoxifen")
 #' @export
 
 
@@ -43,7 +48,7 @@ FeatureSelector.function <- function(TrainObject, TestObject, GeneFilter, DrugNa
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
 
-  # Calculate a measure by GeneFilter  of each gene across all samples in TrainObject
+  # Calculate a measure by GeneFilter of each gene across all samples in TrainObject
   measure_TrainObject<-c()
   for (i in 1:dim(TrainObject_selectedfeatures$GeneExpression)[1]){
     measure_TrainObject[i] <- GeneFilter(TrainObject_selectedfeatures$GeneExpression[i,])

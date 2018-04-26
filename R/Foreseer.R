@@ -2,10 +2,10 @@
 #'
 #' The Foreseer applies the ForeseeModel that was trained on a FORESEE TrainObject to the test data to gain a prediction of the TestObject's response.
 #'
-#' @param TestObject Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
-#' @param ForeseeModel Model that has been trained on a TrainObject with ForeseeTrain.
+#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
+#' @param ForeseeModel Model that has been trained on a TrainObject with the function ForeseeTrain.
 #'
-#' @return \item{Foreseen}{Predicted drug response of the TestObject obtained by applying the ForeseeModel.}
+#' @return \item{Foreseen}{Predicted drug response of the samples listed in the TestObject obtained by applying the ForeseeModel to the molecular data.}
 #' @export
 
 Foreseer <- function(TestObject, ForeseeModel, BlackBox){
@@ -68,7 +68,6 @@ Foreseer <- function(TestObject, ForeseeModel, BlackBox){
 
   Foreseen <- predict(ForeseeModel, TestObject_test)
   }
-  # Plots
 
   # Update Object in the Environment
   return(Foreseen)

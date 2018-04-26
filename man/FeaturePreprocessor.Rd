@@ -2,14 +2,14 @@
 % Please edit documentation in R/FeaturePreprocessor.R
 \name{FeaturePreprocessor}
 \alias{FeaturePreprocessor}
-\title{Preprocess the Inputs of both TrainObject and TestObject for Modeling Drug Response}
+\title{Preprocess the Gene Expression Inputs of both TrainObject and TestObject for Modeling Drug Response}
 \usage{
 FeaturePreprocessor(TrainObject, TestObject, FeaturePreprocessing)
 }
 \arguments{
-\item{TrainObject}{Object that contains all data needed to train a model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+\item{TrainObject}{Object that contains all data needed to train a model,  including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
 
-\item{TestObject}{Object that contains all data that the model is to be tested on, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.}
+\item{TestObject}{Object that contains all data that the model is to be tested on,  including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
 
 \item{FeaturePreprocessing}{Method for preprocessing the inputs of the model:
 The function 'zscore_genewise' calculates the zscore normalizing each gene over all samples,
@@ -17,12 +17,16 @@ The function 'zscore_samplewise' calculates the zscore normalizing each sample o
 The function 'pca' does principal component analysis,
 The function 'physio' does physiospace analysis with the samples using cell line gene expression of the gdsc data base as physiological references,
 The function 'none' keeps the gene expression values unchanged,
-If the user wants to implement a user-defined function batch effect removal function, the input should be the function.}
+The function 'listInputOptions("FeaturePreprocessor")' returns a list of the possible options.
+Instead of chosing one of the implemented options, a user-defined function can be used as an input.}
 }
 \value{
 \item{TrainObject}{The TrainObject with preprocessed features.}
         \item{TestObject}{The TestObject with preprocessed features.}
 }
 \description{
-The FeaturePreprocessor converts the original features into predictive features that are defined by FeaturePreprocessing.
+The FeaturePreprocessor converts the original gene expression features into predictive features with a function defined by FeaturePreprocessing.
+}
+\examples{
+FeaturePreprocessor(GDSC,GSE6434,"zscore_genewise")
 }

@@ -8,3 +8,5 @@ documentation/*
 .gitignore
 .DS_store
 inst/doc
+vignettes/introduction-to-FORESEE.R
+vignettes/introduction-to-FORESEE.html

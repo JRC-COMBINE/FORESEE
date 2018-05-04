@@ -23,12 +23,13 @@ FeaturePreprocessor <- function(TrainObject, TestObject, FeaturePreprocessing){
   UseMethod("FeaturePreprocessor", object = FeaturePreprocessing)
 }
 
-
+#' @export
 FeaturePreprocessor.character <- function(TrainObject, TestObject, FeaturePreprocessing){
   class(FeaturePreprocessing) <- FeaturePreprocessing;
   UseMethod("FeaturePreprocessor", object = FeaturePreprocessing)
 }
 
+#' @export
 FeaturePreprocessor.function <- function(TrainObject, TestObject, FeaturePreprocessing){
 
   TrainObject_processedfeatures <- TrainObject
@@ -47,6 +48,7 @@ FeaturePreprocessor.function <- function(TrainObject, TestObject, FeaturePreproc
 
 ################################################################################
 ### Function "zscore_genewise" to calculate the zscore normalizing each gene over all samples
+#' @export
 FeaturePreprocessor.zscore_genewise <- function(TrainObject, TestObject, FeaturePreprocessing){
 
   TrainObject_processedfeatures <- TrainObject
@@ -70,6 +72,7 @@ FeaturePreprocessor.zscore_genewise <- function(TrainObject, TestObject, Feature
 
 ################################################################################
 ### Function "zscore_samplewise" to calculate the zscore normalizing each gene over all samples
+#' @export
 FeaturePreprocessor.zscore_samplewise <- function(TrainObject, TestObject, FeaturePreprocessing){
 
   TrainObject_processedfeatures <- TrainObject
@@ -93,6 +96,7 @@ FeaturePreprocessor.zscore_samplewise <- function(TrainObject, TestObject, Featu
 
 ################################################################################
 ### Function "pca" for principal component analysis
+#' @export
 FeaturePreprocessor.pca <- function(TrainObject, TestObject, FeaturePreprocessing){
 
   TrainObject_processedfeatures <- TrainObject
@@ -126,6 +130,7 @@ FeaturePreprocessor.pca <- function(TrainObject, TestObject, FeaturePreprocessin
 
 ################################################################################
 ### Function "physio" to calculate the physiospace similarities
+#' @export
 FeaturePreprocessor.physio <- function(TrainObject, TestObject, FeaturePreprocessing){
 
   TrainObject_processedfeatures <- TrainObject
@@ -147,6 +152,7 @@ FeaturePreprocessor.physio <- function(TrainObject, TestObject, FeaturePreproces
 
 ################################################################################
 ### Function "none" to keep original format of the data
+#' @export
 FeaturePreprocessor.none <- function(TrainObject, TestObject, FeaturePreprocessing){
 
   TrainObject_processedfeatures <- TrainObject

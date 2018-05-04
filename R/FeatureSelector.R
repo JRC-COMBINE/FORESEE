@@ -31,6 +31,7 @@ FeatureSelector <- function(TrainObject, TestObject, GeneFilter, DrugName){
   UseMethod("FeatureSelector", object = GeneFilter)
 }
 
+#' @export
 FeatureSelector.character <- function(TrainObject, TestObject, GeneFilter, DrugName){
   class(GeneFilter) <- GeneFilter;
   UseMethod("FeatureSelector", object = GeneFilter)
@@ -43,6 +44,7 @@ FeatureSelector.character <- function(TrainObject, TestObject, GeneFilter, DrugN
 ################################################################################
 ### Function "function" applies the function in "GeneFilter"
 # to Train and Test objects
+#' @export
 FeatureSelector.function <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
@@ -67,6 +69,7 @@ FeatureSelector.function <- function(TrainObject, TestObject, GeneFilter, DrugNa
 
 ################################################################################
 ### Option "variance" to keep variance genes as features in the TrainObject
+#' @export
 FeatureSelector.variance <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
@@ -91,6 +94,7 @@ FeatureSelector.variance <- function(TrainObject, TestObject, GeneFilter, DrugNa
 
 ################################################################################
 ### Option "pvalue" to keep pvalue genes as features in the TrainObject
+#' @export
 FeatureSelector.pvalue <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
@@ -126,6 +130,7 @@ FeatureSelector.pvalue <- function(TrainObject, TestObject, GeneFilter, DrugName
 
 ################################################################################
 ### Option "landmarkgenes" to keep landmarkgenes genes as features in the TrainObject
+#' @export
 FeatureSelector.landmarkgenes <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
@@ -142,6 +147,7 @@ FeatureSelector.landmarkgenes <- function(TrainObject, TestObject, GeneFilter, D
 
 ################################################################################
 ### Option "ontology" to keep ontology genes as features in the TrainObject
+#' @export
 FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
@@ -181,6 +187,7 @@ FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter, DrugNa
 
 ################################################################################
 ### Option "pathway" to keep pathway genes as features in the TrainObject
+#' @export
 FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject
@@ -221,6 +228,7 @@ FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter, DrugNam
 
 ################################################################################
 ### Option "all" to keep all genes as features in the TrainObject
+#' @export
 FeatureSelector.all <- function(TrainObject, TestObject, GeneFilter, DrugName){
 
   TrainObject_selectedfeatures <- TrainObject

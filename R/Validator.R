@@ -16,6 +16,7 @@ Validator <- function(Foreseen, TestObject, Evaluation){
   UseMethod("Validator", object = Evaluation)
 }
 
+#' @export
 Validator.character <- function(Foreseen, TestObject, Evaluation){
   class(Evaluation) <- Evaluation;
   UseMethod("Validator", object = Evaluation)
@@ -24,6 +25,7 @@ Validator.character <- function(Foreseen, TestObject, Evaluation){
 
 ################################################################################
 ### Function "function" applies the function in "Evaluation" to predicted values
+#' @export
 Validator.function <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   return(Evaluation(Foreseen, ANNOTATIONS))
@@ -31,6 +33,7 @@ Validator.function <- function(Foreseen, TestObject, Evaluation) {
 
 ################################################################################
 ### Function "rocauc" calculates the AUC of the ROC curve (binarizes TestObj annotation on median if they have continues values)
+#' @export
 Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   if(is.numeric(ANNOTATIONS)){
@@ -53,6 +56,7 @@ Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
 ################################################################################
 ### Function "rocpvalue" calculates the t.test p value of the ROC curve AUC (binarizes TestObj annotation on median if they have continues values)
 ## versus the 10000 permutated annotation values
+#' @export
 Validator.rocpvalue <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   if(is.numeric(ANNOTATIONS)){
@@ -72,6 +76,7 @@ Validator.rocpvalue <- function(Foreseen, TestObject, Evaluation) {
 
 ################################################################################
 ### Function "prauc" calculates the AUC of the precision-recall curve
+#' @export
 Validator.prauc <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   if(is.numeric(ANNOTATIONS)){
@@ -88,6 +93,7 @@ Validator.prauc <- function(Foreseen, TestObject, Evaluation) {
 ################################################################################
 ### Function "rsquared" calculates the fraction of variance explained by a linear model between predictions and
 ## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+#' @export
 Validator.rsquared <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   if(is.logical(ANNOTATIONS)){
@@ -101,6 +107,7 @@ Validator.rsquared <- function(Foreseen, TestObject, Evaluation) {
 ### Function "rsquared_adjusted" calculates the fraction of variance explained by a linear model between predictions and
 ## actual annotations, corrected by the p-value of F-test,
 ##!! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+#' @export
 Validator.rsquared_adjusted <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   if(is.logical(ANNOTATIONS)){
@@ -113,6 +120,7 @@ Validator.rsquared_adjusted <- function(Foreseen, TestObject, Evaluation) {
 ################################################################################
 ### Function "fpvalue" calculates the p value of an F test on a linear model between predictions and
 ## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+#' @export
 Validator.fpvalue <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   if(is.logical(ANNOTATIONS)){
@@ -132,6 +140,7 @@ Validator.fpvalue <- function(Foreseen, TestObject, Evaluation) {
 ################################################################################
 ### Function "mse" calculates the mean square error of a linear model between predictions and
 ## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+#' @export
 Validator.mse <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   if(is.logical(ANNOTATIONS)){
@@ -145,6 +154,7 @@ Validator.mse <- function(Foreseen, TestObject, Evaluation) {
 ################################################################################
 ### Function "spearman" calculates the spearman correlation between predictions and
 ## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+#' @export
 Validator.spearman <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   if(is.logical(ANNOTATIONS)){
@@ -157,6 +167,7 @@ Validator.spearman <- function(Foreseen, TestObject, Evaluation) {
 ################################################################################
 ### Function "pearson" calculates the spearman correlation between predictions and
 ## actual annotations, !! only for when there is continuous numeric (not binary) annotation availble on TestObj!!
+#' @export
 Validator.pearson <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   if(is.logical(ANNOTATIONS)){
@@ -169,6 +180,7 @@ Validator.pearson <- function(Foreseen, TestObject, Evaluation) {
 ################################################################################
 ### Function "default" is called in case method in "Evaluation" is
 # unknown to Validator
+#' @export
 Validator.default <- function(Foreseen, TestObject, Evaluation){
   stop(paste("Method",Evaluation,"is not defined as an evaluation method!"))
 }

@@ -88,11 +88,13 @@ BlackBoxFilter <- function(TrainObject, BlackBox = "ridge", nfoldCrossvalidation
   }
 }
 
+#' @export
 BlackBoxFilter.character <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   class(BlackBox) <- BlackBox
   UseMethod("BlackBoxFilter", object = BlackBox)
 }
 
+#' @export
 BlackBoxFilter.function <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
@@ -116,6 +118,7 @@ BlackBoxFilter.function <- function(TrainObject, BlackBox, nfoldCrossvalidation)
 
 ################################################################################
 ### Function "linear" to train a linear regression model
+#' @export
 BlackBoxFilter.linear <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
@@ -137,6 +140,7 @@ BlackBoxFilter.linear <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
 ################################################################################
 ### Function "ridge" to train a linear ridge regression model
+#' @export
 BlackBoxFilter.ridge <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
@@ -161,6 +165,7 @@ BlackBoxFilter.ridge <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
 ################################################################################
 ### Function "lasso" to train a lasso regression model
+#' @export
 BlackBoxFilter.lasso <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
@@ -179,6 +184,7 @@ BlackBoxFilter.lasso <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
 ################################################################################
 ### Function "elasticnet" to train a elasticnet regression model
+#' @export
 BlackBoxFilter.elasticnet <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
@@ -205,6 +211,7 @@ BlackBoxFilter.elasticnet <- function(TrainObject, BlackBox, nfoldCrossvalidatio
 
 ################################################################################
 ### Function "svm" to train a support vector regression model
+#' @export
 BlackBoxFilter.svm <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
@@ -228,6 +235,7 @@ BlackBoxFilter.svm <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
 ################################################################################
 ### Function "rf" to train a random forest regression model
+#' @export
 BlackBoxFilter.rf <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
@@ -251,6 +259,7 @@ BlackBoxFilter.rf <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
 ################################################################################
 ### Function "rf" to train a random forest regression model
+#' @export
 BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
@@ -278,6 +287,7 @@ BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation
 
 ################################################################################
 ### Function "tandem" to train a lasso regression model
+#' @export
 BlackBoxFilter.tandem <- function(TrainObject, BlackBox, nfoldCrossvalidation){
 
   TrainObject_train<- as.matrix(t(TrainObject$Features))

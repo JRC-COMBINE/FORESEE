@@ -29,6 +29,7 @@ Homogenizer <- function(TrainObject, TestObject, HomogenizationMethod){
   UseMethod("Homogenizer", object = HomogenizationMethod)
 }
 
+#' @export
 Homogenizer.character <- function(TrainObject, TestObject, HomogenizationMethod){
   class(HomogenizationMethod) <- HomogenizationMethod;
   UseMethod("Homogenizer", object = HomogenizationMethod)
@@ -37,6 +38,7 @@ Homogenizer.character <- function(TrainObject, TestObject, HomogenizationMethod)
 ################################################################################
 ### Function "function" applies the function in "HomogenizationMethod"
 # to Train and Test objects
+#' @export
 Homogenizer.function <- function(TrainObject, TestObject, HomogenizationMethod) {
 
   TrainObject_homogenized <- TrainObject
@@ -62,6 +64,7 @@ Homogenizer.function <- function(TrainObject, TestObject, HomogenizationMethod) 
 
 ################################################################################
 ### Function "ComBat"
+#' @export
 Homogenizer.ComBat <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
@@ -103,6 +106,7 @@ Homogenizer.ComBat <- function(TrainObject, TestObject, HomogenizationMethod){
 
 ################################################################################
 ### Function "quantile"
+#' @export
 Homogenizer.quantile <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
@@ -146,6 +150,7 @@ Homogenizer.quantile <- function(TrainObject, TestObject, HomogenizationMethod){
 
 ################################################################################
 ### Function "limma"
+#' @export
 Homogenizer.limma <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
@@ -185,6 +190,7 @@ Homogenizer.limma <- function(TrainObject, TestObject, HomogenizationMethod){
 
 ################################################################################
 ### Function "YuGene"
+#' @export
 Homogenizer.YuGene <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
@@ -224,6 +230,7 @@ Homogenizer.YuGene <- function(TrainObject, TestObject, HomogenizationMethod){
 
 ################################################################################
 ### Function "RUV"
+#' @export
 Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # require(ruv)
@@ -295,6 +302,7 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
 
 ################################################################################
 ### Function "RUV", based on RUV4 in package "ruv"
+#' @export
 Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
 
   require(ruv)
@@ -373,6 +381,7 @@ Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
 
 ################################################################################
 ### Function "none"
+#' @export
 Homogenizer.none <- function(TrainObject, TestObject, HomogenizationMethod){
 
   TrainObject_homogenized <- TrainObject
@@ -406,6 +415,7 @@ Homogenizer.none <- function(TrainObject, TestObject, HomogenizationMethod){
 ################################################################################
 ### Function "default" is called in case method in "HomogenizationMethod" is
 # unknown to Homogenizer
+#' @export
 Homogenizer.default <- function(TrainObject, TestObject, HomogenizationMethod){
   stop(paste("Method",HomogenizationMethod,"is not defined as a homogenization method!"))
 }

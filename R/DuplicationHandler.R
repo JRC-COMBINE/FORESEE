@@ -20,6 +20,7 @@ DuplicationHandler <- function(Object, DuplicationHandling){
   UseMethod("DuplicationHandler", object = DuplicationHandling)
 }
 
+#' @export
 DuplicationHandler.character <- function(Object, DuplicationHandling){
   class(DuplicationHandling) <- DuplicationHandling;
   UseMethod("DuplicationHandler", object = DuplicationHandling)
@@ -28,6 +29,7 @@ DuplicationHandler.character <- function(Object, DuplicationHandling){
 ################################################################################
 ### Function "function" applies the function in "DuplicationHandling"
 # to all rows that have the same gene name
+#' @export
 DuplicationHandler.function <- function(Object, DuplicationHandling){
 
   Object_withoutDuplicates <- Object
@@ -54,6 +56,7 @@ DuplicationHandler.function <- function(Object, DuplicationHandling){
 
 ################################################################################
 ### Function "first" to choose the first occuring row of duplicated genes only
+#' @export
 DuplicationHandler.first <- function(Object, DuplicationHandling){
 
   Object_withoutDuplicates <- Object
@@ -78,6 +81,7 @@ DuplicationHandler.first <- function(Object, DuplicationHandling){
 
 ################################################################################
 ### Function none" removes all genes that occur more than once.
+#' @export
 DuplicationHandler.none <- function(Object, DuplicationHandling){
 
   Object_withoutDuplicates <- Object
@@ -104,6 +108,7 @@ DuplicationHandler.none <- function(Object, DuplicationHandling){
 
 ################################################################################
 ### Function "mean" calculates the mean of all rows that have the same gene name
+#' @export
 DuplicationHandler.mean <- function(Object, DuplicationHandling){
 
   Object_withoutDuplicates <- Object
@@ -131,6 +136,7 @@ DuplicationHandler.mean <- function(Object, DuplicationHandling){
 ################################################################################
 ### Function "default" is called in case method in "DuplicationHandling" is
 # unknown to DuplicationHandler
+#' @export
 DuplicationHandler.default <- function(Object, DuplicationHandling){
   stop(paste("Method",DuplicationHandling,"is not defined for handling duplicated genes!"))
 }

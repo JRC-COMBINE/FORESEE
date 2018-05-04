@@ -40,7 +40,7 @@ Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
     message("Annotation of the test set is binarized for calculating ROC")
     ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
   }
-  # require(pROC) ## glmnet masks auc so had to use functions of pROC as pROC::function (pROC::roc and pROC::auc)
+  requireForesee(pROC) ## glmnet masks auc so had to use functions of pROC as pROC::function (pROC::roc and pROC::auc)
   ROCObj <- pROC::roc(-(as.numeric(ANNOTATIONS)), Foreseen, direction="<")
   AUCofROC <- pROC::auc(pROC::roc(ANNOTATIONS, Foreseen))[[1]]
   return(AUCofROC)
@@ -63,7 +63,7 @@ Validator.rocpvalue <- function(Foreseen, TestObject, Evaluation) {
     message("Annotation of the test set is binarized for calculating ROC")
     ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
   }
-  # require(pROC) ## glmnet masks auc so had to use functions of pROC as pROC::function (pROC::roc and pROC::auc)
+  requireForesee(pROC) ## glmnet masks auc so had to use functions of pROC as pROC::function (pROC::roc and pROC::auc)
   AUCofROC <- pROC::auc(pROC::roc(ANNOTATIONS, Foreseen))[[1]]
   AUCofROCRandom <- numeric(length = 10000)
   for(K in 1:10000){
@@ -84,7 +84,7 @@ Validator.prauc <- function(Foreseen, TestObject, Evaluation) {
     ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
   }
 
-  require(PRROC)
+  requireForesee(PRROC)
   PRObj <- PRROC::pr.curve(-(as.numeric(ANNOTATIONS)), Foreseen)
   AUCofPR <- PRObj$auc.integral
   return(AUCofPR)

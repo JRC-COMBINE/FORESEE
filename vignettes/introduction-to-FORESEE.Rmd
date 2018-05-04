@@ -1,6 +1,10 @@
 ---
-title: "Introduction to FORESEE"
-author: "Lisa-Katrin Turnhoff and Ali Hadizadeh Esfahani"
+title: "Introduction to FORESEE - a Tool for the Systematic Comparison of Translational Drug Response Modeling Pipelines"
+author: | 
+    | Lisa-Katrin Turnhoff$^{1,2}$ and Ali Hadizadeh Esfahani$^{1,2}$ 
+    | 
+    | $^1$Joint Research Center for Computational Biomedicine (JRC-COMBINE), RWTH Aachen University, Aachen, Germany 
+    | $^2$Aachen Institute for Advanced Study in Computational Engineering Science (AICES), RWTH Aachen University, Aachen, Germany 
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -16,14 +20,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-## FORESEE: a Tool for the Systematic Comparison of Translational Drug Response Modeling Pipelines
-
-
-uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is a versatile open source software, implemented as R-package, that is designed to act as a scaffold in developing and benchmarking such computational drug response models. FORESEE not only introduces a uniform data format for public cell line and patient data sets, but also establishes a standardized environment for drug response prediction pipelines, incorporating state of the art preprocessing methods, model training algorithms and different validation techniques. A modular implementation of the different elements of the modeling pipeline facilitates a straightforward development of different combinatorial models, which can be used to re-evaluate and improve already existing modeling pipelines, as well as to develop and benchmark new ones.
-
-We recommend to install <a href="https://github.com/JRC-COMBINE/FORESEEData">FORESEEData</a> package alongside this package.
-
-### Table of Contents
+## Table of Contents
+**[Introduction](#introduction)**<br>
 **[Installation Instructions](#installation-instructions)**<br>
 **[Usage Instructions](#usage-instructions)**<br>
 **[Troubleshooting](#troubleshooting)**<br>
@@ -31,9 +29,16 @@ We recommend to install <a href="https://github.com/JRC-COMBINE/FORESEEData">FOR
 **[Notes and Miscellaneous](#notes-and-miscellaneous)**<br>
 **[Next Steps, Credits, Feedback, License](#next-steps)**<br>
 
+## Introduction {#introduction}
+
+uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is a versatile open source software, implemented as R-package, that is designed to act as a scaffold in developing and benchmarking such computational drug response models. FORESEE not only introduces a uniform data format for public cell line and patient data sets, but also establishes a standardized environment for drug response prediction pipelines, incorporating state of the art preprocessing methods, model training algorithms and different validation techniques. A modular implementation of the different elements of the modeling pipeline facilitates a straightforward development of different combinatorial models, which can be used to re-evaluate and improve already existing modeling pipelines, as well as to develop and benchmark new ones.
+
+We recommend to install <a href="https://github.com/JRC-COMBINE/FORESEEData">FORESEEData</a> package alongside this package.
+
+
 ## Installation Instructions
 ### Installing via Devtools (Recommended method):
-Easiest way to install FORESEE is via <a href="https://cran.r-project.org/web/packages/devtools/">Devtools</a>.
+The easiest way to install FORESEE is via <a href="https://cran.r-project.org/web/packages/devtools/">Devtools</a>.
 After installing Devtools from cran, you can install FORESEE by:
 ```r
 devtools::install_github(repo = "JRC-COMBINE/FORESEE")
@@ -54,8 +59,50 @@ R -e "devtools::install_local('./FORESEE/')"
 ## ...
 ## ...
 ### ...
-## ...
-### Integrating User-defned Functions into FORESEE Pipeline
+## Use Cases
+### 1. Evaluating Different Options for a Specific Step of the FORESEE Pipeline (Here: Blackbox Algorithm)
+
+In order to investigate the different algorithms that are already implemented to train a drug response model, we can use the function *listInputOptions*.
+
+```r
+algorithm_options <- listInputOptions("BlackBoxFilter")
+```
+Since for this use case, we do not want to test a user-defined function, but only compare already implemented functions, we exclude that option from our list. 
+```r
+algorithm_options <- algorithm_options[algorithm_options != "User Defined Function"]
+```
+Moreover, we want to restrict our analysis to gene expression data only. Thus, we exclude the option *tandem* from our list, as it requires not only gene expression data, but at least one other molecular data type. 
+```r
+algorithm_options <- algorithm_options[algorithm_options != "tandem"]
+```
+In a next step, we can now run the FORESEE pipeline, looping through the different options in our list. 
+
+```r
+roc_auc <- c()
+
+# Loop
+for (i in 1:length(algorithm_options)){
+
+# Train a model on GDSC cell line data
+ForeseeTrain(TrainObject=GDSC, TestObject=GSE6434, DrugName="Docetaxel", CellResponseType = "IC50", CellResponseTransformation = "none", InputDataTypes = "GeneExpression", TrainingTissue = "all", TestingTissue = "all", DuplicationHandling = "first", HomogenizationMethod = "ComBat",GeneFilter = "variance", FeaturePreprocessing = "none", BlackBox = algorithm_options[i], nfoldCrossvalidation = 1)
+
+# Test the model on GSE6434 patient data
+ForeseeTest(TestObject=TestObject, ForeseeModel=ForeseeModel, Evaluation = "rocauc", BlackBox = algorithm_options[i])
+
+# Collect auc of roc curve as performance measure in a list
+roc_auc[i] <-  Performance
+}
+```
+To get an overview of the performances of the different algorithm options, we can plot the result in a diagram.
+
+```r
+# Plot the results
+plot(roc_auc)
+```
+
+
+### 2. Comparing Modeling Performance of a Specific Pipeline on Different Data Sets
+### 3. Integrating User-defined Functions into the FORESEE Pipeline
 FORESEE is designed to be easily expandable. While there are numerous different pipelines 
 already implemented in the package, user can conveniently change each part of the pipeline 
 with their own method. To be exact, in ForeseeTrain CellResponseTransformation, DuplicationHandling,

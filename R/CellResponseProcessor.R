@@ -25,11 +25,13 @@ CellResponseProcessor <- function(TrainObject, DrugName, CellResponseType, CellR
   return(TrainObject)
 }
 
+#' @export
 CellResponseProcessor.character <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
   class(CellResponseTransformation) <- CellResponseTransformation;
   UseMethod("CellResponseProcessor", object = CellResponseTransformation)
 }
 
+#' @export
 CellResponseProcessor.function <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
   message("The used-defined function is applied")
 
@@ -47,6 +49,7 @@ CellResponseProcessor.function <- function(TrainObject, DrugName, CellResponseTy
 
 ################################################################################
 ### Function "powertransform" to powertransform the chosen drug response data
+#' @export
 CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
   # Load Package for Power Transform
@@ -75,6 +78,7 @@ CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResp
 
 ################################################################################
 ### Function "logarithm" to logarithm the chosen drug response data
+#' @export
 CellResponseProcessor.logarithm <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
   # Extract drug response of interest
@@ -100,7 +104,7 @@ CellResponseProcessor.logarithm <- function(TrainObject, DrugName, CellResponseT
 ################################################################################
 ### Function "binarization_kmeans" to binarization the chosen drug response data
 ### Uses the kmeans algorithm of the package Binarize to find two clusters in the data
-
+#' @export
 CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
   require(Binarize)
@@ -123,7 +127,7 @@ CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, Cel
 ################################################################################
 ### Function "binarization_cutoff" to binarization the chosen drug response data
 ### Uses the kmeans algorithm of the package Binarize to find two clusters in the data
-
+#' @export
 CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
   require(bootnet)
@@ -145,6 +149,7 @@ CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, Cel
 
 ################################################################################
 ### Function "none" to use the raw drug response data
+#' @export
 CellResponseProcessor.none <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
   # Extract drug response of interest

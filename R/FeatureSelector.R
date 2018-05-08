@@ -152,10 +152,10 @@ FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter, DrugNa
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
-  if(!any(GDSC$DrugInfo$DRUG_NAME == DrugName)){
+  if(!any(TrainObject$DrugInfo$DRUG_NAME == DrugName)){
     stop("Matching DrugName failed!!")
   } else {
-    TargetGene <- GDSC$DrugInfo$TARGET[GDSC$DrugInfo$DRUG_NAME == DrugName]
+    TargetGene <- TrainObject$DrugInfo$TARGET[TrainObject$DrugInfo$DRUG_NAME == DrugName]
   }
   if(!any(ConvTableGo2Sym$hgnc_symbol == TargetGene)){
     warning(
@@ -192,10 +192,10 @@ FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter, DrugNam
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
-  if(!any(GDSC$DrugInfo$DRUG_NAME == DrugName)){
+  if(!any(TrainObject$DrugInfo$DRUG_NAME == DrugName)){
     stop("Matching DrugName failed!!")
   } else {
-    TargetGene <- GDSC$DrugInfo$TARGET[GDSC$DrugInfo$DRUG_NAME == DrugName]
+    TargetGene <- TrainObject$DrugInfo$TARGET[TrainObject$DrugInfo$DRUG_NAME == DrugName]
     TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
     #TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
   }

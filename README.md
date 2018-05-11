@@ -16,10 +16,10 @@ We recommended to install <a href="https://github.com/JRC-COMBINE/FORESEEData">F
 ### Installation Instructions
 **Be aware:** because of file size restrictions on github, FORESEE on github doesn't contain any 'data'. 
 If you want to install the full FORESEE package first download the package via this link: 
-https://osf.io/rxyv9/download
+https://osf.io/k3pg7/download
 Or you can download directly in R:
 ```r
-download.file(url = "https://osf.io/rxyv9/download", destfile = "FORESEE_0.9.9.tar.gz")
+download.file(url = "https://osf.io/k3pg7/download", destfile = "FORESEE_0.9.9.tar.gz")
 #You can change destination folder as you will, here we are downloading to current folder
 ```
 After downloading you can install the package by:

@@ -81,8 +81,6 @@ CellorPatient <- function(Object){
 #'
 #' @param package the name of a package to be loaded and attached (and installed).
 #'
-#' @import devtools
-#'
 #' @return requireForesee returns (invisibly) a logical indicating whether the required package was available (before installation attempts).
 #' @examples
 #' requireForesee(ranger)
@@ -100,7 +98,8 @@ requireForesee <- function(package){
       usrAns <- readline(prompt = paste("Packege",package,"is needed and not installed, would you like FORESEE to install it for you?(type y or yes): "))
       if(identical(usrAns, "y") | identical(usrAns, "yes")) {
         if(identical(package,"PhysioSpaceMethods")){
-          devtools::install_github(repo = "JRC-COMBINE/PhysioSpaceMethods", build_vignettes = TRUE)
+          requireForesee(devtools)
+          install_github(repo = "JRC-COMBINE/PhysioSpaceMethods", build_vignettes = TRUE)
         } else {
           source("https://bioconductor.org/biocLite.R")
           biocLite(package)

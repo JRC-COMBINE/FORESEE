@@ -139,7 +139,7 @@ FeaturePreprocessor.physio <- function(TrainObject, TestObject, FeaturePreproces
   requireForesee(PhysioSpaceMethods)
   Similarities <- calculatePhysioMap(InputData = cbind(TrainObject_processedfeatures$GeneExpression,
                                         TestObject_processedfeatures$GeneExpression),
-                     References = TrainObject_processedfeatures$GeneExpression, PARALLEL = TRUE)
+                     Space = TrainObject_processedfeatures$GeneExpression, PARALLEL = TRUE)
   TrainObject_processedfeatures$GeneExpression <- Similarities[,1:ncol(TrainObject$GeneExpression)]
   diag(TrainObject_processedfeatures$GeneExpression)<- 0
 

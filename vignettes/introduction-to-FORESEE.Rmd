@@ -210,7 +210,7 @@ ROCObj <- pROC::roc(-(as.numeric(TestObject$Annotation)), Foreseen)
 plot.roc(ROCObj, legacy.axes = TRUE, print.auc=TRUE, main = "Training Histology: Carcinoma")
 
 ```
-<img src="/Users/lisa/Documents/04_Projects/15_CML_Project/FORESEE_Paper/Vignette/Example4_Histology.jpeg" width="400px" />
+<img src="./Example4_Histology.jpeg" width="400px" />
 
 
 ### 4. Integrating User-defined Functions into the FORESEE Pipeline

@@ -101,7 +101,7 @@ plot(roc_auc, xlab = "Black Box Algorithm", ylab = "AUC of ROC", xaxt='n',main="
 axis(1, at=1:7, labels=algorithm_options)
 ```
 
-<img src="/Users/lisa/Documents/04_Projects/15_CML_Project/FORESEE_Paper/Vignette/Example1_BlackBoxFilter.jpeg" width="500px" />
+<img src="./Example1_BlackBoxFilter.jpeg" width="500px" />
 
 
 
@@ -153,8 +153,8 @@ plot.roc(ROCObj_DAEMEN, legacy.axes = TRUE, print.auc=TRUE, main = "Daemen et al
 
 ```
 
-<img src="/Users/lisa/Documents/04_Projects/15_CML_Project/FORESEE_Paper/Vignette/Example2_GDSC.jpeg" width="300px" />
-<img src="/Users/lisa/Documents/04_Projects/15_CML_Project/FORESEE_Paper/Vignette/Example2_DAEMEN.jpeg" width="300px" />
+<img src="./Example2_GDSC.jpeg" width="300px" />
+<img src="./Example2_DAEMEN.jpeg" width="300px" />
 
 One possible cause for this significant difference in performance is the limited amount of samples in the training set by Daemen et al. (42 cell line samples with Docetaxel response) in comparison to the GDSC data set (836 cell line samples with Docetaxel response). Moreover, the overlap of features (genes) between training and test objects (after homogenization and variance filtering) is a lot larger for the combination of GDSC and GSE6434 (6347 genes) than for the combination of the data by Daemen et al. and GSE6434 (523 genes). A more detailed interpretation and explanation however is beyond the scope of this use case.
 
@@ -176,7 +176,7 @@ ROCObj <- pROC::roc(-(as.numeric(TestObject$Annotation)), Foreseen)
 plot.roc(ROCObj, legacy.axes = TRUE, print.auc=TRUE, main = "Training Tissue: Lung")
 
 ```
-<img src="/Users/lisa/Documents/04_Projects/15_CML_Project/FORESEE_Paper/Vignette/Example3_TrainingTissueLung.jpeg" width="400px" />
+<img src="./Example3_TrainingTissueLung.jpeg" width="400px" />
 
 However, often there is more detailed information on the samples within the data files that remains unused, if only the *SampleSelector* is used for specification. This information can still be used, if the user preprocesses the ForeseeCell Object before the analysis.
 

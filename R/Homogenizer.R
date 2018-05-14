@@ -68,7 +68,7 @@ Homogenizer.function <- function(TrainObject, TestObject, HomogenizationMethod) 
 Homogenizer.ComBat <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
-  require(sva)
+  requireForesee(sva)
 
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
@@ -110,7 +110,7 @@ Homogenizer.ComBat <- function(TrainObject, TestObject, HomogenizationMethod){
 Homogenizer.quantile <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
-  require(preprocessCore)
+  requireForesee(preprocessCore)
 
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
@@ -154,7 +154,7 @@ Homogenizer.quantile <- function(TrainObject, TestObject, HomogenizationMethod){
 Homogenizer.limma <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
-  require(limma)
+  requireForesee(limma)
 
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
@@ -194,7 +194,7 @@ Homogenizer.limma <- function(TrainObject, TestObject, HomogenizationMethod){
 Homogenizer.YuGene <- function(TrainObject, TestObject, HomogenizationMethod){
 
   # Load package
-  require(YuGene)
+  requireForesee(YuGene)
 
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
@@ -233,7 +233,7 @@ Homogenizer.YuGene <- function(TrainObject, TestObject, HomogenizationMethod){
 #' @export
 Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
 
-  # require(ruv)
+  # requireForesee(ruv)
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
 
@@ -305,7 +305,7 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
 #' @export
 Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
 
-  require(ruv)
+  requireForesee(ruv)
   TrainObject_homogenized <- TrainObject
   TestObject_homogenized <- TestObject
 

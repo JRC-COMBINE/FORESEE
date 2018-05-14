@@ -152,37 +152,43 @@ FeatureSelector.ontology <- function(TrainObject, TestObject, GeneFilter, DrugNa
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
-  if(!any(GDSC$DrugInfo$Drug.Name == DrugName)){
-    stop("Matching DrugName failed!!")
+  if(!any(names(TrainObject)=="DrugInfo") | !any(names(TrainObject$DrugInfo)=="DRUG_NAME") | !any(names(TrainObject$DrugInfo)=="TARGET")) {
+    warning("TrainObject doesn't have the information needed for ontology feature selection, will continue with all features...")
+    # Update Objects in the Environment
+    assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+    assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
   } else {
-    TargetGene <- GDSC$DrugInfo$Target[GDSC$DrugInfo$Drug.Name == DrugName]
-  }
-  if(!any(ConvTableGo2Sym$hgnc_symbol == TargetGene)){
-    warning(
-      paste0(
-        "Matching Target-Gene failed, probably because the drug doesn't have a single target gene, the target we tried to match was '",TargetGene,"'"
+    if(!any(TrainObject$DrugInfo$DRUG_NAME == DrugName)){
+      stop("Matching DrugName failed!!")
+    } else {
+      TargetGene <- TrainObject$DrugInfo$TARGET[TrainObject$DrugInfo$DRUG_NAME == DrugName]
+    }
+    if(!any(ConvTableGo2Sym$hgnc_symbol == TargetGene)){
+      warning(
+        paste0(
+          "Matching Target-Gene failed, probably because the drug doesn't have a single target gene, the target we tried to match was '",TargetGene,"'"
+        )
       )
-    )
-    GenesWithRelevantGos <- character(length = 0)
-  } else {
-    TargetGos <- ConvTableGo2Sym$go_id[ConvTableGo2Sym$hgnc_symbol == TargetGene]
-    TargetGos <- TargetGos[TargetGos!=""] #removing empty match(es)
-    GenesWithRelevantGos <- sort(table(ConvTableGo2Sym$hgnc_symbol[ConvTableGo2Sym$go_id %in% TargetGos]), decreasing = T)
+      GenesWithRelevantGos <- character(length = 0)
+    } else {
+      TargetGos <- ConvTableGo2Sym$go_id[ConvTableGo2Sym$hgnc_symbol == TargetGene]
+      TargetGos <- TargetGos[TargetGos!=""] #removing empty match(es)
+      GenesWithRelevantGos <- sort(table(ConvTableGo2Sym$hgnc_symbol[ConvTableGo2Sym$go_id %in% TargetGos]), decreasing = T)
+    }
+    if(length(GenesWithRelevantGos) < 1000){ ## ToDo: Have this 1000 as a variable user feeds
+      warning("Not enough features matched, will continue with all features")
+      # Update Objects in the Environment
+      assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+      assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
+    } else {
+      FirstFewEntrezGenesWithRelevantGos <- ConvTableSym2Entrez$entrezgene[match(names(GenesWithRelevantGos)[1:1000],ConvTableSym2Entrez$hgnc_symbol,nomatch = 0)]## ToDo: Have this 1000 as a variable user feeds
+      TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[rownames(TrainObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantGos,]
+      TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[rownames(TestObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantGos,]
+      # Update Objects in the Environment
+      assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+      assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
+    }
   }
-  if(length(GenesWithRelevantGos) < 1000){ ## ToDo: Have this 1000 as a variable user feeds
-    warning("Not enough features matched, will continue with all features")
-    # Update Objects in the Environment
-    assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
-    assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
-  } else {
-    FirstFewEntrezGenesWithRelevantGos <- ConvTableSym2Entrez$entrezgene[match(names(GenesWithRelevantGos)[1:1000],ConvTableSym2Entrez$hgnc_symbol,nomatch = 0)]## ToDo: Have this 1000 as a variable user feeds
-    TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[rownames(TrainObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantGos,]
-    TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[rownames(TestObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantGos,]
-    # Update Objects in the Environment
-    assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
-    assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
-  }
-
 }
 
 ################################################################################
@@ -192,38 +198,44 @@ FeatureSelector.pathway <- function(TrainObject, TestObject, GeneFilter, DrugNam
 
   TrainObject_selectedfeatures <- TrainObject
   TestObject_selectedfeatures <- TestObject
-  if(!any(GDSC$DrugInfo$Drug.Name == DrugName)){
-    stop("Matching DrugName failed!!")
+  if(!any(names(TrainObject)=="DrugInfo") | !any(names(TrainObject$DrugInfo)=="DRUG_NAME") | !any(names(TrainObject$DrugInfo)=="TARGET")) {
+    warning("TrainObject doesn't have the information needed for pathway feature selection, will continue with all features...")
+    # Update Objects in the Environment
+    assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+    assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
   } else {
-    TargetGene <- GDSC$DrugInfo$Target[GDSC$DrugInfo$Drug.Name == DrugName]
-    TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
-    #TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
-  }
-  if(is.na(TargetGeneEntrez) | (!any(names(Entrez2PathID) == TargetGeneEntrez))){
-    warning(
-      paste0(
-        "Matching Target-Gene (to find the target pathway) failed, probably because the drug doesn't have a single target gene, the target we tried to match was '",TargetGene,"'"
+    if(!any(TrainObject$DrugInfo$DRUG_NAME == DrugName)){
+      stop("Matching DrugName failed!!")
+    } else {
+      TargetGene <- TrainObject$DrugInfo$TARGET[TrainObject$DrugInfo$DRUG_NAME == DrugName]
+      TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
+      #TargetGeneEntrez <- ConvTableSym2Entrez$entrezgene[match(TargetGene,ConvTableSym2Entrez$hgnc_symbol)]
+    }
+    if(is.na(TargetGeneEntrez) | (!any(names(Entrez2PathID) == TargetGeneEntrez))){
+      warning(
+        paste0(
+          "Matching Target-Gene (to find the target pathway) failed, probably because the drug doesn't have a single target gene, the target we tried to match was '",TargetGene,"'"
+        )
       )
-    )
-    GenesWithRelevantPaths <- 0
-  } else {
-    TargetPaths <- Entrez2PathID[[as.character(TargetGeneEntrez)]] #TargetGeneEntrez is a factor, and indexing with a factor return weird stuff hence the 'as.character'
-    GenesWithRelevantPaths <- sort(table(unlist(PathID2Entrez[TargetPaths])), decreasing = T)
+      GenesWithRelevantPaths <- 0
+    } else {
+      TargetPaths <- Entrez2PathID[[as.character(TargetGeneEntrez)]] #TargetGeneEntrez is a factor, and indexing with a factor return weird stuff hence the 'as.character'
+      GenesWithRelevantPaths <- sort(table(unlist(PathID2Entrez[TargetPaths])), decreasing = T)
+    }
+    if(length(GenesWithRelevantPaths) < 1000){ ## ToDo: Have this 1000 as a variable user feeds
+      warning("Not enough features matched, will continue with all features")
+      # Update Objects in the Environment
+      assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+      assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
+    } else {
+      FirstFewEntrezGenesWithRelevantPaths <- names(GenesWithRelevantPaths)[1:1000]## ToDo: Have this 1000 as a variable user feeds
+      TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[rownames(TrainObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantPaths,]
+      TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[rownames(TestObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantPaths,]
+      # Update Objects in the Environment
+      assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
+      assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
+    }
   }
-  if(length(GenesWithRelevantPaths) < 1000){ ## ToDo: Have this 1000 as a variable user feeds
-    warning("Not enough features matched, will continue with all features")
-    # Update Objects in the Environment
-    assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
-    assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
-  } else {
-    FirstFewEntrezGenesWithRelevantPaths <- names(GenesWithRelevantPaths)[1:1000]## ToDo: Have this 1000 as a variable user feeds
-    TrainObject_selectedfeatures$GeneExpression<-TrainObject_selectedfeatures$GeneExpression[rownames(TrainObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantPaths,]
-    TestObject_selectedfeatures$GeneExpression<-TestObject_selectedfeatures$GeneExpression[rownames(TestObject_selectedfeatures$GeneExpression) %in% FirstFewEntrezGenesWithRelevantPaths,]
-    # Update Objects in the Environment
-    assign("TrainObject", value = TrainObject_selectedfeatures, envir = parent.frame())
-    assign("TestObject", value = TestObject_selectedfeatures, envir = parent.frame())
-  }
-
 }
 
 ################################################################################

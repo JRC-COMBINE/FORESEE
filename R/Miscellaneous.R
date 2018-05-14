@@ -71,3 +71,44 @@ CellorPatient <- function(Object){
   }
   return(ifelse(test = class(Object)=="ForeseeCell", yes = T, no = F))
 }
+
+
+#' Loading/Attaching (and Installing) a Package
+#'
+#' requireForesee is the same as 'require' from the base package, except in case of a missing package, it
+#' tries to install it via 'biocLite' from Bioconductor. For installation to work, R needs to have access
+#' to the internet (more precisely "https://bioconductor.org/biocLite.R" should be accessable to R).
+#'
+#' @param package the name of a package to be loaded and attached (and installed).
+#'
+#' @return requireForesee returns (invisibly) a logical indicating whether the required package was available (before installation attempts).
+#' @examples
+#' requireForesee(ranger)
+#' @export
+
+requireForesee <- function(package){
+  package <- as.character(substitute(package)) # In case user didn't provide a character but just typed the name of the package!
+  suppressWarnings( # Cause 'require' makes a warning if package is not available
+    loadSucceed <- require(package, quietly = TRUE, character.only = TRUE)
+  )
+  if(!loadSucceed){
+    if(!interactive()){ #'interactive' cause there would be a user to ok the new package installation
+      stop("R is not used interactively, 'requireForesee' needs to install a new package, which is only possible in interactive R!")
+    } else {
+      usrAns <- readline(prompt = paste("Packege",package,"is needed and not installed, would you like FORESEE to install it for you?(type y or yes): "))
+      if(identical(usrAns, "y") | identical(usrAns, "yes")) {
+        if(identical(package,"PhysioSpaceMethods")){
+          requireForesee(devtools)
+          install_github(repo = "JRC-COMBINE/PhysioSpaceMethods", build_vignettes = TRUE)
+        } else {
+          source("https://bioconductor.org/biocLite.R")
+          biocLite(package)
+        }
+        library(package, character.only = TRUE)
+      } else {
+        stop(paste("Installation of",package,"was aborted by the user"))
+      }
+    }
+  }
+  invisible(loadSucceed)
+}

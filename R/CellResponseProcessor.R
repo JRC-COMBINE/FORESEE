@@ -53,7 +53,7 @@ CellResponseProcessor.function <- function(TrainObject, DrugName, CellResponseTy
 CellResponseProcessor.powertransform <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
   # Load Package for Power Transform
-  require(car)
+  requireForesee(car)
 
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
@@ -107,7 +107,7 @@ CellResponseProcessor.logarithm <- function(TrainObject, DrugName, CellResponseT
 #' @export
 CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
-  require(Binarize)
+  requireForesee(Binarize)
 
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)
@@ -130,7 +130,7 @@ CellResponseProcessor.binarization_kmeans <- function(TrainObject, DrugName, Cel
 #' @export
 CellResponseProcessor.binarization_cutoff <- function(TrainObject, DrugName, CellResponseType, CellResponseTransformation){
 
-  require(bootnet)
+  requireForesee(bootnet)
 
   # Extract drug response of interest
   Object_withDrugResponse <- GetCellResponseData(TrainObject = TrainObject, DrugName = DrugName, CellResponseType = CellResponseType)

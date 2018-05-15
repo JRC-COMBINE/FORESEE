@@ -107,7 +107,7 @@ BlackBoxFilter.function <- function(TrainObject, BlackBox, nfoldCrossvalidation)
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
 
   # User-BlackBox modelling:
-  bb_fit <- BlackBox(formula = DrugResponse~., TrainObject_train)
+  bb_fit <- BlackBox(DrugResponse~., TrainObject_train)
 
   # Update Objects in the Environment
   TrainObject[["TrainFrame"]] <- TrainObject_train

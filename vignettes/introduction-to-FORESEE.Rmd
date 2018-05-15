@@ -33,33 +33,24 @@ knitr::opts_chunk$set(
 
 uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is a versatile open source software, implemented as R-package, that is designed to act as a scaffold in developing and benchmarking such computational drug response models. FORESEE not only introduces a uniform data format for public cell line and patient data sets, but also establishes a standardized environment for drug response prediction pipelines, incorporating state of the art preprocessing methods, model training algorithms and different validation techniques. A modular implementation of the different elements of the modeling pipeline facilitates a straightforward development of different combinatorial models, which can be used to re-evaluate and improve already existing modeling pipelines, as well as to develop and benchmark new ones.
 
-We recommend to install <a href="https://github.com/JRC-COMBINE/FORESEEData">FORESEEData</a> package alongside this package.
-
 
 ## Installation Instructions
 ### Installing via Devtools (Recommended method):
-The easiest way to install FORESEE is via <a href="https://cran.r-project.org/web/packages/devtools/">Devtools</a>.
-After installing Devtools from cran, you can install FORESEE by:
+**Be aware:** because of file size restrictions on github, FORESEE on github doesn't contain any 'data'. 
+If you want to install the full FORESEE package first download the package via this link: 
+https://osf.io/k3pg7/download
+Or you can download directly in R:
 ```r
-devtools::install_github(repo = "JRC-COMBINE/FORESEE")
+download.file(url = "https://osf.io/k3pg7/download", destfile = "FORESEE_0.9.9.tar.gz")
+#You can change destination folder as you will, here we are downloading to current folder
+```
+After downloading you can install the package by:
+```r
+install.packages("FORESEE_0.9.9.tar.gz", repos = NULL, type = "source")
 ```
 
-### Alternative installation methods (Manual download):
-...
-```Shell
-cd [Your desired directory]
-git clone https://github.com/JRC-COMBINE/FORESEE.git
-```
-
-```Shell
-R -e "devtools::install_local('./FORESEE/')"
-```
-
-## Usage Instructions
-## ...
-## ...
-### ...
 ## Use Cases
+
 ### 1. Evaluating Different Options for a Specific Step of the FORESEE Pipeline (Here: Blackbox Algorithm)
 
 In order to investigate the different algorithms that are already implemented to train a drug response model, we can use the function *listInputOptions*.
@@ -116,31 +107,225 @@ measured IC50s are not necessarily distributed for an optimum model fitiing, so 
 preprocessing stage to 'transform' these Response values, for example by power transforming or changing 
 to logarithmic scale, which are already implemented in FORESEE and can be easily used by CellResponseTransformation="powertransform" and CellResponseTransformation="logarithm" respectively.
 
-But It is possible to implement your own transformation and pass your function 
+But It is possible to implement your own transformation and pass your function in the form of
 CellResponseTransformation=User_Transformation to be used in the FORESEE pipeline.
 
-FORESEE expects your transformation to be function which has one vector of numerics as input, and returns
-one vector of numerics.
+When implementing a function to be used in CellResponseTransformation, keep these two points in mind:
 
-As an example, we implement a transformation that uniforms the Response and use it in FORESEE:
+* FORESEE expects your transformation to be a function which has one vector of numerics as input, and returns
+another vector of numerics, with the same length and order as the input.
+* You need to make sure input and output vectors have the same 'names'. In case your transformation removes the
+'names' of the vector, you have to manually pass the 'names' from input vector to the output vector (See the next example).
+
+As an example, we implement a new power transformation, but except the already implemented Box-Cox transformation,
+we use a Yeo-Johnson power transformation just in case that we had zero or negative values in Response
 ```r
-Uniformer <- function(x){
-    sort(runif(n = length(x), min = min(x), max = max(x)))[rank(x)]
+YeoJohnsonTrans <- function(x){
+    requireForesee(caret) # We use Yeo-Johnson power transformation implementation of caret package
+    YeoJohnsonModel <- preProcess(x = as.data.frame(x), method = "YeoJohnson")
+    YeoJohnsonTransformedX <- predict(object = YeoJohnsonModel, newdata = as.data.frame(x))$x
+    names(YeoJohnsonTransformedX) <- names(x) #Make sure input and output has the same names and order.
+    return(YeoJohnsonTransformedX)
 }
 ```
 
-Now we just have to pass Uniformer function to ForeseeTrain as the CellResponseTransformation:
+Now we just have to pass YeoJohnsonTrans function to ForeseeTrain as the CellResponseTransformation:
 ```r
-EnvForRunningUniformer <- new.env()
-EnvForRunningUniformer$Uniformer <- Uniformer()
-tmp <- with(EnvForRunningUniformer, {ForeseeTrain(TrainObject = GDSC,
+library(FORESEE)
+EnvForRunningYeoJohnsonTrans <- new.env()
+EnvForRunningYeoJohnsonTrans$YeoJohnsonTrans <- YeoJohnsonTrans
+tmp <- with(EnvForRunningYeoJohnsonTrans, {ForeseeTrain(TrainObject = GDSC,
                                                 TestObject = GSE6434, DrugName = "Docetaxel",
                                                 DuplicationHandling = "first", GeneFilter = "variance",
-                                                CellResponseTransformation = Uniformer);
+                                                CellResponseType = "LN_IC50",
+                                                CellResponseTransformation = YeoJohnsonTrans);
   ForeseeTest(TestObject = TestObject, ForeseeModel = ForeseeModel)}
 )
 ```
 
+If you check EnvForRunningYeoJohnsonTrans$Performance, you'll see the auc of roc curve has improved in comparison to 
+already implemented Box-Cox powertransform, although ever so slightly.
+
+
+#### User-defined DuplicationHandling:
+In case of having duplication in features, e.g. expression of the same gene measured by different probes, user can personilize how
+FORESEE will 'summarize' all these multiple values for the same feature into one value.
+
+FORESEE expects the function you pass to DuplicationHandling to get one vector of numerics as input, 
+and returns one numerical value as output. There are numerous examples of these kinds of functions in R; mean, median, ...
+
+Keep in mind that DuplicationHandling is a cpu-intensive task, so we recommend to pass a relatively fast function to 
+DuplicationHandling in case you want to handle the duplications by your own implemented function.
+
+Here we show two examples of how to pass functions to DuplicationHandling:
+
+1- As the first example, we simply try to have the 'median' of duplicated features as the summerized value:
+```r
+library(FORESEE)
+EnvForMedianDupHandling <- new.env()
+tmp <- with(EnvForMedianDupHandling, {ForeseeTrain(TrainObject = GDSC,
+                                                TestObject = GSE6434, DrugName = "Docetaxel",
+                                                GeneFilter = "variance", CellResponseType = "LN_IC50",
+                                                CellResponseTransformation = "powertransform",
+                                                DuplicationHandling = median);
+  ForeseeTest(TestObject = TestObject, ForeseeModel = ForeseeModel)}
+)
+```
+You can check EnvForMedianDupHandling$Performance to see how a median Duplication handling has performed.
+
+2- For the second example, we implement a function ourselves to handle duplications. We aim to use the 33% quantile
+as a summary of a group of duplicated features. We name our function 'Quan33' and implement it as:
+```r
+Quan33 <- function(x) quantile(x, probs = 0.33)
+```
+
+Now we can pass this function to ForeseeTrain:
+```r
+library(FORESEE)
+EnvForDupHandling <- new.env()
+EnvForDupHandling$Quan33 <- Quan33
+tmp <- with(EnvForDupHandling, {ForeseeTrain(TrainObject = GDSC,
+                                                TestObject = GSE6434, DrugName = "Docetaxel",
+                                                GeneFilter = "variance", CellResponseType = "LN_IC50",
+                                                CellResponseTransformation = "powertransform",
+                                                DuplicationHandling = Quan33);
+  ForeseeTest(TestObject = TestObject, ForeseeModel = ForeseeModel)}
+)
+```
+Again you can check EnvForDupHandling$Performance to see how a our own Duplication handler has performed.
+
+#### User-defined HomogenizationMethod:
+Homogenization of train and test set is another part of FORESEE pipeline that can be fine tuned with a user-defined function. In case you want to make and use your own homogenization method, make sure the function you pass to ForeseeTrain as HomogenizationMethod has the next three points covered:
+
+* FORESEE expects your homogenization to be a function with two matrices as inputs and a list as output.
+* The list return as the output should have a length of two, containing two matrices, which are the homogenized versions of input matrices, with the same order.
+* Make sure the output homogenized matrices have the same dimnames as input matrices. In case the homogenization function drops dimension names you have to pass them to the output yourself.
+
+As an example we implement batch effects removal of ber package as a homogenization method.
+First we implement a function that uses 'ber' to remove batches and is in concordance to the points we mentioned above:
+```r
+BER <- function(MAT1,MAT2){
+  requireForesee(ber)
+  batches <- as.factor(c(rep("MAT1",ncol(MAT1)),rep("MAT2",ncol(MAT2))))
+  homogenizedData <- ber(Y = t(cbind(MAT1,MAT2)), b = batches)
+  return(list(t(homogenizedData[c(1:ncol(MAT1)),]), t(homogenizedData[-c(1:ncol(MAT1)),])))
+}
+```
+
+Now we can test out homogenization method inside a FOERSEE pipeline:
+```r
+library(FORESEE)
+EnvForHomogenization <- new.env()
+EnvForHomogenization$BER <- BER
+tmp <- with(EnvForHomogenization, {ForeseeTrain(TrainObject = GDSC,
+                                                TestObject = GSE6434, DrugName = "Docetaxel",
+                                                GeneFilter = "variance", 
+                                                CellResponseType = "LN_IC50",
+                                                CellResponseTransformation = "powertransform",
+                                                DuplicationHandling = "first",
+                                                HomogenizationMethod = BER);
+  ForeseeTest(TestObject = TestObject, ForeseeModel = ForeseeModel)}
+)
+```
+
+#### User-defined GeneFilter:
+There are two main ways for the user to manipulate how gene are filtered and which genes are used in FORESEE pipeline:
+
+1- The first way is inspired by the already implemented 'variance' option of GeneFilter, in which based on the variance of genes, 20 percent low variant genes are discarded and the remaining genes are used. When user passes a function to GeneFilter, the same method is used but except the variance, the user defined function is used to filter out genes. For example, we show how we can filter out 20 percent of genes with the lowest median absolute deviation:
+```r
+library(FORESEE)
+EnvForFilter <- new.env()
+tmp <- with(EnvForFilter, {ForeseeTrain(TrainObject = GDSC,
+                                                TestObject = GSE6434, DrugName = "Docetaxel",
+                                                CellResponseType = "LN_IC50",
+                                                CellResponseTransformation = "powertransform",
+                                                DuplicationHandling = "first",
+                                                GeneFilter = mad);
+  ForeseeTest(TestObject = TestObject, ForeseeModel = ForeseeModel)}
+)
+```
+Remember the function passed to GeneFilter has to have a vector of numerics as input and one numeric value as output.
+
+2- The other way the user can manipulate gene filtering is by directly removing the unwanted genes from ForeseeTrain objects. This way is particularly useful if user has a specific list of genes, and wants to use those only. In the next example we show how a user specific list of genes can be used:
+```r
+library(FORESEE)
+EnvForFilter <- new.env()
+GenesToUse <- c("2207","28962","3373","5655","51296","23066","80821","51101","145447","84262", "6812","51136","26494","60506","7593","90864","387911","55125","84542","55153")
+GDSCFiltered <- GDSC
+GDSCFiltered$GeneExpression <- GDSCFiltered$GeneExpression[match(GenesToUse,rownames(GDSCFiltered$GeneExpression)),]
+EnvForFilter$GDSCFiltered <- GDSCFiltered
+tmp <- with(EnvForFilter, {ForeseeTrain(TrainObject = GDSCFiltered,
+                                                TestObject = GSE6434, DrugName = "Docetaxel",
+                                                CellResponseType = "LN_IC50",
+                                                CellResponseTransformation = "powertransform",
+                                                DuplicationHandling = "first",
+                                                GeneFilter = "all");
+  ForeseeTest(TestObject = TestObject, ForeseeModel = ForeseeModel)}
+)
+```
+
+#### User-defined FeaturePreprocessing:
+Users can define and use their own FeaturePreprocessing function in FORESEE. FeaturePreprocessing is a function that is applied to GeneExpression matrix of both Train and Test objects in ForeseeTrain. It accepts a matrix of numerical values as input, and returns another matrix which is the processed version of the input matrix, with the same dimensions and dimension names as input matrix.
+
+As an example, we implement a function which transforms all eigenvalues of a matrix to 1, and use this function as feature preprocessor in ForeseeTrain:
+```r
+equalizer <- function(MAT){
+  MATsvd <- svd(MAT)
+  MATprocessed <- MATsvd$u %*% diag(length(MATsvd$d)) %*% t(MATsvd$v)
+  dimnames(MATprocessed) <- dimnames(MAT)
+  return(MATprocessed)
+}
+```
+
+```r
+library(FORESEE)
+EnvForProc <- new.env()
+EnvForProc$equalizer <- equalizer
+tmp <- with(EnvForProc, {ForeseeTrain(TrainObject = GDSC,
+                                                TestObject = GSE6434, DrugName = "Docetaxel",
+                                                CellResponseType = "LN_IC50",
+                                                CellResponseTransformation = "powertransform",
+                                                DuplicationHandling = "first",
+                                                GeneFilter = "variance",
+                                                FeaturePreprocessing = equalizer);
+  ForeseeTest(TestObject = TestObject, ForeseeModel = ForeseeModel)}
+)
+```
+
+#### User-defined BlackBox:
+User can use his/her own model in data fitting by passing a function to BlackBox input in ForeseeTrain. The function passed to BlackBox is expected to:
+
+* Be a function that trains a model.
+* Has two inputs: first a formula of the model to be fit, and second a data frame containing the data to be used in fitting the model.
+* Returns a model that can be used to predict output(s) for new data.
+
+When you use your own defined function for BlackBox in ForeseeTrain, make sure to pass the corresponding 'predict' function to BlackBox input of ForeseeTest. The predict function is expected to have two inputs: the fitted model and the new data frame containing new data for prediction, and one output vector containing the predicted values.
+
+As an example we show how to use Gaussian process from caret package as the model for BlackBox.
+First we write a wrapper around the train function of caret package so it would only have two inputs (as ForeseeTrain BlackBox expects):
+
+```r
+GaussianWrapper <- function(FORMULA, DATA){
+  requireForesee(caret)
+  train(FORMULA, data = DATA, method = "gaussprLinear")
+}
+```
+
+Now we can pass GaussianWrapper as BlackBox in ForeseeTrain. As for the BlackBox in ForeseeTest, Since we used gaussprLinear method of caret, our model is of the class 'train', so we need to pass caret::predict.train as BlackBox in ForeseeTest. But because caret is attached, we can also simply pass 'predict' and R method dispatch will do the rest for us:
+```r
+library(FORESEE)
+EnvForBB <- new.env()
+EnvForBB$GaussianWrapper <- GaussianWrapper
+tmp <- with(EnvForBB, {ForeseeTrain(TrainObject = GDSC,
+                                                TestObject = GSE6434, DrugName = "Docetaxel",
+                                                CellResponseType = "LN_IC50",
+                                                CellResponseTransformation = "powertransform",
+                                                DuplicationHandling = "first",
+                                                GeneFilter = "variance",
+                                                BlackBox = GaussianWrapper);
+  ForeseeTest(TestObject = TestObject, ForeseeModel = ForeseeModel, BlackBox = predict)}
+)
+```
 
 ## Troubleshooting
 ## Compatibility

@@ -274,7 +274,8 @@ More details about how GAO data set was built can be found in GaoPreparer.R.
 
 \subsubsection{WITKIEWICZ}
 WITKIEWICZ is the other xenograft data set included in FORESEE. This data set is from a study by Witkiewcz
-et al. \cite{witkiewicz2016integrated}.
+et al. \cite{witkiewicz2016integrated}, studying Pancreatic ductal adenocarcinoma
+(PDAC) drug response.
 Data used in building the WITKIEWICZ ForeseeCell are two excel files, which are included as supplements in the original
 paper (accessible with the links \cite{WITKIEWICZ2,WITKIEWICZ3}) and the GEO data set GSE84023 (accessible via
 \cite{GSE84023Link}), which includes the RNA-seq gene expression relevant to the paper.

@@ -196,7 +196,8 @@
 
 #' WITKIEWICZ Xenograft Data Set
 #'
-#' WITKIEWICZ is the other xenograft data set included in FORESEE. This data set is from a study by Witkiewcz et al. 2016.
+#' WITKIEWICZ is the other xenograft data set included in FORESEE. This data set is from a study by Witkiewcz et al. 2016,
+#' studying Pancreatic ductal adenocarcinoma (PDAC) drug response.
 #' Data used in building the WITKIEWICZ ForeseeCell are two excel files, which are included as supplements in the original
 #' paper and the GEO data set GSE84023, which includes the RNA-seq gene expression relevant to the paper.
 #' You can check the data vignette for more information (browseVignettes(package = "FORESEE")).

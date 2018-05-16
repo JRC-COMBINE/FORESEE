@@ -213,7 +213,7 @@ plot.roc(ROCObj_DAEMEN, legacy.axes = TRUE, print.auc=TRUE, main = "Daemen et al
 ```
 
 <img src="./Example2_GDSC.jpeg" width="300px" />
-<img src="./Example2_DAEMEN.jpeg" width="300px" />
+<img src="./Example2_Daemen.jpeg" width="300px" />
 
 One possible cause for this significant difference in performance is the limited amount of samples in the training set by Daemen et al. (42 cell line samples with Docetaxel response) in comparison to the GDSC data set (836 cell line samples with Docetaxel response). Moreover, the overlap of features (genes) between training and test objects (after homogenization and variance filtering) is a lot larger for the combination of GDSC and GSE6434 (6347 genes) than for the combination of the data by Daemen et al. and GSE6434 (523 genes). A more detailed interpretation and explanation however is beyond the scope of this use case.
 

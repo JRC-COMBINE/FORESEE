@@ -1,0 +1,4 @@
+# If this folder is empty, you probably cloned FORESEE from GitHub. Because of file size restrictions on GitHub we can not upload the raw files into this folder so either download raw files yourself based on the '[something]Preparer.R' in the parent folder, or access the raw files from the OSF page of FORESEE, read more how in README.md of https://github.com/JRC-COMBINE/FORESEE
+*
+# Except this file
+!.gitignore

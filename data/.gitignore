@@ -1,0 +1,4 @@
+# If this folder is empty, you probably cloned or installed FORESEE from GitHub. Because of file size restrictions on GitHub we can not upload the FORESEE Data files into this folder so if you need the data sets of FORESEE, you have to use the version(s) from the OSF page of FORESEE; read more how in README.md of https://github.com/JRC-COMBINE/FORESEE
+*
+# Except this file
+!.gitignore

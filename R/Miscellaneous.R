@@ -52,6 +52,24 @@ listDrugs <- function(OBJ){
   return(colnames(OBJ$IC50)) ## This will break when OBJ doesn't have IC50 -> ToDO: have to have a better 'Universal' slot available in all Train Objects
 }
 
+#' Checking CellResponseType Availability
+#'
+#' Checking If CellResponseType is Available in Object
+#'
+#' @param OBJ A ForeseeTrain object that you want to check the CellResponseType availability in.
+#' @param RESP CellResponseType to be checked.
+#' @return \item{Returns an invisible TRUE if RESP is available in OBJ, if not available an error will be generated}{}
+#' @examples
+#' CellResponseTypeAvailabilityCheck(DAEMEN,"GI50")
+#' @export
+
+CellResponseTypeAvailabilityCheck <- function(OBJ, RESP){
+  if(!any(OBJ$ResponseTypes$Name == RESP)){
+    stop(paste(RESP,"is not available as a CellResponseType in the TrainObject, You can check the names and descriptions of all available CellResponseTypes of your TrainObject in its 'ResponseTypes' component (e.g. by TrainObject$ResponseTypes)."))
+  }
+  invisible(TRUE)
+}
+
 
 #' Test if the Object is a Cell or a Patient Based on the Drug Response Type
 #'

@@ -11,6 +11,8 @@
 
 GetCellResponseData <- function(TrainObject, DrugName, CellResponseType){
 
+  #Checking to see user's CellResponseType is available in TrainObject:
+  CellResponseTypeAvailabilityCheck(TrainObject,CellResponseType)
   #Checking to see user's DrugName is available:
   if(!any(colnames(TrainObject[[CellResponseType]])==DrugName)){
     message(paste(DrugName,"wasn't found, trying to match case-insensitive..."))

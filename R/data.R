@@ -200,6 +200,12 @@
 #' studying Pancreatic ductal adenocarcinoma (PDAC) drug response.
 #' Data used in building the WITKIEWICZ ForeseeCell are two excel files, which are included as supplements in the original
 #' paper and the GEO data set GSE84023, which includes the RNA-seq gene expression relevant to the paper.
+#'
+#' REMEMBER listDrugs(OBJ = WITKIEWICZ) or listInputOptions(FunArgument = "DrugName", OBJ = WITKIEWICZ)) only
+#' return drugs of single treatment (acceptable as DrugName in ForeseeTrain when CellResponseType="AUC"), if
+#' you want to have CellResponseType="AUCCombo" in ForeseeTrain, list of possible "DrugName" values can be
+#' listed by colnames(WITKIEWICZ$AUCCombo).
+#'
 #' You can check the data vignette for more information (browseVignettes(package = "FORESEE")).
 #'
 #'

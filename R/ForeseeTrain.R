@@ -12,16 +12,22 @@
 #'
 #' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
 #' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
-#' @param DrugName Name of the drug whose efficacy is supposed to be predicted with the model
+#' @param DrugName Name of the drug whose efficacy is supposed to be predicted with the model.
+#' You can get all possible values with listDrugs(OBJ) or listInputOptions("DrugName", OBJ), where OBJ is the object you want to use as TrainObject.
 #' @param CellResponseType Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc.
+#' You can get all possible values with listInputOptions("CellResponseType", OBJ), where OBJ is the object you want to use as TrainObject.
 #' @param CellResponseTransformation Method that is to be used to transform the drug response data of the TrainObject, such as power transform, logarithm, binarization, user defined functions, etc.
 #' Get all possible values with listInputOptions("CellResponseProcessor").
 #' @param InputDataTypes Data types of the TrainObject that are to be used to train the model, such as GeneExpression, Mutation, CopyNumberVariation, Methylation, Cancertype, etc.
+#' You can get all possible values with listInputOptions("InputDataTypes", OBJ), where OBJ is the object you want to use as TrainObject.
 #' @param DuplicationHandling Method for handling duplicates of gene names, such as considering none, the mean, the first hit, etc.
 #' Get all possible values with listInputOptions("DuplicationHandler").
 #' @param HomogenizationMethod Method for homogenizing data of the TrainObject and TestObject, such as ComBat, quantile normalization, limma, RUV, etc.
 #' Get all possible values with listInputOptions("Homogenizer").
-#' @param TrainingTissue Tissue type that the cell lines of the TrainObject should be of, such as pancreas or lung. Default should be "all" for pancancer analysis.
+#' @param TrainingTissue Tissue type that the cell lines of the TrainObject should be of, such as pancreas or lung. Default is "all" for pancancer analysis.
+#' You can get all possible values with listInputOptions("TrainingTissue", OBJ), where OBJ is the object you want to use as TrainObject.
+#' @param TestingTissue Tissue type that the cell lines or samples of the TestObject should be of, such as pancreas or lung. Default is "all" for analysis of all samples.
+#' You can get all possible values with listInputOptions("TestingTissue", OBJ), where OBJ is the object you want to use as TestObject.
 #' @param GeneFilter Set of genes to be considered for training the model, such as all, a certain percantage based on variance or p-value, specific gene sets like landmark genes, gene ontologies or pathways, etc.
 #' Get all possible values with listInputOptions("FeatureSelector").
 #' @param FeaturePreprocessing Method for preprocessing the inputs of the model, such as z-score, principal component analysis, PhysioSpace similarity, etc.

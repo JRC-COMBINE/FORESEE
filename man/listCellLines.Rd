@@ -13,8 +13,11 @@ listCellLines(OBJ)
 \item{Character vector of all cell line names in OBJ.}{}
 }
 \description{
-listCellLines returns all cell lines available in a ForeseeTrain Object.
+listCellLines returns all cell lines (or sample names in case of a xenograft data set)
+available in a ForeseeTrain Object (All cell lines that are included in gene expression matrix
+of ForeseeTrain Object).
 }
 \examples{
 listCellLines(GDSC)
+listCellLines(WITKIEWICZ)
 }

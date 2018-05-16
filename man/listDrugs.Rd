@@ -17,4 +17,5 @@ listDrugs returns all possible drugs that were tested and have reponses availabl
 }
 \examples{
 listDrugs(GDSC)
+listDrugs(GAO)
 }

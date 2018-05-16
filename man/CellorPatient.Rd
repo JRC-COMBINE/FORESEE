@@ -17,4 +17,5 @@ The CellorPatient Function tests if the object is a cell or a patient based on t
 }
 \examples{
 CellorPatient(GDSC)
+CellorPatient(GSE33072_sorafenib)
 }

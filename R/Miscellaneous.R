@@ -1,36 +1,73 @@
 #' List Input Options for FORESEE Methods
 #'
-#' listInputOptions returns possible input values in ForeseeTrain (CellResponseTransformation, DuplicationHandling,
-#' HomogenizationMethod, GeneFilter, FeaturePreprocessing and BlackBox) and in ForeseeTest (Evaluation).
+#' listInputOptions returns possible input arguments in ForeseeTrain (for DrugName, CellResponseType, InputDataTypes, TrainingTissue,
+#' TestingTissue, CellResponseTransformation, DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing
+#' and BlackBox arguments) and in ForeseeTest (for Evaluation argument).
 #'
-#' @param METHOD Character string of the function corresponding to the input of ForeseeTrain or ForeseeTest.
+#' @param FunArgument Character string of the input argument (for DrugName, CellResponseType, InputDataTypes, TrainingTissue
+#' and TestingTissue) or the function corresponding to the input of ForeseeTrain (CellResponseTransformation, DuplicationHandling,
+#' HomogenizationMethod, GeneFilter, FeaturePreprocessing and BlackBox) or ForeseeTest (Evaluation).
+
 #' Check the help of ForeseeTrain and ForeseeTest for more information.
+#' @param OBJ A ForeseeTrain or ForeseeTest object that you want to extract options for. Only necessary for when FunArgument is
+#' DrugName, CellResponseType, InputDataTypes, TrainingTissue or TestingTissue.
 #' @return \item{Character vector of all possible inputs}{}
 #' @examples
 #' listInputOptions("CellResponseProcessor")
 #' listInputOptions("DuplicationHandler")
 #' listInputOptions("Homogenizer")
 #' listInputOptions("Validator")
+#' listInputOptions("DrugName", CCLE)[1:10]
+#' listInputOptions("InputDataTypes", GAO)
+#' listInputOptions("CellResponseType", GDSC)
+#' listInputOptions("TrainingTissue", CCLE)
+#' listInputOptions("TestingTissue", GSE33072_erlotinib)
 #' @export
 
-listInputOptions <- function(METHOD){
-  listOfPossibilities <- methods(METHOD)
-  listOfPossibilitiesWithOutMETHODName <- sapply(strsplit(listOfPossibilities, split = ".", fixed = T), function(x) x[2])
-  listOfPossibilitiesWithOutMETHODName <- setdiff(listOfPossibilitiesWithOutMETHODName, c("default", "character")) # "default" and "character" are used in implementation but nor actually input options
-  if(any(listOfPossibilitiesWithOutMETHODName == "function")){
-    listOfPossibilitiesWithOutMETHODName[listOfPossibilitiesWithOutMETHODName=="function"] <- "User Defined Function"
+listInputOptions <- function(FunArgument, OBJ){
+  if(FunArgument=="DrugName"){
+    return(colnames(OBJ[[as.character(OBJ$ResponseTypes$Name[1])]]))
+  } else if(FunArgument=="CellResponseType"){
+    return(as.character(OBJ$ResponseTypes$Name))
+  } else if(FunArgument=="InputDataTypes"){
+    return(as.character(OBJ$InputTypes$Name))
+  } else if(FunArgument=="TrainingTissue"){
+    if(any(names(OBJ) == "TissueInfo") & any(names(OBJ$TissueInfo) == "Site")){
+      return(as.character(unique(OBJ$TissueInfo$Site)))
+    } else {
+      warning("Object doesn't have tissue site information, the only acceptable option for TrainingTissue is 'all' for using all samples.")
+      return("all")
+    }
+  } else if(FunArgument=="TestingTissue"){
+    if(any(names(OBJ) == "TissueInfo") & any(names(OBJ$TissueInfo) == "Site")){
+      return(as.character(unique(OBJ$TissueInfo$Site)))
+    } else {
+      warning("Object doesn't have tissue site information, the only acceptable option for TestingTissue is 'all' for using all samples.")
+      return("all")
+    }
+  } else {
+    listOfPossibilities <- methods(FunArgument)
+    listOfPossibilitiesWithOutMETHODName <- sapply(strsplit(listOfPossibilities, split = ".", fixed = T), function(x) x[2])
+    listOfPossibilitiesWithOutMETHODName <- setdiff(listOfPossibilitiesWithOutMETHODName, c("default", "character")) # "default" and "character" are used in implementation but nor actually input options
+    if(any(listOfPossibilitiesWithOutMETHODName == "function")){
+      listOfPossibilitiesWithOutMETHODName[listOfPossibilitiesWithOutMETHODName=="function"] <- "User Defined Function"
+    }
+    return(listOfPossibilitiesWithOutMETHODName)
   }
-  return(listOfPossibilitiesWithOutMETHODName)
 }
 
 #' List All Cell lines Inside a ForeseeTrain Object
 #'
-#' listCellLines returns all cell lines available in a ForeseeTrain Object.
+#' listCellLines returns all cell lines (or sample names in case of a xenograft data set)
+#' available in a ForeseeTrain Object (All cell lines that are included in gene expression matrix
+#' of ForeseeTrain Object).
+#'
 #'
 #' @param OBJ A ForeseeTrain object of which you want to extract its containing cell lines.
 #' @return \item{Character vector of all cell line names in OBJ.}{}
 #' @examples
 #' listCellLines(GDSC)
+#' listCellLines(WITKIEWICZ)
 #' @export
 
 listCellLines <- function(OBJ){
@@ -45,11 +82,12 @@ listCellLines <- function(OBJ){
 #' @return \item{Character vector of all drug names in OBJ.}{}
 #' @examples
 #' listDrugs(GDSC)
+#' listDrugs(GAO)
 #' @export
 
 listDrugs <- function(OBJ){
-  if(!any(names(OBJ) == "IC50")) stop("listDrugs is not implemented completely!!")
-  return(colnames(OBJ$IC50)) ## This will break when OBJ doesn't have IC50 -> ToDO: have to have a better 'Universal' slot available in all Train Objects
+  if(class(OBJ) != "ForeseeCell") stop(paste("'listDrugs' is only applicable for ForeseeCell objects!, class of input OBJ is",class(OBJ),"!"))
+  return(listInputOptions("DrugName",OBJ))
 }
 
 #' Checking CellResponseType Availability
@@ -80,6 +118,7 @@ CellResponseTypeAvailabilityCheck <- function(OBJ, RESP){
 #' @return \item{CellorPatient_status}{The Status of the FORESEE Object that states, whether it is a cell (true) or a patient (false).}
 #' @examples
 #' CellorPatient(GDSC)
+#' CellorPatient(GSE33072_sorafenib)
 #' @export
 
 CellorPatient <- function(Object){

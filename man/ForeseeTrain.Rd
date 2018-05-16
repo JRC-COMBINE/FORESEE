@@ -17,16 +17,23 @@ ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType = "IC50",
 
 \item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
 
-\item{DrugName}{Name of the drug whose efficacy is supposed to be predicted with the model}
+\item{DrugName}{Name of the drug whose efficacy is supposed to be predicted with the model.
+You can get all possible values with listDrugs(OBJ) or listInputOptions("DrugName", OBJ), where OBJ is the object you want to use as TrainObject.}
 
-\item{CellResponseType}{Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc.}
+\item{CellResponseType}{Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc.
+You can get all possible values with listInputOptions("CellResponseType", OBJ), where OBJ is the object you want to use as TrainObject.}
 
 \item{CellResponseTransformation}{Method that is to be used to transform the drug response data of the TrainObject, such as power transform, logarithm, binarization, user defined functions, etc.
 Get all possible values with listInputOptions("CellResponseProcessor").}
 
-\item{InputDataTypes}{Data types of the TrainObject that are to be used to train the model, such as GeneExpression, Mutation, CopyNumberVariation, Methylation, Cancertype, etc.}
+\item{InputDataTypes}{Data types of the TrainObject that are to be used to train the model, such as GeneExpression, Mutation, CopyNumberVariation, Methylation, Cancertype, etc.
+You can get all possible values with listInputOptions("InputDataTypes", OBJ), where OBJ is the object you want to use as TrainObject.}
 
-\item{TrainingTissue}{Tissue type that the cell lines of the TrainObject should be of, such as pancreas or lung. Default should be "all" for pancancer analysis.}
+\item{TrainingTissue}{Tissue type that the cell lines of the TrainObject should be of, such as pancreas or lung. Default is "all" for pancancer analysis.
+You can get all possible values with listInputOptions("TrainingTissue", OBJ), where OBJ is the object you want to use as TrainObject.}
+
+\item{TestingTissue}{Tissue type that the cell lines or samples of the TestObject should be of, such as pancreas or lung. Default is "all" for analysis of all samples.
+You can get all possible values with listInputOptions("TestingTissue", OBJ), where OBJ is the object you want to use as TestObject.}
 
 \item{DuplicationHandling}{Method for handling duplicates of gene names, such as considering none, the mean, the first hit, etc.
 Get all possible values with listInputOptions("DuplicationHandler").}

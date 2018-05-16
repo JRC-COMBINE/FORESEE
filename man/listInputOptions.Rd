@@ -4,22 +4,33 @@
 \alias{listInputOptions}
 \title{List Input Options for FORESEE Methods}
 \usage{
-listInputOptions(METHOD)
+listInputOptions(FunArgument, OBJ)
 }
 \arguments{
-\item{METHOD}{Character string of the function corresponding to the input of ForeseeTrain or ForeseeTest.
+\item{FunArgument}{Character string of the input argument (for DrugName, CellResponseType, InputDataTypes, TrainingTissue
+and TestingTissue) or the function corresponding to the input of ForeseeTrain (CellResponseTransformation, DuplicationHandling,
+HomogenizationMethod, GeneFilter, FeaturePreprocessing and BlackBox) or ForeseeTest (Evaluation).
 Check the help of ForeseeTrain and ForeseeTest for more information.}
+
+\item{OBJ}{A ForeseeTrain or ForeseeTest object that you want to extract options for. Only necessary for when FunArgument is
+DrugName, CellResponseType, InputDataTypes, TrainingTissue or TestingTissue.}
 }
 \value{
 \item{Character vector of all possible inputs}{}
 }
 \description{
-listInputOptions returns possible input values in ForeseeTrain (CellResponseTransformation, DuplicationHandling,
-HomogenizationMethod, GeneFilter, FeaturePreprocessing and BlackBox) and in ForeseeTest (Evaluation).
+listInputOptions returns possible input arguments in ForeseeTrain (for DrugName, CellResponseType, InputDataTypes, TrainingTissue,
+TestingTissue, CellResponseTransformation, DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing
+and BlackBox arguments) and in ForeseeTest (for Evaluation argument).
 }
 \examples{
 listInputOptions("CellResponseProcessor")
 listInputOptions("DuplicationHandler")
 listInputOptions("Homogenizer")
 listInputOptions("Validator")
+listInputOptions("DrugName", CCLE)[1:10]
+listInputOptions("InputDataTypes", GAO)
+listInputOptions("CellResponseType", GDSC)
+listInputOptions("TrainingTissue", CCLE)
+listInputOptions("TestingTissue", GSE33072_erlotinib)
 }

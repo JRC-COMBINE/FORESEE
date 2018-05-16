@@ -15,6 +15,8 @@ ForeseeTest(TestObject, ForeseeModel, Evaluation = "rocauc",
 \item{Evaluation}{Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.
 Get all possible values with listInputOptions("Validator").
 Instead of choosing one of the implemented options, a user-defined function can be used as an input.}
+
+\item{BlackBox}{BlackBox used for training ForeseeModel.}
 }
 \value{
 \item{Performance}{Evaluation Measure of the Predictability of the ForeseeModel trained on the TrainObject and tested on the TestObject.}

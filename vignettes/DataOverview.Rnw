@@ -1,0 +1,391 @@
+\documentclass{article}
+
+% \VignetteIndexEntry{FORESEE Data Overview}
+
+\usepackage[a4paper, total={7in, 8in}]{geometry}
+\usepackage{color}
+\usepackage{float}
+\usepackage{hyperref}
+
+\hypersetup{
+  colorlinks, allcolors=blue
+}
+
+\title{FORESEE Data Overview and Preparation}
+\date{May 2018}
+\author{}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\maketitle
+
+\section{Introduction}
+One of the major accommodations provided by FORESEE in facilitating a rapid drug prediction model development is its rich curated data sets.
+More than two gigabytes of cell line, xenograft and patient data sets are downloaded, curated and structured in objects, which are designed
+for more convenient model development. In this text we describe the FORESEE data objects ForeseeCell and ForeseePatient. We also provide
+information about data sets added to FORESEE in the structure of the aforementioned objects.
+
+\section{ForeseeCell Object}
+ForeseeCell objects are either cell line or xenograft data sets that are structured to be used as a TrainObject in the FORESEE pipeline.
+They usually contain variety of molecular data types for model training, and various response variables, which are different measures of drug responses.
+
+\subsection{ForeseeCell Structure}
+ForeseeCell is very similar to the list data type in R programming language; it is a data structure which includes different data types, and can be indexed using double brackets or dollar sign, for example, ForeseeCell\$variable1 or ForeseeCell[["variable1"]] or ForeseeCell[[1]]. We divide components of ForeseeCell into two categories:
+
+\subsubsection{Fixed Components}
+These components are available in all instances of ForeseeCell. Here we list these fixed components:
+
+\begin{description}
+  \item[InputTypes] InputTypes is a data frame with two columns of 'Name' and 'Description', which provide the names of all
+  components in the object that can be used as input data (in ForeseeTrain for example), and description for each
+  input data.
+  \item[ResponseTypes] ResponseTypes is another two-column data frame with a 'Name' column,
+  providing the names of all components in the object that are a measure of drug activity and can be used as
+  response variable (called 'CellResponseType' in ForeseeTrain) and a 'Description' column for each response variable.
+  \item[GeneExpression] Althought technically part of the InputTypes, GeneExpression is present in all ForeseeCell object instances.
+  It is a matrix, with genes in rows and samples (cell lines or xenograft model) in columns. Entrez IDs are saved in 'rownames' of
+  the matrix and sample names in 'colnames'.
+\end{description}
+
+\subsubsection{Potential Components}
+These components are not necessarily available in all instances of ForeseeCell. The potential components are as follows:
+
+\begin{description}
+  \item[GeneExpressionRNAseq] In data sets including both DNA array and RNA-seq measured gene expressions, DNA array values are
+  saved in the 'GeneExpression' component and RNA-seq values are saved in 'GeneExpressionRNAseq'. Similar to GeneExpression,
+  GeneExpressionRNAseq is a matrix, with genes in rows and samples (cell lines or xenograft model) in columns. Entrez IDs are saved in 'rownames' of
+  the matrix and sample names in 'colnames'. Information about units used in GeneExpressionRNAseq can be found in the description of InputTypes.
+  Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
+  \item[ProteinExpression] another matrix, with protein abundance values, with genes(corresponding to each protein) in rows and
+  samples (cell lines or xenograft model) in columns. Entrez IDs are saved in
+  'rownames' of the matrix and sample names in 'colnames'. Information about technology and units used in ProteinExpression can be found in
+  the description of InputTypes.
+  Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
+  \item[Methylation] another matrix with genes in rows and samples (cell lines or xenograft model) in columns.
+  Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
+  \item[SNP6] Copy number variation measured by Affymetrix genome-wide human SNP Array 6.0 chip, arranged in a matrix similar to GeneExpression,
+  genes in rows and samples in columns.
+  Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
+  \item[Mutation] A binary matrix, with genes in rows and samples in columns, with one indicating existence of
+  a mutation and zero indicating inexistence of a mutilation.
+  Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
+  \item[CNVGain] A binary matrix, with genes in rows and samples in columns, where one indicates a severe increase
+  in copy number variation and zero indicates normal copy number value.
+  Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
+  \item[CNVLoss] A binary matrix, with genes in rows and samples in columns, where one indicates a severe reduction
+  in copy number variation and zero indicates normal copy number value.
+  Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
+  \item[IC50,EC50,IG50,ActArea,BestResponse,...] Response variables matrices, with samples in rows and drugs in columns.
+  Availability of response components can be check via the ResponseTypes component, which also includes a description about the meaning behind
+  each of the response measures.
+  \item[DrugInfo] A data frame with extra information about the included drugs in the dataset. Columns 'DRUG\_NAME' and 'TARGET' from this
+  component are used in FeatureSelector.ontology() and FeatureSelector.pathway() and are needed if the user wants to use any of the mentioned
+  FeatureSelector methods, where the pipeline uses only the gene names for training the model that are contained in the ontology or
+  pathway associated with the chosen drug.
+  \item[CelllineInfo] A data frame with extra information about cell lines in the dataset.
+  \item[TissueInfo] A data frame with tissue-related information about cell lines or xenograft models in the dataset. Column 'Site' of this
+  component is used to extract relevant samples that user set by assigning a value to 'TrainingTissue' input in ForeseeTrain(). Hence, this
+  component is needed if user wants to use a specific tissue for 'TrainingTissue'.
+
+\end{description}
+
+\subsection{Available ForeseeCell Instances in the Package}
+
+\subsubsection{GDSC}
+Genomics of Drug Sensitivity in Cancer, or GDSC for short, is one of the ForeseeCell datasets available in the FORESEE package.
+All files related to the GDSC dataset were downloaded on 25.4.2018 from \url{https://www.cancerrxgene.org/downloads}. Details of the
+downloaded files are listed in table \ref{table:1}.
+
+\begin{table}
+\centering
+\resizebox{\textwidth}{!}{%
+ \begin{tabular}{||c c c c||}
+ \hline
+ File & Name of the File & Last updated on & Link \\ [0.5ex]
+ \hline\hline
+ log(IC50) and AUC values & v17.3\_fitted\_dose\_response.xlsx & March 27th 2018 & \cite{GDSCResponse} \\
+ \hline
+ Screened compounds & Screened\_Compounds.xlsx & March 27th 2018 & \cite{GDSCDrugs} \\
+ \hline
+ Annotated list of Cell lines & Cell\_Lines\_Details.xlsx & July 4th 2016 & \cite{GDSCCells} \\
+ \hline
+ RMA normalised gene expression from DNA array & sanger1018\_brainarray\_ensemblgene\_rma.txt.gz & March 2nd 2017 & \cite{GDSCGEX} \\
+ \hline
+ Binary matrix of CNV, Mutation and Methylation & mmc4.xlsx & --- & \cite{GDSCBiMat} \\ [1ex]
+ \hline
+\end{tabular}}
+\caption{GDSC Raw Files Overview}
+\label{table:1}
+\end{table}
+
+Downloaded files are processed and prepared as the following components of the GDSC ForeseeCell object:
+\begin{itemize}
+  \item \textbf{GeneExpression}: RMA normalized DNA array values were converted into an R matrix, with genes in rows and cell lines in columns.
+  Column names that were originally COSMIC IDs were converted to cell line names, and row names were converted from Ensembl gene IDs to Entrez
+  IDs using biomaRt \cite{biomaRt1,biomaRt2} (From here onward, any gene identifier conversion is done by biomaRt unless stated otherwise.).
+  \item \textbf{CNVGain, CNVLoss, Mutation and Methylation}: Four different binary matrices, with genes in rows and cell lines in columns, all
+  extracted from supplement Table S3B of the paper \cite{iorio2016landscape}. Gene names were converted from symbols to Entrez
+  IDs.
+  \item \textbf{LN\_IC50, AUC ,RMSE ,Z\_SCORE ,MAX\_CONC\_MICROMOLAR , MIN\_CONC\_MICROMOLAR}: Response data were all in one data frame. We rearranged
+  drug responses into different matrices, with cell lines as rows and drugs as columns.
+  \item \textbf{DrugInfo}: There are drugs that have two matching IDs: we added a '(2)' suffix to the drug name that already had another ID.
+  \item \textbf{CelllineInfo and TissueInfo}: Directly imported from their corresponding files without any change.
+  \item \textbf{InputTypes}: We listed all input data, and a short description for each, in one data frame.
+  \item \textbf{ResponseTypes}: We listed all response data, and a short description for each, in one data frame.
+\end{itemize}
+For in depth look into the script that imports, processes and makes the GDSC object, check GDSCPreparer.R in the data-raw directory of the package.
+
+\subsubsection{CCLE}
+Broad Institute Cancer Cell Line Encyclopedia, or CCLE for short, is another big cell line dataset included as a ForeseeCell instance. All relevant
+files for the CCLE object were downloaded on May 2018 from \url{https://portals.broadinstitute.org/ccle/data}. You can check table \ref{table:2} for detailed information about downloaded files.
+
+\begin{table}
+\centering
+\resizebox{\textwidth}{!}{%
+ \begin{tabular}{||c c c c||}
+ \hline
+ File & Name of the File & Last updated on & Link \\ [0.5ex]
+ \hline\hline
+ RMA normalised gene expression from DNA array & CCLE\_Expression\_Entrez\_2012-10-18.res & October 18th 2012 & \cite{CCLEGEX} \\
+ \hline
+ RNAseq gene expression in RPKM & CCLE\_DepMap\_18Q1\_RNAseq\_RPKM\_20180214.gct & February 14th 2018 & \cite{CCLEGEXRNA} \\
+ \hline
+ Binary Calls for Copy Number and Mutation Data & CCLE\_MUT\_CNA\_AMP\_DEL\_binary\_Revealer.gct & February 29th 2016 & \cite{CCLEBin} \\
+ \hline
+ Reverse Phase Protein Array data & ccle2maf\_081117.txt & January 23rd 2018 & \cite{CCLERPPA} \\
+ \hline
+ Reverse Phase Protein Array antibody information & ccle2maf\_081117-2.txt & January 24rd 2018 & \cite{CCLERPPAAnit} \\
+ \hline
+ Cell Line Annotations & CCLE\_sample\_info\_file\_2012-10-18.txt & October 18th 2012 & \cite{CCLECell} \\
+ \hline
+ List of the 24 drugs profiled across 504 CCLE lines & CCLE\_NP24.2009\_profiling\_2012.02.20.csv & April 17th 2012 & \cite{CCLEDrug} \\
+ \hline
+ Pharmacologic profiles for 24 anticancer drugs across 504 CCLE lines & CCLE\_NP24.2009\_Drug\_data\_2015.02.24.csv & February 24th 2015 & \cite{CCLEResponse} \\ [1ex]
+ \hline
+\end{tabular}}
+\caption{CCLE Raw Files Overview}
+\label{table:2}
+\end{table}
+
+Items inside CCLE object were built from the files in table \ref{table:2}, and are listed as follows (in depth
+built procedure can be found in CCLEPreparer.R):
+
+\begin{itemize}
+  \item \textbf{GeneExpression}: A matrix, with gene Entrez IDs in rows and cell lines in columns, containing
+  RMA-normalized gene expression profiles measured by DNA array.
+  \item \textbf{GeneExpressionRNAseq}: A matrix, with genes identified by Entrez IDs in rows and cell
+  lines in columns, containing gene expression profiles measured by RNA-seq, in Reads Per Kilobase of
+  transcript per Million (RPKM).
+  \item \textbf{Mutation, CNVGain and CNVLoss}: Three different binary matrices, with genes in rows (names converted to
+  Entrez IDs) and cell lines in columns, pointing toward mutation, gaining copy number variation and losing copy
+  number variation respectively.
+  \item \textbf{ProteinExpression}: Another matrix, with genes in rows and cell lines in columns, containing values
+  of protein abundance measured by Reverse Phase Protein Array. Gene corresponding to measured protein (Target
+  genes of antibody) in each row is identified by its Entrez ID. Since there are duplications in measured genes, we
+  used the mean value of the duplicated genes as the final value.
+  \item \textbf{TissueInfo}: Directly imported as a data frame. The column 'Site Primary' was renamed to 'Site' so
+  that TissueInfo would be compatible with SampleSelector() in case user assigned a 'TrainingTissue'.
+  \item \textbf{DrugInfo}: Directly imported as a data frame. Columns 'Compound (code or generic name)' and 'Target(s)'
+  were renamed to 'DRUG\_NAME' and 'TARGET' respectively, for compatibility with FeatureSelector().
+  \item \textbf{IC50, EC50, ActArea and Amax}: From CCLE response data, four matrices were build with cell lines
+  in rows and drugs in columns. Descriptions about each measured value are available in ResponseTypes component.
+  \item \textbf{ResponseTypes}: Data frame containing the names and a short description of all response components
+  available in CCLE.
+  \item \textbf{InputTypes}: Data frame containing the names and short description of all input data components
+  available in CCLE.
+\end{itemize}
+
+\subsubsection{DAEMEN}
+DAEMEN ForeseeCell contains the data used in \cite{daemen2013modeling}. We downloaded the data used for modeling,
+as provided by the paper with the link
+\url{https://www.synapse.org/#!Synapse:syn2179898}.
+An overview of all files downloaded for DAEMEN ForeseeCell are provided in table \ref{table:3}.
+\begin{table}
+\centering
+\resizebox{\textwidth}{!}{%
+ \begin{tabular}{||c c c c||}
+ \hline
+ File & Name of the File & Last updated on & Link \\ [0.5ex]
+ \hline\hline
+ RMA normalised gene expression data from DNA array & Neve\_AffyRMA\_genelevel\_maxvar\_stringent.csv & August 30th 2013 & \cite{DAEMENGEX} \\
+ \hline
+ Gene expression counts based on sequencing data & breastRNAseq\_genelevel\_stringent.txt & August 30th 2013 & \cite{DAEMENGEXRNA} \\
+ \hline
+ Methylation data & Methylation\_stringent.csv & August 30th 2013 & \cite{DAEMENMETH} \\
+ \hline
+ Methylation annotation data & Methylation\_annotation\_stringent.csv & August 30th 2013 & \cite{DAEMENMETHAnnot} \\
+ \hline
+ SNP data & SNP6\_genelevel\_stringent\_std0.7.csv & August 30th 2013 & \cite{DAEMENSNP} \\
+ \hline
+ GI50 drug response & gb-2013-14-10-r110-S1.xlsx & --- & \cite{DAEMENResponse} \\ [1ex]
+ \hline
+\end{tabular}}
+\caption{DAEMEN Raw Files Overview}
+\label{table:3}
+\end{table}
+Inside DAEMEN ForeseeCell we have:
+\begin{itemize}
+  \item \textbf{GeneExpression}: Matrix of DNA array gene expressions, genes in rows and cell lines in columns, with Entrez
+  IDs in rownames.
+  \item \textbf{GeneExpressionRNAseq}: Matrix of counts based on RNA-seq technology. We transformed the seq values into
+  logarithmic (base 2) scale for having semi-normal distributed values, which is necessary for linear modeling.
+  As a prerequisite for transforming to log-scale, we replaced all values lower than 1 with 1.
+  \item \textbf{Methylation and SNP6}: Directly imported into matrices from downloaded files.
+  \item \textbf{GI50}: Directly imported as a matrix with cell lines in rows and drugs in columns. A description
+  about GI50 can be found in ResponseTypes component.
+  \item \textbf{TissueInfo}: Directly imported as a data frame. The column 'Transcriptional subtype' was renamed
+  to 'Site' to make TissueInfo compatible with SampleSelector().
+  \item \textbf{ResponseTypes}: Data frame containing the names (only GI50 in this data set) and a short
+  description of all response components available in DAEMEN.
+  \item \textbf{InputTypes}: Data frame containing the names and a short description of all input data components
+  available in DAEMEN.
+\end{itemize}
+
+You can check DAEMENPreparer.R for more details on how the DAEMEN data set was built.
+
+\subsubsection{GAO}
+GAO is one of the two xenograft data sets included in FORESEE. The data is downloaded as supplement files of
+\cite{gao2015high}, which are freely available
+and can be downloaded via \cite{NOVARTIS}.
+GAO ForeseeCell includes:
+\begin{itemize}
+  \item \textbf{GeneExpression}: A matrix of RNA-seq values in FPKM (Fragments Per Kilobase of transcript per Million).
+  The matrix contains genes as rows and samples as columns, with Entrez IDs in rownames. FPKM values were transformed into logarithmic
+  scale (base 2) for having semi-normal distributed values, which is necessary for linear modeling.
+  \item \textbf{SNP6}: Copy number data measured by SNP array (Affymetrix genome-wide human SNP Array 6.0 chip).
+  \item \textbf{Mutation, CNVGain and CNVLoss}: Binary matrices, pointing toward mutations, gaining copy number
+  variations and losing copy number variations respectively.
+  \item \textbf{TissueInfo}: Directly imported from 'PCT raw data' sheet of the excel file as a data frame.
+  The column 'Tumor Type' was renamed to 'Site' to make TissueInfo compatible with SampleSelector()
+  in case user assigned a 'TrainingTissue'.
+  \item \textbf{DrugInfo}: Directly imported from 'PCT curve metrics' sheet of the excel file as a data frame.
+  Columns 'Treatment' and 'Treatment Target' were renamed to 'DRUG\_NAME' and 'TARGET' respectively,
+  for compatibility with FeatureSelector().
+  \item \textbf{BestResponse, BestResponseCombo, TimeToDouble, ...}: This data set includes 14 different response
+  matrices, all of which have samples in rows and drugs in columns. List and description of these response matrices
+  can be found in ResponseTypes component.
+  \item \textbf{ResponseTypes}: Data frame containing the names and a short
+  description of all response components available in GAO.
+  \item \textbf{InputTypes}: Data frame containing the names and a short description of all input data components
+  available in GAO.
+\end{itemize}
+
+More details about how GAO data set was built can be found in GaoPreparer.R.
+
+\subsubsection{WITKIEWICZ}
+WITKIEWICZ is the other xenograft data set included in FORESEE. This data set is from a study by Witkiewcz
+et al. \cite{witkiewicz2016integrated}.
+Data used in building the WITKIEWICZ ForeseeCell are two excel files, which are included as supplements in the original
+paper (accessible with the links \cite{WITKIEWICZ2,WITKIEWICZ3}) and the GEO data set GSE84023 (accessible via
+\cite{GSE84023Link}), which includes the RNA-seq gene expression relevant to the paper.
+WITKIEWICZ data set contains:
+\begin{itemize}
+  \item \textbf{GeneExpression}: Matrix of gene expressions measured by RNA-seq. We used the already processed
+  data available on GEO. Based on GSE84023 page on GEO, this is the processing pipeline they used:
+  "Illumina Casava1.7 software used for basecalling. Sequenced reads were trimmed for adaptor sequence,
+  mapped to hg19 genome using bowtie TopHat. Counts per gene was obtained using HTseq counts and normalized
+  using edgeR package in R. Genome\_build: hg19. files\_format\_and\_content: tab-delimited text file include
+  matrix of normalized log counts per million for each sample."
+  \item \textbf{AUC and AUCCombo}: Response data were imported from supplement excel files, and then formatted as a
+  matrix with samples in rows and drugs in columns. More information about these two response matrices can be
+  found in ResponseTypes component.
+  \item \textbf{DrugInfo}: A data frame with only one column, which includes drug names of this study, and their
+  alternative names (e.g. commercial name) in parentheses.
+  \item \textbf{ResponseTypes}: Data frame containing the names and a short
+  description of all response components available in WITKIEWICZ.
+  \item \textbf{InputTypes}: Data frame containing the names (in this case only 'GeneExpression') and a short
+  description of all input data components available in WITKIEWICZ.
+\end{itemize}
+
+You can check WITKIEWICZPreparer.R for more detail about how exactly this data set was processed.
+
+
+
+\section{ForeseePatient Object}
+ForeseePatient objects are, as the name suggests, patient data sets that are structured to be used as a TestObject in the FORESEE pipeline.
+In comparison to ForeseeCell, ForeseePatient data sets tend to have less components; they usually have only one input
+data type variable and one response variable.
+
+\subsection{ForeseePatient Structure}
+ForeseePatient, similar to ForeseeCell, is a data structure having components of different data types,
+that can be indexed using double brackets or dollar sign (for example ForeseePatient\$variable1 or ForeseePatient[["variable1"]] or ForeseePatient[[1]]), similar to a list data type in R programming language. Analogous to ForeseeCell, we can divide the components of ForeseePatient into two categories:
+
+\subsubsection{Fixed Components}
+These components are available in all instances of ForeseePatient:
+
+\begin{description}
+  \item[GeneExpression] is a matrix, with genes in rows and patients in columns. Entrez IDs are
+  saved in 'rownames' of the matrix and patient identifiers in 'colnames'.
+  \item[Annotation] is a logical or numeric vector indicating the patient response to a drug. Extra information
+  is provided in names(Annotation), e.g. when Annotation is a logical vector, names(Annotation) provides information
+  about what True and False in Annotation mean in terms of patient response.
+\end{description}
+
+Unlike ForeseeCell, ForeseePatient data sets do not have 'ResponseTypes' or 'InputTypes' components, since in all
+available ForeseePatient instances in the package, there is only one input type data ('GeneExpression') and only
+one response type data ('Annotation').
+
+\subsubsection{Potential Components}
+This component is not necessarily available in all instances of ForeseePatient:
+
+\begin{description}
+  \item[ExtraAnnotation] is a data frame including all annotations that was contained in the original
+  patient data set. This component is not used in the FORESEE pipeline, but is included
+  for the user (e.g. to divide a patient data set into sub groups based on ExtraAnnotation for better modeling).
+\end{description}
+
+\subsection{Available ForeseePatient Instances in the Package}
+We included and preprocessed all patient data in the \cite{geeleher2014clinical} in our package.
+Since the preprocessing and constructing pipeline for all ForeseePatient data sets are almost the same,
+the following explanation applies to all ForeseePatients:
+
+\begin{itemize}
+  \item \textbf{GeneExpression}: Raw CEL files were downloaded from GEO, and normalized using RMA from affy
+  package \cite{AffyPackageUse}. Except in case of GSE9782, which didn't provide raw CEL files on GEO, and for that
+  we downloaded their already MAS5-normalized data. In contrast to \cite{geeleher2014clinical} we did not use
+  MAS5 normalized version as they were, but for better modeling purposes, we transformed the data to a
+  logarithmic scale (base 2).
+
+  Data sets that contained more than one drug types were split into smaller ForseePatient data sets,
+  for example, in GSE33072 includes two groups of patients treated with erlotinib or sorafenib,
+  therefore we divided it into two GSE33072\_erlotinib and GSE33072\_sorafenib ForeseePatient data sets.
+
+  \item \textbf{Annotation}: extracted from provided annotations from GEO,
+  similar to \cite{geeleher2014clinical}.
+\end{itemize}
+
+An overview of all ForeseePatient data sets are provided in table \ref{table:4}.
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+ \begin{tabular}{||c c c c||}
+ \hline
+ ForeseePatient data set Name & Treatment & Number of Patients & Link \\ [0.5ex]
+ \hline\hline
+ GSE6434 & Docetaxel & 24 & \cite{GSE6434Link} \\
+ \hline
+ EGEOD18864 (identical to GSE18864 on GEO) & Cisplatin & 24 (only patients, not reference tumors) & \cite{GSE18864Link} \\
+ \hline
+ GSE33072\_erlotinib & Erlotinib & 25 & \cite{GSE33072Link} \\
+ \hline
+ GSE33072\_sorafenib & Sorafenib & 39 & \cite{GSE33072Link} \\
+ \hline
+ GSE9782\_GPL96\_bortezomib & Bortezomib & 169 & \cite{GSE9782Link} \\
+ \hline
+ GSE9782\_GPL96\_dexamethasone & Dexamethasone & 70 & \cite{GSE9782Link} \\
+ \hline
+ GSE9782\_GPL97\_bortezomib & Bortezomib & 169 & \cite{GSE9782Link} \\
+ \hline
+ GSE9782\_GPL97\_dexamethasone & Dexamethasone & 70 & \cite{GSE9782Link} \\ [1ex]
+ \hline
+\end{tabular}}
+\caption{Overview of Available ForeseePatient Instances}
+\label{table:4}
+\end{table}
+
+
+\bibliography{FORESEEScholar}{}
+\bibliographystyle{unsrt}
+
+\end{document}

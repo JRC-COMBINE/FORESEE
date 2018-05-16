@@ -286,9 +286,13 @@ WITKIEWICZ data set contains:
   mapped to hg19 genome using bowtie TopHat. Counts per gene was obtained using HTseq counts and normalized
   using edgeR package in R. Genome\_build: hg19. files\_format\_and\_content: tab-delimited text file include
   matrix of normalized log counts per million for each sample."
+
+  We averaged over all samples from the same patient.
   \item \textbf{AUC and AUCCombo}: Response data were imported from supplement excel files, and then formatted as a
   matrix with samples in rows and drugs in columns. More information about these two response matrices can be
   found in ResponseTypes component.
+
+  In AUC matrix, we averaged over all samples from the same patient.
   \item \textbf{DrugInfo}: A data frame with only one column, which includes drug names of this study, and their
   alternative names (e.g. commercial name) in parentheses.
   \item \textbf{ResponseTypes}: Data frame containing the names and a short

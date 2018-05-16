@@ -34,6 +34,16 @@ ConvTabelle <- getBM(attributes = c("hgnc_symbol","entrezgene"),
 rownames(RNAseqMat) <- ConvTabelle$entrezgene[match(rownames(RNAseqMat),ConvTabelle$hgnc_symbol)]
 RNAseqMat <- RNAseqMat[!is.na(rownames(RNAseqMat)),] # No need to log2; as said above, values are normalized log counts per million.
 
+#Since overlap between sample names in RNAseqMat and Response data are small (overlap of
+#combinatory treated sample names and RNAseq sample names are 0! they have same patient
+#names but the suffix added to patient names are different), we average over
+#all samples of the same patient (on different phases for example):
+RNAseqMatAverageDF <- aggregate(x = t(RNAseqMat),
+                              by = list(sapply(strsplit(colnames(RNAseqMat),
+                                                        split = "_"),function(x) x[1])),
+                              FUN = mean)
+RNAseqMatAverage <- data.matrix(t(RNAseqMatAverageDF[,-1]))
+colnames(RNAseqMatAverage) <- RNAseqMatAverageDF$Group.1
 
 ###Response data curation:
 #Importing and cleaning up:
@@ -43,12 +53,22 @@ require(openxlsx)
 AUC_single <- read.xlsx(xlsxFile = "./data-raw/WITKIEWICZ/WITKIEWICZ-raw/NIHMS803574-supplement-3.xlsx", sheet = 3, rowNames = T)
 AUC_single_Mat <- as.matrix(AUC_single)
 AUC_single_Mat <- t(AUC_single_Mat) #We want the models to be in rows and drugs in columns.
+#Averaging over samples from the same patient (because of the reason mentioned above):
+AUC_single_MatAverageDF <- aggregate(x = AUC_single_Mat,
+                                by = list(sapply(strsplit(rownames(AUC_single_Mat),
+                                                          split = "_"),function(x) x[1])),
+                                FUN = mean)
+AUC_single_MatAverage <- data.matrix(AUC_single_MatAverageDF[,-1])
+rownames(AUC_single_MatAverage) <- AUC_single_MatAverageDF$Group.1
 
 #Double response data:
 require(openxlsx)
 AUC_combo <- read.xlsx(xlsxFile = "./data-raw/WITKIEWICZ/WITKIEWICZ-raw/NIHMS803574-supplement-2.xlsx", sheet = 2, rowNames = T)
 AUC_combo_Mat <- as.matrix(AUC_combo)
 AUC_combo_Mat <- t(AUC_combo_Mat) #We want the models to be in rows and drugs in columns.
+#There is no need for averaging over samples cause in combo treatment each patient has 1 sample,
+#We have to correct the names though:
+rownames(AUC_combo_Mat) <- sapply(strsplit(rownames(AUC_combo_Mat),split = "_"),function(x) x[1])
 
 ###Preparing Meta information:
 #Some (maybe?) drug info:
@@ -60,7 +80,8 @@ DrugInfo <- read.xlsx(xlsxFile = "./data-raw/WITKIEWICZ/WITKIEWICZ-raw/NIHMS8035
 Response <- c("AUC","AUCCombo")
 Response <- cbind(Response,c("patient-derived cell line models were screened in total at
                              100 nM-1 μM dose range, and area under the curve (AUC)
-                             was calculated per drug per cell line (range 0.08 – 4.95), For single treatment",
+                             was calculated per drug per cell line (range 0.08 – 4.95), For single treatment,
+                             averaged over all samples from the same patient",
                              "patient-derived cell line models were screened in total at
                              100 nM-1 μM dose range, and area under the curve (AUC)
                              was calculated per drug per cell line (range 0.08 – 4.95), For combinatory treatment"))
@@ -69,7 +90,7 @@ Response <- as.data.frame(Response);colnames(Response) <- c("Name","Description"
 ###Preparing 'InputTypes' slot:
 ##InputTypes is a data frame containing variable names (and description) of availble ForeseeCell input data variables:
 InputTypes <- c("GeneExpression")
-InputTypes <- cbind(InputTypes,c("Matrix of normalized log counts per million for each sample,
+InputTypes <- cbind(InputTypes,c("Matrix of normalized log counts per million, averaged over all samples from each patient,
                                  detailed pipeline explained in https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE84023"))
 InputTypes <- as.data.frame(InputTypes);colnames(InputTypes) <- c("Name","Description")
 
@@ -77,8 +98,8 @@ InputTypes <- as.data.frame(InputTypes);colnames(InputTypes) <- c("Name","Descri
 ###Making and saving the Foresee object:
 WITKIEWICZ <- list()
 class(WITKIEWICZ) <- "ForeseeCell" ##We assign Xenografts as Cell objects!
-WITKIEWICZ[["GeneExpression"]] <- RNAseqMat
-WITKIEWICZ[["AUC"]] <- AUC_single_Mat
+WITKIEWICZ[["GeneExpression"]] <- RNAseqMatAverage
+WITKIEWICZ[["AUC"]] <- AUC_single_MatAverage
 WITKIEWICZ[["AUCCombo"]] <- AUC_combo_Mat
 
 WITKIEWICZ[["DrugInfo"]] <- DrugInfo

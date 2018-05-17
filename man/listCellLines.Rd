@@ -14,7 +14,7 @@ listCellLines(OBJ)
 }
 \description{
 listCellLines returns all cell lines (or sample names in case of a xenograft data set)
-available in a ForeseeTrain Object (All cell lines that are included in gene expression matrix
+available in a ForeseeTrain Object (all cell lines that are included in gene expression matrix
 of ForeseeTrain Object).
 }
 \examples{

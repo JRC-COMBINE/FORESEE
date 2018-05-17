@@ -7,9 +7,9 @@
 FeaturePreprocessor(TrainObject, TestObject, FeaturePreprocessing)
 }
 \arguments{
-\item{TrainObject}{Object that contains all data needed to train a model,  including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
+\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data}
 
-\item{TestObject}{Object that contains all data that the model is to be tested on,  including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
+\item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data}
 
 \item{FeaturePreprocessing}{Method for preprocessing the inputs of the model:
 The function 'zscore_genewise' calculates the zscore normalizing each gene over all samples,

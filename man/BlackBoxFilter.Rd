@@ -8,7 +8,7 @@ BlackBoxFilter(TrainObject, BlackBox = "ridge", nfoldCrossvalidation = 1,
   ...)
 }
 \arguments{
-\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
+\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data}
 
 \item{BlackBox}{Modeling algorithm for training:
 The function 'linear' fits a linear regression model to the training data,
@@ -22,12 +22,12 @@ The function 'tandem' fits a two-stage regression model by Nanne Aben (2017) to 
 The function 'listInputOptions("BlackBoxFilter")' returns a list of the possible options.
 Instead of choosing one of the implemented options, a user-defined function can be used as an input.}
 
-\item{nfoldCrossvalidation}{# folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.}
+\item{nfoldCrossvalidation}{# folds to use for crossvalidation while training the model. If put to one, the complete data of the TrainObject is used for training.}
 }
 \value{
-\item{ForeseeModel}{A black box model trained on the TrainObject data that can be applied to new test data.}
+\item{ForeseeModel}{A black box model trained on the TrainObject features that can be applied to new test data.}
         \item{TrainObject}{The TrainObject that was used to train the model.}
 }
 \description{
-The BlackBoxFilter applies a machine learning algorithm to the molecular data of the TrainObject to create a model that is predictive of the drug response.
+The BlackBoxFilter applies a machine learning algorithm to the feature matrix that was created from molecular data characterizing the samples of the TrainObject to create a model that is predictive of the drug response.
 }

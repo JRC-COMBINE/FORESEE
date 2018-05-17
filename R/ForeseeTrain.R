@@ -1,17 +1,17 @@
 #' Train a Drug Efficacy Prediction Model
 #'
 #' ForeseeTrain uses the data of the TrainObject to train a black box model that can later be applied to new data in order to predict drug efficacy.
-#' Duplicates in the gene names are removed using the Foresee DuplicationHandler.
-#' The Homogenizer function removes batch effects and homogenizes train and test data.
-#' The FeatureSelector filters the input and selects features to be used for the prediction.
-#' The FeaturePreprocessor converts the original features into predictive features.
 #' The CellResponseProcessor prepares the response data of the TrainObject for prediction.
-#' A machine learning algorithm is applied to the preprocessed data to create a model that is predictive of drug response.
+#' Duplicates in the gene names are removed using the Foresee DuplicationHandler.
+#' The Homogenizer function reduces batch effects between train and test data.
+#' The FeatureSelector restricts the input features of the TrainObject to a specific set tht is to be used for the model.
+#' The FeaturePreprocessor converts the original features into predictive features.
+#' The Sample Selector restricts the training samples to those of a specific tissue.
+#' The FeatureCombiner combines features of all specified data types into one feature matrix.
+#' The BlackBox applies a machine learning algorithm to the preprocessed data to train a model that is predictive of drug response.
 #'
-#'
-#'
-#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
-#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data
+#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data
 #' @param DrugName Name of the drug whose efficacy is supposed to be predicted with the model.
 #' You can get all possible values with listDrugs(OBJ) or listInputOptions("DrugName", OBJ), where OBJ is the object you want to use as TrainObject.
 #' @param CellResponseType Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc.
@@ -56,20 +56,17 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
   #################################################################################################################################
   # 1. Cell Response Processing
 
-  # Do CellResponseProcessor in the beginning to avoid doing the rest on duplicated cell line names etc.
+  # Options
   # the function 'powertransform' power transforms the drug response data,
   # the function 'logarithm' returns the natural logarithm of the drug response data,
   # the function 'binarization_kmeans' returns a binarized drug response vector based on 2 kmeans clusters,
   # the function 'binarization_cutoff' returns a binarized drug response vector based on a cutoff at the median,
-  # the function 'none' returns the unchanged drug response data,
-  # the function 'user-defined function' is determined by the function in the input
-
-  # CellResponseType_options <- c("IC50", "AUC")
-  # CellResponseTransformation_options <- c("powertransform", "logarithm", "binarization_kmeans", "binarization_cutoff", "none")
+  # the function 'none' returns the unchanged drug response data.
+  # The function 'listInputOptions("CellResponseProcessor")' returns a list of the possible options.
+  # Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 
   # Process Cell Response
   TrainObject <- CellResponseProcessor(TrainObject, DrugName, CellResponseType, CellResponseTransformation)
-
 
   # If FORESEE is used to do cell2cell prediction, the drug response data of the TestObject is processed in the same manner as the TrainObject
   if (class(TestObject)=="ForeseeCell"){
@@ -78,8 +75,6 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
 
   #################################################################################################################################
   # 2. Selecting Samples
-
-  # SampleSelector_options <- c("all",as.character(unique(TrainObject$TissueInfo$Site)))
 
   TrainObject <- SampleSelector(TrainObject=TrainObject,TrainingTissue=TrainingTissue, InputDataTypes=InputDataTypes)
 
@@ -97,11 +92,11 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
     #################################################################################################################################
     # 3a. Remove Duplicates in gene names
     # Options
-      # The function 'mean' calculates the mean of all rows that have the same gene name,
-      # The function 'first' chooses the first occuring row of duplicated genes only,
-      # The function 'none' removes all genes that occur more than once.
-
-      # DuplicationHandling_options <- c("first", "mean", "none")
+    # The function 'mean' calculates the mean of all rows that have the same gene name,
+    # The function 'first' chooses the first hit of duplicated genes and discards the rest of genes with the same name,
+    # The function 'none' removes all gene names that occur more than once.
+    # The function 'listInputOptions("DuplicationHandler")' returns a list of the possible options.
+    # Instead of chosing one of the implemented options, a user-defined function can be used as an input.
 
     # Train matrix
       TrainObject <- DuplicationHandler(Object=TrainObject, DuplicationHandling=DuplicationHandling)
@@ -114,11 +109,12 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
       # The function 'ComBat' uses the batch effect removal ComBat of the sva package,
       # The function 'quantile' uses the quantile normalization of the preprocessCore package,
       # The function 'limma' uses the removeBatchEffect function of the limma package,
-      # The function 'RUV' uses the RUV normalization, requiring a set of negative control genes,
-      # The function 'none' doesn't do any batch effect correction,
-      # If the user wants to implement a user-defined function batch effect removal function, the input should be the function.
-
-      #   HomogenizationMethod_options <- c("ComBat", "quantile", "limma", "YuGene", "RUV", "RUV4", "none")
+      # The function 'YuGene' uses the function of the YuGene package by Le Cao,
+      # The function 'RUV' regresses out unwanted variation using the 10 principal components of negative control genes (here: list of human housekeeping by Eisenberg and Levanon (2013))
+      # The function 'RUV4' regresses out unwanted variation using the ruv package,
+      # The function 'none' does not do any batch effect correction.
+      # The function 'listInputOptions("Homogenizer")' returns a list of the possible options.
+      # Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 
       # Homogenize
       Homogenizer(TrainObject=TrainObject, TestObject=TestObject, HomogenizationMethod=HomogenizationMethod)
@@ -130,12 +126,11 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
       # The option 'variance' removes the 20 % genes of lowest variance across samples in the TrainObject
       # The option 'pvalue' removes the 20 % genes of lowest p-value (ttest) across samples in the TrainObject
       # The option 'landmarkgenes' uses the L1000 gene set downloaded from CLUE Command App
-      # The option 'ontology' uses a specific set of genes included in the chosen ontology? -> Ali
-      # The option 'pathway' uses a specific set of genes included in the chosen pathway? -> Ali
+      # The option 'ontology' uses a specific set of genes included in the ontology associated with the drug
+      # The option 'pathway' uses a specific set of genes included in the pathway associated with the drug
       # The option 'all' keeps all genes as features
-      # If the user inserts a list as an input, the list is considered as chosen features.
-
-      # FeatureSelector_options <- c("variance", "pvalue", "landmarkgenes", "ontology", "pathway", "all")
+      # The function 'listInputOptions("FeatureSelector")' returns a list of the possible options.
+      # Instead of choosing one of the implemented options, a user-defined function can be used as an input
 
       FeatureSelector(TrainObject=TrainObject,TestObject=TestObject, GeneFilter=GeneFilter, DrugName=DrugName)
 
@@ -148,9 +143,8 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
       # The function 'pca' does principal component analysis,
       # The function 'physio' does physiospace analysis with the samples using cell line gene expression of the gdsc data base as physiological references,
       # The function 'none' keeps the gene expression values unchanged,
-      # If the user wants to implement a user-defined function batch effect removal function, the input should be the function.
-
-      # FeaturePreprocessing_options <- c("zscore_genewise", "zscore_samplewise", "pca", "physio", "none")
+      # The function 'listInputOptions("FeaturePreprocessor")' returns a list of the possible options.
+      # Instead of chosing one of the implemented options, a user-defined function can be used as an input.
 
       FeaturePreprocessor(TrainObject=TrainObject, TestObject=TestObject, FeaturePreprocessing=FeaturePreprocessing)
 
@@ -171,11 +165,12 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "
   # The function 'ridge' fits a linear ridge regression model by Cule et al. (2012) to the training data,
   # The function 'lasso' fits a lasso regression model from the glmnet package by Friedman et al. (2008) to the training data,
   # The function 'elasticnet' fits an elastic net regression model from the glmnet package by Friedman et al. (2008) to the training data,
-  # The function 'svm' fits a support vector regression model ffrom the e1071 package by Meyer and Chih-Chung (2017) to the training data,
-  # The function 'rf' fits a random forest regression model by by Breiman (2001) to the training data
+  # The function 'svm' fits a support vector regression model from the e1071 package by Meyer and Chih-Chung (2017) to the training data,
+  # The function 'rf' fits a random forest regression model by Breiman (2001) to the training data
   # The function 'rf_ranger' fits a fast random forest regression model by Marvin N. Wright (2018) to the training data
-
-  # BlackBox_options <- c("linear", "ridge", "lasso", "elasticnet", "svm", "rf", "rf_ranger")
+  # The function 'tandem' fits a two-stage regression model by Nanne Aben (2017) to the training data.
+  # The function 'listInputOptions("BlackBoxFilter")' returns a list of the possible options.
+  # Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 
   BlackBoxFilter(TrainObject=TrainObject, BlackBox=BlackBox, nfoldCrossvalidation=nfoldCrossvalidation)
 

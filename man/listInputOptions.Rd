@@ -21,7 +21,7 @@ DrugName, CellResponseType, InputDataTypes, TrainingTissue or TestingTissue.}
 \description{
 listInputOptions returns possible input arguments in ForeseeTrain (for DrugName, CellResponseType, InputDataTypes, TrainingTissue,
 TestingTissue, CellResponseTransformation, DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing
-and BlackBox arguments) and in ForeseeTest (for Evaluation argument).
+and BlackBox arguments) and in ForeseeTest (for the Evaluation argument).
 }
 \examples{
 listInputOptions("CellResponseProcessor")

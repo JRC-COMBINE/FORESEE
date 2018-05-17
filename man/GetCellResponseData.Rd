@@ -7,16 +7,18 @@
 GetCellResponseData(TrainObject, DrugName, CellResponseType)
 }
 \arguments{
-\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
+\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data}
 
-\item{CellResponseType}{Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc., that is used for prediction}
+\item{DrugName}{Name of the drug whose efficacy is supposed to be predicted with the model}
+
+\item{CellResponseType}{Format of the drug response data of the TrainObject, such as LN_IC50, AUC, GI50, etc., that is used for prediction}
 }
 \value{
 \item{TrainObject}{The TrainObject with extracted drug response data.}
 }
 \description{
-The GetCellResponseData Function extracts the features of the drug response data that are relevant to predict the drug response.
+The GetCellResponseData Function extracts the entries of the drug response data that are relevant to predict the drug response with regard to the user's choice of CellResponseType and DrugName. It returns the given input object with a new element "DrugResponse".
 }
 \examples{
-GetCellResponseData(GDSC,"Gemcitabine", "AUC")
+GetCellResponseData(GDSC,"Gemcitabine","AUC")
 }

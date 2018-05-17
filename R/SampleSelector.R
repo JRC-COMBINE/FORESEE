@@ -1,11 +1,11 @@
 #' SampleSelector
 #'
-#' The Sample Selector returns features of only those samples that have a specified drug response and are available for all chosen input data types. If a specific tissue is selected, the samples are reduced to cell lines of that tissue only.
+#' The Sample Selector returns features of only those samples that have a drug response for the drug specified by the user's input for DrugName and are available for all chosen input data types. If a specific tissue is selected, the samples are reduced to cell lines of that tissue only.
 #'
-#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
-#' @param TrainingTissue Tissue type that the cell lines of the TrainObject should be of, such as lung. Default should be "all" for pancancer analysis.
-#' @param InputDataTypes Data types of the TrainObject that are to be used to train the model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
-#' @return \item{TrainObject}{The TrainObject with only those samples that have a specified drug response and are available for all chosen input data types.}
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data
+#' @param TrainingTissue Tissue type that the cell lines of the TrainObject should be of, such as "lung". Default should be "all" for pancancer analysis.
+#' @param InputDataTypes Data types of the TrainObject that are to be used to train the model, such as "GeneExpression", "Mutation", "CopyNumberVariation", "Methylation", "CancerType", etc.
+#' @return \item{TrainObject}{The TrainObject with only those samples that have the specified drug response and are available for all chosen input data types.}
 #' @examples
 #' SampleSelector(GDSC, "pancreas", "GeneExpression")
 #' SampleSelector(GDSC, "all", c("GeneExpression","Mutation"))

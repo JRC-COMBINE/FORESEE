@@ -2,8 +2,8 @@
 #'
 #' The FeatureSelector selects a subset of features from all genes to be used for drug efficacy prediction.
 #'
-#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
-#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc.) and drug response data
+#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc.) and drug response data
 #' @param GeneFilter Set of genes to be considered for training the model, such as all, a certain percantage based on variance or p-value, specific gene sets like landmark genes, gene ontologies or pathways, etc.
 #' The option 'variance' removes the 20 % genes of lowest variance across samples in the TrainObject
 #' The option 'pvalue' removes the 20 % genes of lowest p-value (ttest) across samples in the TrainObject
@@ -21,12 +21,6 @@
 #' FeatureSelector(GDSC,GSE6434,"pathway","Tamoxifen")
 #' @export
 
-
-#ToDo3: Ontologies
-#ToDo4: Pathways
-#ToDo5: User-defined gene lists
-
-
 FeatureSelector <- function(TrainObject, TestObject, GeneFilter, DrugName){
   UseMethod("FeatureSelector", object = GeneFilter)
 }
@@ -37,9 +31,6 @@ FeatureSelector.character <- function(TrainObject, TestObject, GeneFilter, DrugN
   UseMethod("FeatureSelector", object = GeneFilter)
 }
 
-# FeatureSelector.list <- function(TrainObject, TestObject, GeneFilter, DrugName){
-#   UseMethod("FeatureSelector", object = GeneFilter)
-# }
 
 ################################################################################
 ### Function "function" applies the function in "GeneFilter"

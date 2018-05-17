@@ -4,7 +4,7 @@
 \alias{ForeseeTrain}
 \title{Train a Drug Efficacy Prediction Model}
 \usage{
-ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType = "IC50",
+ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
   CellResponseTransformation = "powertransform",
   InputDataTypes = "GeneExpression", TrainingTissue = "all",
   TestingTissue = "all", DuplicationHandling = "first",

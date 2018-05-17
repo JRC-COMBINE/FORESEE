@@ -274,7 +274,8 @@ More details about how GAO data set was built can be found in GaoPreparer.R.
 
 \subsubsection{WITKIEWICZ}
 WITKIEWICZ is the other xenograft data set included in FORESEE. This data set is from a study by Witkiewcz
-et al. \cite{witkiewicz2016integrated}.
+et al. \cite{witkiewicz2016integrated}, studying Pancreatic ductal adenocarcinoma
+(PDAC) drug response.
 Data used in building the WITKIEWICZ ForeseeCell are two excel files, which are included as supplements in the original
 paper (accessible with the links \cite{WITKIEWICZ2,WITKIEWICZ3}) and the GEO data set GSE84023 (accessible via
 \cite{GSE84023Link}), which includes the RNA-seq gene expression relevant to the paper.
@@ -286,9 +287,13 @@ WITKIEWICZ data set contains:
   mapped to hg19 genome using bowtie TopHat. Counts per gene was obtained using HTseq counts and normalized
   using edgeR package in R. Genome\_build: hg19. files\_format\_and\_content: tab-delimited text file include
   matrix of normalized log counts per million for each sample."
+
+  We averaged over all samples from the same patient.
   \item \textbf{AUC and AUCCombo}: Response data were imported from supplement excel files, and then formatted as a
   matrix with samples in rows and drugs in columns. More information about these two response matrices can be
   found in ResponseTypes component.
+
+  In AUC matrix, we averaged over all samples from the same patient.
   \item \textbf{DrugInfo}: A data frame with only one column, which includes drug names of this study, and their
   alternative names (e.g. commercial name) in parentheses.
   \item \textbf{ResponseTypes}: Data frame containing the names and a short

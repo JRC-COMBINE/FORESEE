@@ -10,3 +10,5 @@ documentation/*
 inst/doc
 vignettes/introduction-to-FORESEE.R
 vignettes/introduction-to-FORESEE.html
+vignettes/DataOverview*
+*Rapp.history

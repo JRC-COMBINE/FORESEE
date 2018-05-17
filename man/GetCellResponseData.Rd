@@ -18,5 +18,5 @@ GetCellResponseData(TrainObject, DrugName, CellResponseType)
 The GetCellResponseData Function extracts the features of the drug response data that are relevant to predict the drug response.
 }
 \examples{
-GetCellResponseData(GDSC,"Gemcitabine", "AUC")
+GetCellResponseData(GDSC,"Gemcitabine","AUC")
 }

@@ -4,7 +4,7 @@
 \alias{ForeseeTrain}
 \title{Train a Drug Efficacy Prediction Model}
 \usage{
-ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
+ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType = "IC50",
   CellResponseTransformation = "powertransform",
   InputDataTypes = "GeneExpression", TrainingTissue = "all",
   TestingTissue = "all", DuplicationHandling = "first",
@@ -13,9 +13,9 @@ ForeseeTrain(TrainObject, TestObject, DrugName, CellResponseType,
   nfoldCrossvalidation = 1, ...)
 }
 \arguments{
-\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
+\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data}
 
-\item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
+\item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data}
 
 \item{DrugName}{Name of the drug whose efficacy is supposed to be predicted with the model.
 You can get all possible values with listDrugs(OBJ) or listInputOptions("DrugName", OBJ), where OBJ is the object you want to use as TrainObject.}
@@ -59,10 +59,12 @@ Get all possible values with listInputOptions("BlackBoxFilter").}
 }
 \description{
 ForeseeTrain uses the data of the TrainObject to train a black box model that can later be applied to new data in order to predict drug efficacy.
-Duplicates in the gene names are removed using the Foresee DuplicationHandler.
-The Homogenizer function removes batch effects and homogenizes train and test data.
-The FeatureSelector filters the input and selects features to be used for the prediction.
-The FeaturePreprocessor converts the original features into predictive features.
 The CellResponseProcessor prepares the response data of the TrainObject for prediction.
-A machine learning algorithm is applied to the preprocessed data to create a model that is predictive of drug response.
+Duplicates in the gene names are removed using the Foresee DuplicationHandler.
+The Homogenizer function reduces batch effects between train and test data.
+The FeatureSelector restricts the input features of the TrainObject to a specific set tht is to be used for the model.
+The FeaturePreprocessor converts the original features into predictive features.
+The Sample Selector restricts the training samples to those of a specific tissue.
+The FeatureCombiner combines features of all specified data types into one feature matrix.
+The BlackBox applies a machine learning algorithm to the preprocessed data to train a model that is predictive of drug response.
 }

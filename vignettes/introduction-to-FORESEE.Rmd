@@ -46,7 +46,7 @@ knitr::opts_chunk$set(
 
 The uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is an R-package that is designed to act as a scaffold in developing and benchmarking predictive models that utilize drug sensitivity information gained in cell line models to predict clinical therapy outcome in patients. Besides introducing a uniform data format for public cell line and patient data sets, it incorporates state-of-the-art preprocessing methods, model training algorithms and different validation techniques to create a standardized environment for drug response prediction pipelines. 
 
-The aim of this tutorial is to help users set up the FORESEE package and understand some of the routines that the package offers. While the reference manual that separately describes each of the functional modules and how to use them in great detail can be found at **!!!!!!!!!!LINK!!!!!!!!!!**, the use cases mentioned in this tutorial cover a more application-related context of the overall routine and exemplify how the user can exploit the capabilities of the implemented methods as well as how the scope of the package can be extended by user-defined functions and other packages.  
+The aim of this tutorial is to help users set up the FORESEE package and understand some of the routines that the package offers. While the reference manual that separately describes each of the functional modules and how to use them in great detail can be found at https://github.com/JRC-COMBINE/FORESEE/blob/master/ReferenceManual.pdf, the use cases mentioned in this tutorial cover a more application-related context of the overall routine and exemplify how the user can exploit the capabilities of the implemented methods as well as how the scope of the package can be extended by user-defined functions and other packages.  
 
 
 ## Installation Instructions
@@ -55,7 +55,7 @@ The aim of this tutorial is to help users set up the FORESEE package and underst
 FORESEE is available on GitHub (https://github.com/JRC-COMBINE/FORESEE) and OSF (https://osf.io/rf6qk/ or DOI 10.17605/OSF.IO/RF6QK). Because of file size restrictions on github, FORESEE on github does not contain any data. 
 If you want to install the full FORESEE package, you have to install the OSF version, by firstly downloading the source package via this link:
 https://osf.io/k3pg7/download
-Or you can download directly in R:
+or directly downloading it in R:
 ```r
 download.file(url = "https://osf.io/k3pg7/download", destfile = "FORESEE_0.9.9.tar.gz")
 #You can change destination folder as you wish; here, we are downloading to the current folder

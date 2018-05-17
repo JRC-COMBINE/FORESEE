@@ -5,6 +5,15 @@
 #' @param TestObject Object that contains all data that the model is to be tested on, especially the true, measured drug response.
 #' @param Foreseen Predicted drug response of the TestObject obtained by applying the ForeseeModel.
 #' @param Evaluation Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.
+#' The option 'fpvalue' calculates the p value of an F test on a linear model between predictions and the actual annotations,
+#' The option 'mse' calculates the mean square error of a linear model between predictions and the actual annotations,
+#' The option 'pearson' calculates the pearson correlation between predictions and the actual annotations,
+#' The option 'prauc' calculates the AUC of the precision-recall curve
+#' The option 'rocauc' calculates the AUC of the ROC curve
+#' The option 'rocpvalue' calculates the t.test p value of the ROC curve AUC versus 10000 permutated annotation values,
+#' The option 'rsquared' calculates the fraction of variance explained by a linear model between predictions and actual annotations,
+#' The option 'rsquared_adjusted' calculates the fraction of variance explained by a linear model between predictions and actual annotations, corrected the p-value of F-test,
+#' The option 'spearman'. calculates the spearman correlation between predictions and the actual annotations.
 #' The function 'listInputOptions("Validator")' returns a list of the possible options.
 #' Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 #' @return \item{Performance}{Evaluation Measure of the Predictability of the ForeseeModel trained on the TrainObject and tested on the TestObject.}
@@ -50,13 +59,6 @@ Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
   ROCObj <- pROC::roc(-(as.numeric(ANNOTATIONS)), Foreseen, direction="<")
   AUCofROC <- pROC::auc(pROC::roc(ANNOTATIONS, Foreseen))[[1]]
   return(AUCofROC)
-
-  ### Plot ROC Curve
-  #jpeg(filename = filename_roc, width=10, height=10, units="in", res=600)
-  #plot(ROCObj, main = "Prediction of Patient Response after Training on Cell Line Data",legacy.axes = TRUE, print.auc = TRUE)
-  #dev.off()
-
-
 }
 
 ################################################################################

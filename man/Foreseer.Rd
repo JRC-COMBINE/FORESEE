@@ -7,13 +7,13 @@
 Foreseer(TestObject, ForeseeModel, BlackBox)
 }
 \arguments{
-\item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
+\item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data}
 
-\item{ForeseeModel}{Model that has been trained on a TrainObject with the function ForeseeTrain.}
+\item{ForeseeModel}{Model that has been trained on a TrainObject with the function ForeseeTrain().}
 }
 \value{
-\item{Foreseen}{Predicted drug response of the samples listed in the TestObject obtained by applying the ForeseeModel to the molecular data.}
+\item{Foreseen}{Predicted drug response of the samples listed in the TestObject obtained by applying the ForeseeModel to the features of the TestObject.}
 }
 \description{
-The Foreseer applies the ForeseeModel that was trained on a FORESEE TrainObject to the test data to gain a prediction of the TestObject's response.
+The Foreseer applies the ForeseeModel that was trained on the features of a FORESEE TrainObject to the test data to gain a prediction of the TestObject's drug response.
 }

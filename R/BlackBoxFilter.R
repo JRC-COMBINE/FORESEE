@@ -1,8 +1,8 @@
 #' Train a Black Box Model for Drug Efficacy Prediction
 #'
-#' The BlackBoxFilter applies a machine learning algorithm to the molecular data of the TrainObject to create a model that is predictive of the drug response.
+#' The BlackBoxFilter applies a machine learning algorithm to the feature matrix that was created from molecular data characterizing the samples of the TrainObject to create a model that is predictive of the drug response.
 #'
-#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data
 #' @param BlackBox Modeling algorithm for training:
 #' The function 'linear' fits a linear regression model to the training data,
 #' The function 'ridge' fits a linear ridge regression model by Cule et al. (2012) to the training data,
@@ -14,8 +14,8 @@
 #' The function 'tandem' fits a two-stage regression model by Nanne Aben (2017) to the training data.
 #' The function 'listInputOptions("BlackBoxFilter")' returns a list of the possible options.
 #' Instead of choosing one of the implemented options, a user-defined function can be used as an input.
-#' @param nfoldCrossvalidation # folds to use for crossvalidation while training the model. If put to zero, the complete data of the TrainObject is used for training.
-#' @return \item{ForeseeModel}{A black box model trained on the TrainObject data that can be applied to new test data.}
+#' @param nfoldCrossvalidation # folds to use for crossvalidation while training the model. If put to one, the complete data of the TrainObject is used for training.
+#' @return \item{ForeseeModel}{A black box model trained on the TrainObject features that can be applied to new test data.}
 #'         \item{TrainObject}{The TrainObject that was used to train the model.}
 #' @export
 
@@ -102,13 +102,13 @@ BlackBoxFilter.function <- function(TrainObject, BlackBox, nfoldCrossvalidation)
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
-  # For some weird reason the object still contains duplicates? Check duplication handler
-  # Just take the first occuring gene name (here: in columns!) for now
+  # Check if there are still duplications (to avoid that the pipeline breaks)
+  # Just take the first occuring gene name (here: in columns)
   TrainObject_train <- as.data.frame(TrainObject_train)
   TrainObject_train <- TrainObject_train[,!duplicated(colnames(TrainObject_train))]
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
 
-  # User-BlackBox modelling:
+  # User-BlackBox modeling:
   bb_fit <- BlackBox(DrugResponse~., TrainObject_train)
 
   # Update Objects in the Environment
@@ -126,8 +126,8 @@ BlackBoxFilter.linear <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
-  # For some weird reason the object still contains duplicates? Check duplication handler
-  # Just take the first occuring gene name (here: in columns!) for now
+  # Check if there are still duplications (to avoid that the pipeline breaks)
+  # Just take the first occuring gene name (here: in columns)
   TrainObject_train <- as.data.frame(TrainObject_train)
   TrainObject_train <- TrainObject_train[,!duplicated(colnames(TrainObject_train))]
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
@@ -148,8 +148,8 @@ BlackBoxFilter.ridge <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
-  # For some weird reason the object still contains duplicates? Check duplication handler
-  # Just take the first occuring gene name (here: in columns!) for now
+  # Check if there are still duplications (to avoid that the pipeline breaks)
+  # Just take the first occuring gene name (here: in columns)
   TrainObject_train <- as.data.frame(TrainObject_train)
   TrainObject_train <- TrainObject_train[,!duplicated(colnames(TrainObject_train))]
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
@@ -192,8 +192,8 @@ BlackBoxFilter.elasticnet <- function(TrainObject, BlackBox, nfoldCrossvalidatio
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
-  # For some weird reason the object still contains duplicates? Check duplication handler
-  # Just take the first occuring gene name (here: in columns!) for now
+  # Check if there are still duplications (to avoid that the pipeline breaks)
+  # Just take the first occuring gene name (here: in columns)
   TrainObject_train <- as.data.frame(TrainObject_train)
   TrainObject_train <- TrainObject_train[,!duplicated(colnames(TrainObject_train))]
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
@@ -219,8 +219,8 @@ BlackBoxFilter.svm <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
-  # For some weird reason the object still contains duplicates? Check duplication handler
-  # Just take the first occuring gene name (here: in columns!) for now
+  # Check if there are still duplications (to avoid that the pipeline breaks)
+  # Just take the first occuring gene name (here: in columns)
   TrainObject_train <- as.data.frame(TrainObject_train)
   TrainObject_train <- TrainObject_train[,!duplicated(colnames(TrainObject_train))]
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
@@ -243,8 +243,8 @@ BlackBoxFilter.rf <- function(TrainObject, BlackBox, nfoldCrossvalidation){
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
-  # For some weird reason the object still contains duplicates? Check duplication handler
-  # Just take the first occuring gene name (here: in columns!) for now
+  # Check if there are still duplications (to avoid that the pipeline breaks)
+  # Just take the first occuring gene name (here: in columns)
   TrainObject_train <- as.data.frame(TrainObject_train)
   TrainObject_train <- TrainObject_train[,!duplicated(colnames(TrainObject_train))]
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]
@@ -267,8 +267,8 @@ BlackBoxFilter.rf_ranger <- function(TrainObject, BlackBox, nfoldCrossvalidation
   TrainObject_train<- as.matrix(cbind(t(TrainObject$Features),TrainObject$DrugResponse))
   colnames(TrainObject_train)[dim(TrainObject_train)[2]]<-"DrugResponse"
 
-  # For some weird reason the object still contains duplicates? Check duplication handler
-  # Just take the first occuring gene name (here: in columns!) for now
+  # Check if there are still duplications (to avoid that the pipeline breaks)
+  # Just take the first occuring gene name (here: in columns)
   TrainObject_train <- as.data.frame(TrainObject_train)
   TrainObject_train <- TrainObject_train[,!duplicated(colnames(TrainObject_train))]
   TrainObject_train <- TrainObject_train[!duplicated(rownames(TrainObject_train)),]

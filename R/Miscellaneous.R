@@ -2,12 +2,11 @@
 #'
 #' listInputOptions returns possible input arguments in ForeseeTrain (for DrugName, CellResponseType, InputDataTypes, TrainingTissue,
 #' TestingTissue, CellResponseTransformation, DuplicationHandling, HomogenizationMethod, GeneFilter, FeaturePreprocessing
-#' and BlackBox arguments) and in ForeseeTest (for Evaluation argument).
+#' and BlackBox arguments) and in ForeseeTest (for the Evaluation argument).
 #'
 #' @param FunArgument Character string of the input argument (for DrugName, CellResponseType, InputDataTypes, TrainingTissue
 #' and TestingTissue) or the function corresponding to the input of ForeseeTrain (CellResponseTransformation, DuplicationHandling,
 #' HomogenizationMethod, GeneFilter, FeaturePreprocessing and BlackBox) or ForeseeTest (Evaluation).
-
 #' Check the help of ForeseeTrain and ForeseeTest for more information.
 #' @param OBJ A ForeseeTrain or ForeseeTest object that you want to extract options for. Only necessary for when FunArgument is
 #' DrugName, CellResponseType, InputDataTypes, TrainingTissue or TestingTissue.
@@ -41,14 +40,14 @@ listInputOptions <- function(FunArgument, OBJ){
     if(any(names(OBJ) == "TissueInfo") & any(names(OBJ$TissueInfo) == "Site")){
       return(as.character(unique(OBJ$TissueInfo$Site)))
     } else {
-      warning("Object doesn't have tissue site information, the only acceptable option for TrainingTissue is 'all' for using all samples.")
+      warning("Object does not have tissue site information, the only acceptable option for TrainingTissue is 'all' for using all samples.")
       return("all")
     }
   } else if(FunArgument=="TestingTissue"){
     if(any(names(OBJ) == "TissueInfo") & any(names(OBJ$TissueInfo) == "Site")){
       return(as.character(unique(OBJ$TissueInfo$Site)))
     } else {
-      warning("Object doesn't have tissue site information, the only acceptable option for TestingTissue is 'all' for using all samples.")
+      warning("Object does not have tissue site information, the only acceptable option for TestingTissue is 'all' for using all samples.")
       return("all")
     }
   } else {
@@ -65,9 +64,8 @@ listInputOptions <- function(FunArgument, OBJ){
 #' List All Cell lines Inside a ForeseeTrain Object
 #'
 #' listCellLines returns all cell lines (or sample names in case of a xenograft data set)
-#' available in a ForeseeTrain Object (All cell lines that are included in gene expression matrix
+#' available in a ForeseeTrain Object (all cell lines that are included in gene expression matrix
 #' of ForeseeTrain Object).
-#'
 #'
 #' @param OBJ A ForeseeTrain object of which you want to extract its containing cell lines.
 #' @return \item{Character vector of all cell line names in OBJ.}{}
@@ -158,7 +156,7 @@ requireForesee <- function(package){
     if(!interactive()){ #'interactive' cause there would be a user to ok the new package installation
       stop("R is not used interactively, 'requireForesee' needs to install a new package, which is only possible in interactive R!")
     } else {
-      usrAns <- readline(prompt = paste("Packege",package,"is needed and not installed, would you like FORESEE to install it for you?(type y or yes): "))
+      usrAns <- readline(prompt = paste("Package",package,"is needed and not installed, would you like FORESEE to install it for you?(type y or yes): "))
       if(identical(usrAns, "y") | identical(usrAns, "yes")) {
         if(identical(package,"PhysioSpaceMethods")){
           requireForesee(devtools)

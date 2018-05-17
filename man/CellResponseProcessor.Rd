@@ -8,11 +8,11 @@ CellResponseProcessor(TrainObject, DrugName, CellResponseType,
   CellResponseTransformation)
 }
 \arguments{
-\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
+\item{TrainObject}{Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data}
 
 \item{DrugName}{Name of the drug whose efficacy is supposed to be predicted with the model}
 
-\item{CellResponseType}{Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc., that is included in the TrainObject and to be used for prediction}
+\item{CellResponseType}{Format of the drug response data of the TrainObject, such as LN_IC50, AUC, GI50, etc., that is included in the TrainObject and to be used for prediction}
 
 \item{CellResponseTransformation}{Method that is to be used to transform the drug response data of the TrainObject:
 the function 'powertransform' power transforms the drug response data,
@@ -30,5 +30,5 @@ Instead of choosing one of the implemented options, a user-defined function can 
 The CellResponseProcessor transforms the response data of the TrainObject for prediction.
 }
 \examples{
-CellResponseProcessor(GDSC, "Docetaxel", "IC50", "powertransform")
+CellResponseProcessor(GDSC, "Docetaxel", "LN_IC50", "binarization_cutoff")
 }

@@ -1,10 +1,10 @@
 #' Get Cell Line Drug Response from FORESEE Object
 #'
-#' The GetCellResponseData Function extracts the features of the drug response data that are relevant to predict the drug response.
+#' The GetCellResponseData Function extracts the entries of the drug response data that are relevant to predict the drug response with regard to the user's choice of CellResponseType and DrugName. It returns the given input object with a new element "DrugResponse".
 #'
-#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
-#' @param CellResponseType Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc., that is used for prediction
-#'
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data
+#' @param CellResponseType Format of the drug response data of the TrainObject, such as LN_IC50, AUC, GI50, etc., that is used for prediction
+#' @param DrugName Name of the drug whose efficacy is supposed to be predicted with the model
 #' @return \item{TrainObject}{The TrainObject with extracted drug response data.}
 #' @examples GetCellResponseData(GDSC,"Gemcitabine","AUC")
 #' @export
@@ -35,6 +35,7 @@ GetCellResponseData <- function(TrainObject, DrugName, CellResponseType){
   }
   DrugResponse <- TrainObject[[CellResponseType]][,DrugName]
   DrugResponse <- DrugResponse[is.na(DrugResponse)==FALSE]
+  #Adding the element DrugResponse to the TrainObject
   TrainObject[["DrugResponse"]] <- DrugResponse
 
   return(TrainObject)

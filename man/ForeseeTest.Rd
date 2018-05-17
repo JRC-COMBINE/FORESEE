@@ -8,12 +8,21 @@ ForeseeTest(TestObject, ForeseeModel, Evaluation = "rocauc",
   BlackBox = "ridge")
 }
 \arguments{
-\item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data}
+\item{TestObject}{Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data}
 
 \item{ForeseeModel}{Model that has been trained on a TrainObject with the function ForeseeTrain.}
 
-\item{Evaluation}{Measure for evaluating the model performance, such as ROC-Curve, AUC or p-value of ROC-Curve, Rsquared, MSE, Correlation, F-Test, etc.
-Get all possible values with listInputOptions("Validator").
+\item{Evaluation}{Measure for evaluating the model performance.
+The option 'fpvalue' calculates the p value of an F test on a linear model between predictions and the actual annotations,
+The option 'mse' calculates the mean square error of a linear model between predictions and the actual annotations,
+The option 'pearson' calculates the pearson correlation between predictions and the actual annotations,
+The option 'prauc' calculates the AUC of the precision-recall curve
+The option 'rocauc' calculates the AUC of the ROC curve
+The option 'rocpvalue' calculates the t.test p value of the ROC curve AUC versus 10000 permutated annotation values,
+The option 'rsquared' calculates the fraction of variance explained by a linear model between predictions and actual annotations,
+The option 'rsquared_adjusted' calculates the fraction of variance explained by a linear model between predictions and actual annotations, corrected the p-value of F-test,
+The option 'spearman'. calculates the spearman correlation between predictions and the actual annotations.
+The function 'listInputOptions("Validator")' returns a list of the possible options.
 Instead of choosing one of the implemented options, a user-defined function can be used as an input.}
 
 \item{BlackBox}{BlackBox used for training ForeseeModel.}
@@ -23,7 +32,7 @@ Instead of choosing one of the implemented options, a user-defined function can 
         \item{Foreseen}{Predicted drug response of the TestObject obtained by applying the ForeseeModel to the molecular data of the TestObject.}
 }
 \description{
-ForeseeTest applies the machine learning based model ForeseeModel that has been trained on the data of a FORESEE TrainObject to a FORESEE TestObject to evaluate the Predictability of Drug Efficacy.
-First, the Foreseer applies the ForeseeModel to the test data to gain the predicted response Foreseen.
-Second, the Validator evaluates the performance of the model by comparing the predicted response Foreseen to the reported, true response.
+ForeseeTest applies the machine learning based model ForeseeModel that has been trained on the features of a FORESEE TrainObject to a FORESEE TestObject to evaluate the Predictability of Drug Efficacy.
+First, the Foreseer applies the ForeseeModel to the test data to gain the predicted response 'Foreseen'.
+Second, the Validator evaluates the performance of the model by comparing the predicted response 'Foreseen' to the reported, true response.
 }

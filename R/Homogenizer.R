@@ -1,16 +1,17 @@
 #' Homogenize a Pair of two FORESEE Objects
 #'
-#' The Homogenizer function removes batch effects and homogenizes the data of a given TrainObject and TestObject.
+#' The Homogenizer function reduces batch effects and homogenizes the data of a given TrainObject and TestObject.
 #'
-#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
-#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data
+#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data
 #' @param HomogenizationMethod Method for homogenizing data of the TrainObject and TestObject.
 #' The function 'ComBat' uses the batch effect removal ComBat of the sva package,
 #' The function 'quantile' uses the quantile normalization of the preprocessCore package,
 #' The function 'limma' uses the removeBatchEffect function of the limma package,
 #' The function 'YuGene' uses the function of the YuGene package by Le Cao,
 #' The function 'RUV' regresses out unwanted variation using the 10 principal components of negative control genes (here: list of human housekeeping by Eisenberg and Levanon (2013))
-#' The function 'none' doesn't do any batch effect correction.
+#' The function 'RUV4' regresses out unwanted variation using the ruv package,
+#' The function 'none' does not do any batch effect correction.
 #' The function 'listInputOptions("Homogenizer")' returns a list of the possible options.
 #' Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 #' @return \item{TrainObject}{The TrainObject with homogenized features according to the chosen TestObject.}
@@ -24,11 +25,6 @@
 # File authors: Lisa-Katrin Turnhoff <turnhoff@combine.rwth-aachen.de> and Ali Hadizadeh Esfahani <hadizadeh@combine.rwth-aachen.de>
 # Distributed under the GNU General Public License v3.0.(http://www.gnu.org/licenses/gpl-3.0.html)
 #########################
-
-# ToDo
-# Change RUV implementation: at the moment copied more or less from Geeleher not using any package!
-# Implement user-defined function
-
 
 Homogenizer <- function(TrainObject, TestObject, HomogenizationMethod){
   UseMethod("Homogenizer", object = HomogenizationMethod)
@@ -63,8 +59,6 @@ Homogenizer.function <- function(TrainObject, TestObject, HomogenizationMethod) 
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
   assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
-
-
 
 
 ################################################################################
@@ -251,7 +245,6 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
   TrainObject_homogenized$GeneExpression <- TrainObject_homogenized$GeneExpression[CommonGenes,]
   TestObject_homogenized$GeneExpression <- TestObject_homogenized$GeneExpression[CommonGenes,]
 
-
   # Load list of housekeeping genes
   # "Human housekeeping genes revisited", E. Eisenberg and E.Y. Levanon, Trends in Genetics, 29 (2013)
   # saved as LM_genes_entrez in package internal data:
@@ -261,10 +254,6 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
   BothBatches <- cbind(TrainObject_homogenized$GeneExpression,TestObject_homogenized$GeneExpression)
   BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
 
-  # NegativeControl <-  rownames(TestObject_homogenized$GeneExpression) %in% HK_genes_entrez
-  # NegativeControl <-  HK_genes_entrez[HK_genes_entrez %in% CommonGenes]
-  # sum(HK_genes_entrez %in% CommonGenes)
-
   # Apply principal component analysis to gene expression matrix of only the control genes
   pca_NegativeControl <- princomp(BothBatches[NegativeControl,])
   loadings_10PCs<- pca_NegativeControl$loadings[,1:10]
@@ -273,22 +262,6 @@ Homogenizer.RUV <- function(TrainObject, TestObject, HomogenizationMethod){
   for (i in 1:dim(LinearModel_RUV)[1]){
   LinearModel_RUV[i,] <- lm(BothBatches[i,]~loadings_10PCs)$residuals
   }
-  ### Is it correct to project on the loadings??? Recheck
-
-  # dim(BothBatches)
-  # dim(loadings_10PCs)
-  # hist(BothBatches[1,])
-  # hist(LinearModel_RUV[1,])
-  # hist(BothBatches[,1])
-  # hist(LinearModel_RUV[,1])
-
-  # # Homogenizes both gene expression Data sets
-  # BothBatches <- cbind(TrainObject_homogenized$GeneExpression,TestObject_homogenized$GeneExpression)
-  # BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
-  # # WRONG! RUVObject <- RUV4(Y=t(BothBatches), X=rownames(),Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k = 0)
-  # RUVObject <- RUV4(Y=t(BothBatches), X=colnames(t(BothBatches)),Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl)
-  #
-  # RUVObject <- RUV4(Y=t(BothBatches), X=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k=1)
 
   TrainObject_homogenized$GeneExpression <- LinearModel_RUV[, BatchIndex=="trainobject"]
   TestObject_homogenized$GeneExpression <- LinearModel_RUV[, BatchIndex=="testobject"]
@@ -332,32 +305,6 @@ Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
   # Create Data out of both batches
   BothBatches <- cbind(TrainObject_homogenized$GeneExpression,TestObject_homogenized$GeneExpression)
   BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
-
-  # NegativeControl <-  rownames(TestObject_homogenized$GeneExpression) %in% HK_genes_entrez
-  # NegativeControl <-  HK_genes_entrez[HK_genes_entrez %in% CommonGenes]
-  # sum(HK_genes_entrez %in% CommonGenes)
-
-  # Apply principal component analysis to gene expression matrix of only the control genes
-  # pca_NegativeControl <- princomp(BothBatches[NegativeControl,])
-  # loadings_10PCs<- pca_NegativeControl$loadings[,1:10]
-  # scores_10PCs<- pca_NegativeControl$scores[,1:10]
-  # LinearModel_RUV<-BothBatches
-  # for (i in 1:dim(LinearModel_RUV)[1]){
-  #   LinearModel_RUV[i,] <- lm(BothBatches[i,]~loadings_10PCs)$residuals
-  # }
-  ### Is it correct to project on the loadings???
-
-  # dim(BothBatches)
-  # dim(loadings_10PCs)
-  # hist(BothBatches[1,])
-  # hist(LinearModel_RUV[1,])
-  # hist(BothBatches[,1])
-  # hist(LinearModel_RUV[,1])
-
-  # # Homogenizes both gene expression Data sets
-  # BothBatches <- cbind(TrainObject_homogenized$GeneExpression,TestObject_homogenized$GeneExpression)
-  # BatchIndex <- as.factor(c(rep("trainobject", ncol(TrainObject_homogenized$GeneExpression)), rep("testobject", ncol(TestObject_homogenized$GeneExpression))))
-  # # WRONG! RUVObject <- RUV2(Y=t(BothBatches), Z=as.matrix(as.numeric(as.factor(BatchIndex))), ctl = NegativeControl, k = 0)
 
   RUVObject <- RUV4(Y=t(BothBatches), X=matrix(c(rep(1, ncol(TrainObject_homogenized$GeneExpression)),
                                           rep(2, ncol(TestObject_homogenized$GeneExpression))),
@@ -414,8 +361,6 @@ Homogenizer.none <- function(TrainObject, TestObject, HomogenizationMethod){
   assign("TrainObject", value = TrainObject_homogenized, envir = parent.frame())
   assign("TestObject", value = TestObject_homogenized, envir = parent.frame())
 }
-
-
 
 ################################################################################
 ### Function "default" is called in case method in "HomogenizationMethod" is

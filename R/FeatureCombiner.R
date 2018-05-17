@@ -1,10 +1,10 @@
 #' FeatureCombiner
 #'
 #' The Feature Combiner combines all selected Input Data Types into one Feature Matrix
-
-#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
-#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type) and drug response data
-#' @param InputDataTypes Data types of the TrainObject that are to be used to train the model, such as gene expression, mutation, copy number variation, methylation, cancer type, drug response data, etc.
+#'
+#' @param TrainObject Object that contains all data needed to train a model, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data
+#' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data
+#' @param InputDataTypes Data types of the TrainObject that are to be used to train the model, such as "GeneExpression", "Mutation", "CopyNumberVariation", "Methylation", "CancerType", etc.
 #' @return \item{TrainObject}{The TrainObject with a new Feature matrix combining all specified input data types and a Featuretype Vector indicating the molecular data type of each feature}
 #'         \item{TestObject}{The TestObject with a new Feature matrix combining all specified input data types and a Featuretype Vector indicating the molecular data type of each feature}
 #' @examples
@@ -29,7 +29,6 @@ FeatureCombiner<- function(TrainObject, TestObject, InputDataTypes){
 
   for (m in 1:length(InputDataTypes)){
 
-
     if(is.null(TrainObject[[InputDataTypes[m]]])==TRUE){
       warning(paste0("The ForeseeTrainObject does not comprise data of the type '",InputDataTypes[m],"'. Therefore, the training will proceed without that data type."))
       missing_data_index_train <- m
@@ -40,7 +39,6 @@ FeatureCombiner<- function(TrainObject, TestObject, InputDataTypes){
     warning(paste0("The ForeseeTest Object does not comprise data of the type '",InputDataTypes[m],"'. Therefore, the training will proceed without that data type."))
     missing_data_index_test <- m
       }
-
 
     missing_data_train <- cbind(missing_data_train,missing_data_index_train)
     missing_data_test <- cbind(missing_data_test,missing_data_index_test)

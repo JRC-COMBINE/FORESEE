@@ -15,7 +15,7 @@ The uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is an R-pack
 FORESEE is available on GitHub and OSF (https://osf.io/rf6qk/ or DOI 10.17605/OSF.IO/RF6QK). Because of file size restrictions on github, FORESEE on github does not contain any data. 
 If you want to install the full FORESEE package, you have to install the OSF version, by firstly downloading the source package via this link:
 https://osf.io/k3pg7/download
-Or you can download directly in R:
+or directly downloading in R:
 ```r
 download.file(url = "https://osf.io/k3pg7/download", destfile = "FORESEE_0.9.9.tar.gz")
 #You can change destination folder as you wish; here, we are downloading to the current folder
@@ -27,7 +27,7 @@ install.packages("FORESEE_0.9.9.tar.gz", repos = NULL, type = "source")
 
 #### GitHub Version (Code only)
 If you are only interested on the methods provided in FORESEE but not the data sets, you can install FORESEE from this repository.
-Easiest way to install GitHub version of FORESEE is via <a href="https://cran.r-project.org/web/packages/devtools/">Devtools</a>.
+The easiest way to install the GitHub version of FORESEE is via <a href="https://cran.r-project.org/web/packages/devtools/">Devtools</a>.
 After installing Devtools from cran, you can install FORESEE by:
 ```r
 devtools::install_github(repo = "JRC-COMBINE/FORESEE", build_vignettes = TRUE)

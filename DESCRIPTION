@@ -1,7 +1,7 @@
 Package: FORESEE
 Type: Package
 Title: A Tool for the Systematic Comparison of Translational Drug Response Modeling Pipelines
-Version: 0.9.9
+Version: 1.0.0
 Author: Lisa-Katrin Turnhoff <turnhoff@combine.rwth-aachen.de> and Ali Hadizadeh Esfahani <hadizadeh@combine.rwth-aachen.de>
 Maintainer: Lisa-Katrin Turnhoff <turnhoff@combine.rwth-aachen.de> 
 Description: The uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is designed to act as a scaffold in developing and benchmarking translational drug sensitivity models. The package is generally geared to utilize drug sensitivity knowledge gained in cancer cell line modeling to predict clinical therapy outcome in patients. For this purpose, FORESEE includes different public cell line and patient data sets in a standardized format on the one hand and incorporates state-of-the-art preprocessing methods, model training algorithms and different validation techniques on the other hand. The modular implementation of these elements offers the training and testing of diverse combinatorial models, which can be used to re-evaluate and improve already existing modeling pipelines, but also to develop new ones.

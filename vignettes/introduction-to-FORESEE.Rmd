@@ -51,18 +51,28 @@ The aim of this tutorial is to help users set up the FORESEE package and underst
 
 ## Installation Instructions
 
-**Be aware:** because of file size restrictions on github, FORESEE on github does not contain any data. 
-If you want to install the full FORESEE package, first download the package via this link: 
+#### Full Version (Code+Data)
+FORESEE is available on GitHub (https://github.com/JRC-COMBINE/FORESEE) and OSF (https://osf.io/rf6qk/ or DOI 10.17605/OSF.IO/RF6QK). Because of file size restrictions on github, FORESEE on github does not contain any data. 
+If you want to install the full FORESEE package, you have to install the OSF version, by firstly downloading the source package via this link:
 https://osf.io/k3pg7/download
 Or you can download directly in R:
 ```r
 download.file(url = "https://osf.io/k3pg7/download", destfile = "FORESEE_0.9.9.tar.gz")
 #You can change destination folder as you wish; here, we are downloading to the current folder
 ```
-After downloading you can install the package by:
+After downloading you can install the source package by:
 ```r
 install.packages("FORESEE_0.9.9.tar.gz", repos = NULL, type = "source")
 ```
+
+#### GitHub Version (Code only)
+If you are only interested on the methods provided in FORESEE but not the data sets, you can install FORESEE from GitHub repository.
+Easiest way to install GitHub version of FORESEE is via <a href="https://cran.r-project.org/web/packages/devtools/">Devtools</a>.
+After installing Devtools from cran, you can install FORESEE by:
+```r
+devtools::install_github(repo = "JRC-COMBINE/FORESEE", build_vignettes = TRUE)
+```
+
 
 ## Use Cases
 
@@ -172,6 +182,11 @@ Next, we use almost the same routine for the data set published by Daemen et al.
 
 ```r
 DAEMEN$ResponseTypes
+```
+or
+
+```r
+listInputOptions("CellResponseType", DAEMEN)
 ```
 Since GI50 values are the only available response measure, we choose them for *CellResponseType* instead of IC50 values. 
 
@@ -308,7 +323,7 @@ FORESEE is designed to be easily expandable. While there are numerous different 
 *HomogenizationMethod*, *GeneFilter*, *FeaturePreprocessing* and *BlackBox* can be defined by the user. In this section we demonstrate this capability of FORESEE by some examples.
 
 #### 4.1. User-Defined CellResponseTransformation: {#usecase4.1}
-The underlying distribution of 'Response' has a great impact on the fitted model using a blackbox. Here, the 'Response' is the cell line response to a drug, quantified by different measures, such as IC50. The measured IC50s are not necessarily distributed for an optimum model fitiing, so it is quite common in the preprocessing stage to 'transform' these Response values, for example by power transformation or changing 
+The underlying distribution of 'Response' has a great impact on the fitted model using a blackbox. Here, the 'Response' is the cell line response to a drug, quantified by different measures, such as IC50. The measured IC50s are not necessarily distributed for an optimum model fitting, so it is quite common in the preprocessing stage to 'transform' these Response values, for example by power transformation or changing 
 to logarithmic scale. These are already implemented in FORESEE and can be easily used by setting *CellResponseTransformation* to "powertransform" or to "logarithm" respectively.
 
 However, it is also possible to implement your own transformation and pass your function in the form of
@@ -416,7 +431,7 @@ print(Performance)
 ```
 
 #### 4.3. User-Defined HomogenizationMethod: {#usecase4.3}
-Homogenization of train and test set is another part of FORESEE pipeline that can be fine tuned with a user-defined function. In case you want to make and use your own homogenization method, make sure that the function you pass to *ForeseeTrain* as *HomogenizationMethod* satisfies the following three conditions:
+Homogenization of train and test sets is another part of FORESEE pipeline that can be fine tuned with a user-defined function. In case you want to make and use your own homogenization method, make sure that the function you pass to *ForeseeTrain* as *HomogenizationMethod* satisfies the following three conditions:
 
 * FORESEE expects your homogenization to be a function with two matrices as inputs and a list as output.
 * The list returned as the output should have a length of two, containing two matrices, which are the homogenized versions of the input matrices with the same order.
@@ -544,7 +559,7 @@ Users can use their own model in data fitting by passing a function to the *Blac
 * needs to have two inputs: first a formula of the model to be fit, and second a data frame containing the data to be used in fitting the model.
 * returns a model that can be used to predict the output for new data.
 
-When a user-defined function is used for *BlackBox* in ForeseeTrain, mthe corresponding 'predict' function needs to be passed to the *BlackBox* input of *ForeseeTest* as well. The 'predict' function is expected to have two inputs - the fitted model and the new data frame containing new data for prediction - and one output vector containing the predicted values.
+When a user-defined function is used for *BlackBox* in ForeseeTrain, the corresponding 'predict' function needs to be passed to the *BlackBox* input of *ForeseeTest* as well. The 'predict' function is expected to have two inputs - the fitted model and the new data frame containing new data for prediction - and one output vector containing the predicted values.
 
 As an example we show how to use the Gaussian process from the R-package caret as model for *BlackBox* [@caret].
 First, we write a wrapper function around the train function of the caret package, such that it only has two inputs (as ForeseeTrain *BlackBox* expects):

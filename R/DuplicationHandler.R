@@ -41,9 +41,9 @@ DuplicationHandler.function <- function(Object, DuplicationHandling){
   dim_before <- dim(Object_withoutDuplicates$GeneExpression)[1]
 
   # Removes duplicates
-  Object_withoutDuplicates$GeneExpression <- data.matrix(aggregate(x = Object_withoutDuplicates$GeneExpression, by = list(rownames(Object_withoutDuplicates$GeneExpression)), FUN = DuplicationHandling))
+  Object_withoutDuplicates$GeneExpression <- aggregate(x = Object_withoutDuplicates$GeneExpression, by = list(rownames(Object_withoutDuplicates$GeneExpression)), FUN = DuplicationHandling)
   rownames(Object_withoutDuplicates$GeneExpression) <- Object_withoutDuplicates$GeneExpression[,1]
-  Object_withoutDuplicates$GeneExpression <- Object_withoutDuplicates$GeneExpression[,2:dim(Object_withoutDuplicates$GeneExpression)[2]]
+  Object_withoutDuplicates$GeneExpression <- data.matrix(Object_withoutDuplicates$GeneExpression[,-1])
 
   # Calculates the dimension of the gene expression matrix after removing duplicates
   dim_after<- dim(Object_withoutDuplicates$GeneExpression)[1]

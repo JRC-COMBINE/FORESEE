@@ -12,15 +12,15 @@ The uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is an R-pack
 ### Installation
 
 #### Full Version (Code+Data)
-Because of file size restrictions on github, FORESEE on github does not contain any data. 
-If you want to install the full FORESEE package, first download the package via this link: 
+FORESEE is available on GitHub and OSF (https://osf.io/rf6qk/ or DOI 10.17605/OSF.IO/RF6QK). Because of file size restrictions on github, FORESEE on github does not contain any data. 
+If you want to install the full FORESEE package, you have to install the OSF version, by firstly downloading the source package via this link:
 https://osf.io/k3pg7/download
 Or you can download directly in R:
 ```r
 download.file(url = "https://osf.io/k3pg7/download", destfile = "FORESEE_0.9.9.tar.gz")
 #You can change destination folder as you wish; here, we are downloading to the current folder
 ```
-After downloading you can install the package by:
+After downloading you can install the source package by:
 ```r
 install.packages("FORESEE_0.9.9.tar.gz", repos = NULL, type = "source")
 ```
@@ -53,4 +53,4 @@ browseVignettes(package = "FORESEE")
 ```
 
 ### Test Environments
-The package was tested on R 3.4, on Windows 10, Mac OS X and Linux (CENTOS 7.4).
+The package was tested with R 3.4 on Windows 10, Mac OS X and Linux (CENTOS 7.4).

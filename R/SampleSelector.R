@@ -11,6 +11,12 @@
 #' SampleSelector(GDSC, "all", c("GeneExpression","Mutation"))
 #' @export
 
+#########################
+# This file is part of the FORESEE R-package
+# File authors: Lisa-Katrin Turnhoff <turnhoff@combine.rwth-aachen.de> and Ali Hadizadeh Esfahani <hadizadeh@combine.rwth-aachen.de>
+# Distributed under the GNU General Public License v3.0.(http://www.gnu.org/licenses/gpl-3.0.html)
+#########################
+
 SampleSelector<- function(TrainObject,TrainingTissue, InputDataTypes){
 
   #################################################################################################################################

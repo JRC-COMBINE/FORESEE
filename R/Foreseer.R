@@ -8,6 +8,12 @@
 #' @return \item{Foreseen}{Predicted drug response of the samples listed in the TestObject obtained by applying the ForeseeModel to the molecular data.}
 #' @export
 
+#########################
+# This file is part of the FORESEE R-package
+# File authors: Lisa-Katrin Turnhoff <turnhoff@combine.rwth-aachen.de> and Ali Hadizadeh Esfahani <hadizadeh@combine.rwth-aachen.de>
+# Distributed under the GNU General Public License v3.0.(http://www.gnu.org/licenses/gpl-3.0.html)
+#########################
+
 Foreseer <- function(TestObject, ForeseeModel, BlackBox){
   if (is.function(BlackBox)){
     TestObject_test<- as.data.frame(as.matrix(t(TestObject$Features)))

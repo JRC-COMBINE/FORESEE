@@ -13,8 +13,11 @@
 #' DuplicationHandler(GDSC,"first")
 #' @export
 
-#ToDo1: Should we include a line to remove NAs?
-#ToDo2: Remove duplicates from molecular data other than gene expression as well!
+#########################
+# This file is part of the FORESEE R-package
+# File authors: Lisa-Katrin Turnhoff <turnhoff@combine.rwth-aachen.de> and Ali Hadizadeh Esfahani <hadizadeh@combine.rwth-aachen.de>
+# Distributed under the GNU General Public License v3.0.(http://www.gnu.org/licenses/gpl-3.0.html)
+#########################
 
 DuplicationHandler <- function(Object, DuplicationHandling){
   UseMethod("DuplicationHandler", object = DuplicationHandling)

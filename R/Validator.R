@@ -12,6 +12,12 @@
 #' Validator(rep(1,length(GSE6434$Annotation)),GSE6434,"rocauc")
 #' @export
 
+#########################
+# This file is part of the FORESEE R-package
+# File authors: Lisa-Katrin Turnhoff <turnhoff@combine.rwth-aachen.de> and Ali Hadizadeh Esfahani <hadizadeh@combine.rwth-aachen.de>
+# Distributed under the GNU General Public License v3.0.(http://www.gnu.org/licenses/gpl-3.0.html)
+#########################
+
 Validator <- function(Foreseen, TestObject, Evaluation){
   UseMethod("Validator", object = Evaluation)
 }

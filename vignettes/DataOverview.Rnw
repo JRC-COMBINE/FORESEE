@@ -13,7 +13,7 @@
 
 \title{FORESEE Data Overview and Preparation}
 \date{May 2018}
-\author{}
+\author{L. K. Turnhoff, A. H. Esfahani, M. Montazeri, N. Kusch and A. Schuppert}
 
 \begin{document}
 \SweaveOpts{concordance=TRUE}

@@ -9,9 +9,10 @@ The uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is an R-pack
 **[Usage Instructions](#usage-instructions)**<br>
 **[Test Environments](#test-environments)**<br>
 
-### Installation {#installation}
+### Installation
 
-**Be aware:** because of file size restrictions on github, FORESEE on github does not contain any data. 
+#### Full Version (Code+Data)
+Because of file size restrictions on github, FORESEE on github does not contain any data. 
 If you want to install the full FORESEE package, first download the package via this link: 
 https://osf.io/k3pg7/download
 Or you can download directly in R:
@@ -24,18 +25,32 @@ After downloading you can install the package by:
 install.packages("FORESEE_0.9.9.tar.gz", repos = NULL, type = "source")
 ```
 
-### License {#license}
+#### GitHub Version (Code only)
+If you are only interested on the methods provided in FORESEE but not the data sets, you can install FORESEE from this repository.
+Easiest way to install GitHub version of FORESEE is via <a href="https://cran.r-project.org/web/packages/devtools/">Devtools</a>.
+After installing Devtools from cran, you can install FORESEE by:
+```r
+devtools::install_github(repo = "JRC-COMBINE/FORESEE", build_vignettes = TRUE)
+```
+
+### License
 Distributed under GNU General Public License v3.0. See the accompanying [license](https://github.com/JRC-COMBINE/FORESEE/blob/master/LICENSE) file or the copy at https://www.gnu.org/licenses/gpl-3.0.html.
 
-### Usage Instructions {#usage-instructions}
+### Usage Instructions
 
-The package contains a vignette to explain the preparation of data contained in the package at https://github.com/JRC-COMBINE/FORESEE/blob/master/vignettes/DataOverview.Rnw and a vignette to explain some of the functional routines that can be implemented using FORESEE at https://github.com/JRC-COMBINE/FORESEE/blob/master/vignettes/introduction-to-FORESEE.Rmd. 
+The package contains a vignette to explain the preparation of data contained in the package accessible via
+```r
+vignette(topic="DataOverview")
+```
+and a vignette to explain some of the functional routines that can be implemented using FORESEE accessible via 
+```r
+vignette(topic="introduction-to-FORESEE")
+```
 
-Moreover, the vignettes of the package can be found via:
-
+You can additionally access the vignettes mentioned above in your browser by:
 ```r
 browseVignettes(package = "FORESEE")
 ```
 
-### Test Environments {#test-environments}
-The package was tested on ...
+### Test Environments
+The package was tested on R 3.4, on Windows 10, Mac OS X and Linux (CENTOS 7.4).

@@ -47,7 +47,7 @@
 # Distributed under the GNU General Public License v3.0.(http://www.gnu.org/licenses/gpl-3.0.html)
 #########################
 
-ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType = "IC50", CellResponseTransformation = "powertransform",
+ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, CellResponseTransformation = "powertransform",
                          InputDataTypes = "GeneExpression", TrainingTissue = "all", TestingTissue = "all",
                          DuplicationHandling = "first", HomogenizationMethod = "ComBat",
                          GeneFilter = "all", FeaturePreprocessing = "none", BlackBox = "ridge", nfoldCrossvalidation = 1,...){

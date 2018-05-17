@@ -13,7 +13,7 @@ The uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is an R-pack
 
 #### Full Version (Code+Data)
 FORESEE is available on GitHub and OSF (https://osf.io/rf6qk/ or DOI 10.17605/OSF.IO/RF6QK). Because of file size restrictions on github, FORESEE on github does not contain any data. 
-If you want to install the full FORESEE package, you have to install the OSF version. At the time of writing this vignette, last version of available FORESEE on OSF is 1.0.0. You can install this version by firstly downloading the source package via this link:
+If you want to install the full FORESEE package, you have to install the OSF version. At the time of writing this vignette, the last available version of FORESEE on OSF is 1.0.0. You can install this version by firstly downloading the source package via this link:
 https://osf.io/b7scq/download
 or directly downloading it in R:
 ```r

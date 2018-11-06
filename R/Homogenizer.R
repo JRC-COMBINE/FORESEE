@@ -323,6 +323,10 @@ Homogenizer.RUV4 <- function(TrainObject, TestObject, HomogenizationMethod){
   dim_after_train <- dim(TrainObject_homogenized$GeneExpression)[1]
   dim_after_test <- dim(TestObject_homogenized$GeneExpression)[1]
 
+  # Recover the lost 'colnames' in the process:
+  colnames(TrainObject_homogenized$GeneExpression) <- colnames(TrainObject$GeneExpression)
+  colnames(TestObject_homogenized$GeneExpression) <- colnames(TestObject$GeneExpression)
+
   # Prints the reduction of gene names
   message(paste0("The homogenization of both gene expression matrices reduced the number of common genes in the Foresee objects to ", dim_after_train))
 

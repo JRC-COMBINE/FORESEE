@@ -94,7 +94,7 @@ FeatureSelector.pvalue <- function(TrainObject, TestObject, GeneFilter, DrugName
   # Calculate ttest-p-value of each gene between sensitive and resistant samples in TrainObject
 
   # Order samples in TrainObject according to their DrugResponse
-  num <- 50
+  num <- min(50,floor(length(TrainObject$DrugResponse)/2)) # in case length(DrugResponse) < 100
   sensInd <- order(TrainObject$DrugResponse)[1:num]
   resInd <- order(TrainObject$DrugResponse)[(length(TrainObject$DrugResponse)-num):length(TrainObject$DrugResponse)]
 

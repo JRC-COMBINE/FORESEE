@@ -51,7 +51,7 @@ Validator.function <- function(Foreseen, TestObject, Evaluation) {
 #' @export
 Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
-  if(is.numeric(ANNOTATIONS)){
+  if(is.numeric(ANNOTATIONS) & length(unique(ANNOTATIONS))>2){
     message("Annotation of the test set is binarized for calculating ROC")
     ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
   }

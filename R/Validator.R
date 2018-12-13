@@ -53,11 +53,10 @@ Validator.rocauc <- function(Foreseen, TestObject, Evaluation) {
   ANNOTATIONS <- if(CellorPatient(TestObject)) TestObject$DrugResponse else TestObject$Annotation
   if(is.numeric(ANNOTATIONS) & length(unique(ANNOTATIONS))>2){
     message("Annotation of the test set is binarized for calculating ROC")
-    ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) > 0, TRUE, FALSE)
+    ANNOTATIONS <- ifelse(ANNOTATIONS-median(ANNOTATIONS) < 0, TRUE, FALSE)
   }
   requireForesee(pROC) ## glmnet masks auc so had to use functions of pROC as pROC::function (pROC::roc and pROC::auc)
-  ROCObj <- pROC::roc(-(as.numeric(ANNOTATIONS)), Foreseen, direction="<")
-  AUCofROC <- pROC::auc(pROC::roc(ANNOTATIONS, Foreseen))[[1]]
+  AUCofROC <- pROC::auc(pROC::roc(ANNOTATIONS, Foreseen, direction=">"))[[1]]
   return(AUCofROC)
 }
 

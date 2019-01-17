@@ -104,6 +104,61 @@
 #' @source \url{https://portals.broadinstitute.org/ccle/data}
 "CCLE"
 
+#' Cancer Therapeutics Response Portal or CTRP (v2)
+#'
+#' Cancer Therapeutics Response Portal, or CTRP for short, is a cell line
+#' dataset included as a ForeseeCell instance. All relevant
+#' files for the CTRP object were downloaded on Jan. 2019 from
+#' \url{https://ocg.cancer.gov/programs/ctd2/data-portal}.
+#' You can check the data vignette for more information (browseVignettes(package = "FORESEE")).
+#'
+#' @format A ForeseeCell object is very similar to the list data type in R
+#' programming language; it is a data structure which includes different data
+#' types, and can be indexed using double brackets or dollar sign, for example,
+#' ForeseeCell\$variable1 or ForeseeCell[["variable1"]] or ForeseeCell[[1]].
+#'
+#' Available components in CTRP are:
+#'
+#' \describe{
+#'   \item{GeneExpression}{A matrix, with gene Entrez IDs in rows and cell lines in
+#'   columns, containing RMA-normalized gene expression profiles measured by DNA array.}
+#'   \item{GeneExpressionRNAseq}{A matrix, with genes identified by Entrez IDs in rows
+#'   and cell lines in columns, containing gene expression profiles measured by RNA-seq,
+#'   in Reads Per Kilobase of transcript per Million (RPKM).}
+#'   \item{Mutation, CNVGain and CNVLoss}{Three different binary matrices, with genes
+#'   in rows (names converted to Entrez IDs) and cell lines in columns, pointing toward
+#'   mutation, gaining copy number variation and losing copy number variation respectively.}
+#'   \item{ProteinExpression}{Another matrix, with genes in rows and cell lines in columns,
+#'   containing values of protein abundance measured by Reverse Phase Protein Array.
+#'   Gene corresponding to measured protein (Target genes of antibody) in each row is
+#'   identified by its Entrez ID. Since there are duplications in measured genes, we
+#'   used the mean value of the duplicated genes as the final value.}
+#'   \item{EC50, AUC and PPV}{From CTRP response data, three matrices
+#'   were build with cell lines in rows and drugs in columns. Descriptions about
+#'   each measured value are available in ResponseTypes component.
+#'   \item{DrugInfo}{A data frame with extra information about the tested
+#'   'small-molecule's of CTRP. Columns 'DRUG_NAME' and 'TARGET' from this component are used
+#'   in FeatureSelector.ontology() and FeatureSelector.pathway() and are needed if
+#'   the user wants to use any of the mentioned FeatureSelector methods, where the
+#'   pipeline uses only the gene names for training the model that are contained in
+#'   the ontology or pathway associated with the chosen drug.}
+#'   \item{TissueInfo}{A data frame with tissue-related information about cell lines
+#'   in the dataset. Column 'Site' of this component is used to extract relevant
+#'   samples that user set by assigning a value to 'TrainingTissue' input in
+#'   ForeseeTrain(). Hence, this component is needed if user wants to use a
+#'   specific tissue for 'TrainingTissue'.}
+#'   \item{InputTypes}{InputTypes is a data frame with two columns of 'Name'
+#'   and 'Description', which provide the names of all components in the object
+#'   that can be used as input data (in ForeseeTrain for example), and description
+#'   for each input data.}
+#'   \item{ResponseTypes}{ResponseTypes is another two-column data frame with a
+#'   'Name' column, providing the names of all components in the object that are
+#'   a measure of drug activity and can be used as response variable (called
+#'   'CellResponseType' in ForeseeTrain) and a 'Description' column for each response variable.}
+#' }
+#' @source \url{https://portals.broadinstitute.org/ctrp.v2.1}
+"CTRP"
+
 #' DAEMEN Breast Cancer Cell Line Data Set
 #'
 #' DAEMEN ForeseeCell contains the data used in Daemen et. al. 2013 publication. We
@@ -467,6 +522,33 @@
 #' }
 #' @source \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE9782}
 "GSE9782_GPL97_dexamethasone"
+
+#' GSE51373 Patient Data Set
+#'
+#' GSE51373 is a gene expression response dataset of 28 serous epithelial ovarian
+#' cancer patients to combinatory platin-based chemo plus Paclitaxel treatment.
+#' You can check the data vignette for more information (browseVignettes(package = "FORESEE")).
+#'
+#' @format A ForeseePatient is a data structure having components of different data types,
+#' that can be indexed using double brackets or dollar sign (for example
+#' ForeseePatient\$variable1 or ForeseePatient[["variable1"]] or ForeseePatient[[1]]),
+#' similar to a list data type in R programming language.
+#'
+#' Available components in GSE51373 are:
+#'
+#' \describe{
+#'   \item{GeneExpression}{is a matrix, with genes in rows and patients in columns. Entrez IDs are
+#'   saved in 'rownames' of the matrix and patient identifiers in 'colnames'.
+#'
+#'   Raw CEL files were downloaded from GEO, and normalized using RMA from affy package.}
+#'   \item{Annotation}{is a logical vector indicating the patient response to a drug. Extra information
+#'   is provided in names(Annotation).}
+#'   \item{ExtraAnnotation}{is a data frame including all annotations that was contained in the original
+#'   patient data set. This component is not used in the FORESEE pipeline, but is included
+#'   for the user (e.g. to divide a patient data set into sub groups based on ExtraAnnotation for better modeling).}
+#' }
+#' @source \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE51373}
+"GSE51373"
 
 #' #' Landmark Genes of the Broad Institute (LINCS)
 #' #'

@@ -5,7 +5,7 @@
 ##Raw CEL files of GSE18864 must be downloaded from Gene Expression Omnibus (GEO) via the
 #link https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE18864, (or from ArrayExpress
 #using the this link: https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-18864/)
-# and untared in GSE6434-raw folder.
+# and untared in GSE18864-raw folder.
 ##You can do this process automatically by running the next lines:
 download.file(url = "https://www.ebi.ac.uk/arrayexpress/files/E-GEOD-18864/E-GEOD-18864.raw.1.zip",
               destfile = "./data-raw/GSE18864/E-GEOD-18864.raw.1.zip") #Downloading the CEL files.

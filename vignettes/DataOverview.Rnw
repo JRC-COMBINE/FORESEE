@@ -12,7 +12,7 @@
 }
 
 \title{FORESEE Data Overview and Preparation}
-\date{May 2018}
+\date{June 2018}
 \author{L. K. Turnhoff, A. H. Esfahani, M. Montazeri, N. Kusch and A. Schuppert}
 
 \begin{document}
@@ -26,7 +26,8 @@ for more convenient model development. In this text we describe the FORESEE data
 information about data sets added to FORESEE in the structure of the aforementioned objects.
 
 \section{ForeseeCell Object}
-ForeseeCell objects are either cell line or xenograft data sets that are structured to be used as a TrainObject in the FORESEE pipeline.
+ForeseeCell objects are either cell line or xenograft data sets that are structured to be used as
+a TrainObject or a TestObject in the FORESEE pipeline.
 They usually contain variety of molecular data types for model training, and various response variables, which are different measures of drug responses.
 
 \subsection{ForeseeCell Structure}
@@ -41,7 +42,8 @@ These components are available in all instances of ForeseeCell. Here we list the
   input data.
   \item[ResponseTypes] ResponseTypes is another two-column data frame with a 'Name' column,
   providing the names of all components in the object that are a measure of drug activity and can be used as
-  response variable (called 'CellResponseType' in ForeseeTrain) and a 'Description' column for each response variable.
+  response variable (called 'CellResponseType' in ForeseeTrain()) and a 'Description'
+  column for each response variable.
   \item[GeneExpression] Althought technically part of the InputTypes, GeneExpression is present in all ForeseeCell object instances.
   It is a matrix, with genes in rows and samples (cell lines or xenograft model) in columns. Entrez IDs are saved in 'rownames' of
   the matrix and sample names in 'colnames'.
@@ -56,12 +58,12 @@ These components are not necessarily available in all instances of ForeseeCell. 
   GeneExpressionRNAseq is a matrix, with genes in rows and samples (cell lines or xenograft model) in columns. Entrez IDs are saved in 'rownames' of
   the matrix and sample names in 'colnames'. Information about units used in GeneExpressionRNAseq can be found in the description of InputTypes.
   Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
-  \item[ProteinExpression] another matrix, with protein abundance values, with genes(corresponding to each protein) in rows and
+  \item[ProteinExpression] Another matrix, with protein abundance values, with genes(corresponding to each protein) in rows and
   samples (cell lines or xenograft model) in columns. Entrez IDs are saved in
   'rownames' of the matrix and sample names in 'colnames'. Information about technology and units used in ProteinExpression can be found in
   the description of InputTypes.
   Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
-  \item[Methylation] another matrix with genes in rows and samples (cell lines or xenograft model) in columns.
+  \item[Methylation] Another matrix with genes in rows and samples (cell lines or xenograft model) in columns.
   Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
   \item[SNP6] Copy number variation measured by Affymetrix genome-wide human SNP Array 6.0 chip, arranged in a matrix similar to GeneExpression,
   genes in rows and samples in columns.
@@ -75,14 +77,20 @@ These components are not necessarily available in all instances of ForeseeCell. 
   \item[CNVLoss] A binary matrix, with genes in rows and samples in columns, where one indicates a severe reduction
   in copy number variation and zero indicates normal copy number value.
   Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
-  \item[IC50,EC50,IG50,ActArea,BestResponse,...] Response variables matrices, with samples in rows and drugs in columns.
-  Availability of response components can be check via the ResponseTypes component, which also includes a description about the meaning behind
+  \item[IC50,EC50,IG50,ActArea,BestResponse,...] Response variables matrices, with
+  samples in rows and drugs in columns.
+  Availability of response components can be check via the ResponseTypes component,
+  which also includes a description about the meaning behind
   each of the response measures.
-  \item[DrugInfo] A data frame with extra information about the included drugs in the dataset. Columns 'DRUG\_NAME' and 'TARGET' from this
-  component are used in FeatureSelector.ontology() and FeatureSelector.pathway() and are needed if the user wants to use any of the mentioned
-  FeatureSelector methods, where the pipeline uses only the gene names for training the model that are contained in the ontology or
+  \item[DrugInfo] A data frame with extra information about the included drugs in
+  the dataset. Columns 'DRUG\_NAME' and 'TARGET' from this
+  component are used in FeatureSelector.ontology() and FeatureSelector.pathway()
+  and are needed if the user wants to use any of the mentioned
+  FeatureSelector methods, where the pipeline uses only the gene names for
+  training the model that are contained in the ontology or
   pathway associated with the chosen drug.
   \item[CelllineInfo] A data frame with extra information about cell lines in the dataset.
+  \item[ExperimentInfo] A data frame with extra information about experimental conditions.
   \item[TissueInfo] A data frame with tissue-related information about cell lines or xenograft models in the dataset. Column 'Site' of this
   component is used to extract relevant samples that user set by assigning a value to 'TrainingTissue' input in ForeseeTrain(). Hence, this
   component is needed if user wants to use a specific tissue for 'TrainingTissue'.
@@ -193,6 +201,50 @@ built procedure can be found in CCLEPreparer.R):
   available in CCLE.
   \item \textbf{InputTypes}: Data frame containing the names and short description of all input data components
   available in CCLE.
+\end{itemize}
+
+\subsubsection{CTRP}
+Another high-throughput cell line response data set from Board institute is
+Cancer Therapeutics Response Portal, or CTRP for short. From its website,
+'The Cancer Therapeutics Response Portal (CTRP) links genetic, lineage, and
+other cellular features of cancer cell lines to small-molecule sensitivity
+with the goal of accelerating discovery of patient-matched cancer therapeutics.'
+All relevant files for the CTRP object were downloaded on January 2019 from
+CTR2 portal \url{https://ocg.cancer.gov/programs/ctd2/data-portal}.
+
+CTPR uses the same cell lines as CCLE data set. Hence, the genetic feature data
+is identical to CCLE. For more information, check CCLE section of this vignette.
+As for experiment response data, all relevant files are in a zip file called
+CTRPv2.0\_2015\_ctd2\_ExpandedDataset.zip on CTR2 portal. For detailed information
+about the content of the zip file, and the process with which CTRP object is
+built, you can check CTRPPreparer.R.
+
+Inside CTRP object you will find:
+\begin{itemize}
+  \item \textbf{GeneExpression}: A matrix, with gene Entrez IDs in rows and cell lines in columns, containing
+  RMA-normalized gene expression profiles measured by DNA array.
+  \item \textbf{GeneExpressionRNAseq}: A matrix, with genes identified by Entrez IDs in rows and cell
+  lines in columns, containing gene expression profiles measured by RNA-seq, in Reads Per Kilobase of
+  transcript per Million (RPKM).
+  \item \textbf{Mutation, CNVGain and CNVLoss}: Three different binary matrices, with genes in rows (names converted to
+  Entrez IDs) and cell lines in columns, pointing toward mutation, gaining copy number variation and losing copy
+  number variation respectively.
+  \item \textbf{ProteinExpression}: Another matrix, with genes in rows and cell lines in columns, containing values
+  of protein abundance measured by Reverse Phase Protein Array. Gene corresponding to measured protein (Target
+  genes of antibody) in each row is identified by its Entrez ID. Since there are duplications in measured genes, we
+  used the mean value of the duplicated genes as the final value.
+  \item \textbf{TissueInfo}: A data frame with tissue-related information about
+  cell lines in the dataset. The column 'ccle\_primary\_site' was renamed to 'Site' so
+  that TissueInfo would be compatible with SampleSelector() in case user assigned a 'TrainingTissue'.
+  \item \textbf{DrugInfo}: A data frame with extra information about the tested
+  'small-molecule's of CTRP. Columns 'cpd\_name' and 'gene\_symbol\_of\_protein\_target'
+  were renamed to 'DRUG\_NAME' and 'TARGET' respectively, for compatibility with FeatureSelector().
+  \item \textbf{EC50, AUC and PPV}: From CTPR response data, three matrices were build with cell lines
+  in rows and drugs in columns. Descriptions about each measured value are available in ResponseTypes component.
+  \item \textbf{ResponseTypes}: Data frame containing the names and a short description of all response components
+  available in CTPR.
+  \item \textbf{InputTypes}: Data frame containing the names and short description of all input data components
+  available in CTPR.
 \end{itemize}
 
 \subsubsection{DAEMEN}
@@ -382,7 +434,9 @@ An overview of all ForeseePatient data sets are provided in table \ref{table:4}.
  \hline
  GSE9782\_GPL97\_bortezomib & Bortezomib & 169 & \cite{GSE9782Link} \\
  \hline
- GSE9782\_GPL97\_dexamethasone & Dexamethasone & 70 & \cite{GSE9782Link} \\ [1ex]
+ GSE9782\_GPL97\_dexamethasone & Dexamethasone & 70 & \cite{GSE9782Link} \\
+ \hline
+ GSE51373 & Platin-based \& Paclitaxel & 28 & \cite{GSE51373Link} \\ [1ex]
  \hline
 \end{tabular}}
 \caption{Overview of Available ForeseePatient Instances}

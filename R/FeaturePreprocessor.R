@@ -108,7 +108,16 @@ FeaturePreprocessor.pca <- function(TrainObject, TestObject, FeaturePreprocessin
   TestObject_processedfeatures <- TestObject
 
   # Number of how many PCs should be used for the projection
+
+  # Check: how many features can be used to do pca?
+  if (dim(TrainObject_processedfeatures$GeneExpression)[1]>10){
   number_pcs <- 10
+  } else if ((2<dim(TrainObject_processedfeatures$GeneExpression)[1]) && (dim(TrainObject_processedfeatures$GeneExpression)[1]<=10)){
+  number_pcs <- dim(TrainObject_processedfeatures$GeneExpression)[1]-2
+  message(paste("The TrainObject only contains",dim(TrainObject_processedfeatures$GeneExpression)[1],"features. The model will be built on",number_pcs ,"PCs only."))
+  } else {
+    stop("The TrainObject does not contain enough features to perform PCA!")
+  }
 
   # PCA for the Train Object
   TrainObject_pca <- prcomp(t(TrainObject_processedfeatures$GeneExpression))

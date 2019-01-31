@@ -37,8 +37,9 @@ knitr::opts_chunk$set(
  **[4.4. User-Defined GeneFilter](#usecase4.4)**<br>
  **[4.5. User-Defined FeaturePreprocessing](#usecase4.5)**<br>
  **[4.6. User-Defined BlackBox](#usecase4.6)**<br>
-
-
+**[5. Alternatives to Cell2Patient Modeling with FORESEE](#usecase5)**<br>
+ **[5.1. Cell2Cell Modeling](#usecase5.1)**<br>
+ **[5.2. PDX2Patient Modeling](#usecase5.2)**<br>
 
 **[References](#references)**<br>
 
@@ -594,6 +595,138 @@ ForeseeTest(
 )
 print(Performance)
 ```
+
+
+
+### 5.  Alternatives to Cell2Patient Modeling with FORESEE {#usecase5}
+The systematic screening of modeling pipelines is not just useful for translational cell2patient modeling. Therefore, FORESEE also supports cell-to-cell (cell2cell) and patient-derived xenograft-to-patient (pdx2patient) modeling pipelines. In this section we demonstrate one example for each use case.
+
+#### 5.1.  Cell2Cell Modeling: {#usecase5.1}
+In the case of cell2cell modeling, it can be interesting to see how well one dataset can be modelled by another one. 
+In this example, we test, how the effect of Erlotinib on cell lines can be modelled using GDSC [@Garnett2012] as a training set and CTRP [@CTRP3, @CTRP1, @CTRP2] as a test set. 
+
+First, we check if both data bases contain the drug of interest, erlotinib. 
+
+
+```r
+
+require(FORESEE)
+data("GDSC")
+data("CTRP")
+
+# Erlotinib in GDSC
+GDSC$DrugInfo$DRUG_NAME[grep("Erlotinib",GDSC$DrugInfo$DRUG_NAME,ignore.case=TRUE)]
+# Erlotinib in CTRP
+CTRP$DrugInfo$DRUG_NAME[grep("Erlotinib",CTRP$DrugInfo$DRUG_NAME,ignore.case=TRUE)]
+```
+
+In order to enable FORESEE to find the correct drug to model, we need to adjust the drug names to a common name.
+Then, we can run FORESEE exactly like for the cell2patient case. 
+Since the drug response in both platforms is given as AUC (continuous values), we pick pearson correlation as measure of evaluation.
+
+
+```r
+#Capitalize erlotinib in CTRP object
+colnames(CTRP$AUC)[grep("Erlotinib",colnames(CTRP$AUC),ignore.case=TRUE)[1]]<-"Erlotinib"
+
+# Train a model on GDSC cell line data
+ForeseeTrain(
+  TrainObject=GDSC, 
+  TestObject=CTRP, 
+  DrugName="Erlotinib", 
+  CellResponseType = "AUC", 
+  CellResponseTransformation = "none", 
+  InputDataTypes = "GeneExpression", 
+  TrainingTissue = "all", 
+  TestingTissue = "all", 
+  DuplicationHandling = "first", 
+  HomogenizationMethod = "quantile",
+  GeneFilter = "pvalue", 
+  FeaturePreprocessing = "zscore_genewise", 
+  BlackBox = "elasticnet", 
+  nfoldCrossvalidation = 1
+  )
+
+# Test the model on CTRP data
+ForeseeTest(
+  TestObject=TestObject, 
+  ForeseeModel=ForeseeModel, 
+  Evaluation = "pearson", 
+  BlackBox = "elasticnet"
+)
+
+print(Performance)
+
+# Plot the result
+plot(TestObject$DrugResponse, Foreseen, 
+     xlab = "Erlotinib Response in CTRP",
+     ylab = "Erlotinib Response Prediction",
+     title(main = paste0("Pearson Correlation of Cell2Cell Model Predicting Erlotinib: ",
+                         round(Performance, digits = 3),  " \n(Model Training on GDSC)")))
+                         
+                         
+```
+<img src="./Example5_CTRPvsGDSC.png" width="600px" />
+
+#### 5.2.  PDX2Patient Modeling: {#usecase5.2}
+
+Patiend-derived xenografts are often tested to obtain a better estimate of a drug response in patients than achievable with cell lines. FORESEE can create pdx2patient models to help determining the performance of those. In this example we check if the WITKIEWICZ pdx data [@xenograft2] can be used to train a model that predicts the drug response of GSE6434 breast cancer patients [@Chang2005].
+
+First, we check if the pdx data set contains the drug of interest, docetaxel. 
+
+```r
+
+require(FORESEE)
+data("WITKIEWICZ")
+data("GSE6434")
+
+# Docetaxel in PDX data by Witkiewicz et al.
+WITKIEWICZ$DrugInfo$Item.Name[grep("Docetaxel",WITKIEWICZ$DrugInfo$Item.Name,ignore.case=TRUE)]
+
+```
+
+In order to enable FORESEE to find the correct drug to model, we need to adjust the drug names to a common name.
+Then, we can run FORESEE exactly like for the cell2patient case. 
+
+
+```r
+#Remove the brand name of the drug in WITKIEWICZ pdx object
+colnames(WITKIEWICZ$AUC)[grep("Docetaxel",colnames(WITKIEWICZ$AUC),ignore.case=TRUE)[1]]<-"Docetaxel"
+
+# Train a model on WITKIEWICZ pdx data
+ForeseeTrain(
+  TrainObject=WITKIEWICZ, 
+  TestObject=GSE6434, 
+  DrugName="Docetaxel", 
+  CellResponseType = "AUC", 
+  CellResponseTransformation = "binarization_kmeans", 
+  InputDataTypes = "GeneExpression", 
+  TrainingTissue = "all", 
+  TestingTissue = "all", 
+  DuplicationHandling = "first", 
+  HomogenizationMethod = "ComBat",
+  GeneFilter = "all", 
+  FeaturePreprocessing = "zscore_samplewise", 
+  BlackBox = "svm", 
+  nfoldCrossvalidation = 1
+  )
+
+# Test the model on GSE6434patient data
+ForeseeTest(
+  TestObject=TestObject, 
+  ForeseeModel=ForeseeModel, 
+  Evaluation = "rocauc", 
+  BlackBox = "svm"
+)
+
+# Plot the result
+require(pROC)
+ROCObj <- pROC::roc(-(as.numeric(TestObject$Annotation)), Foreseen)
+plot.roc(ROCObj, legacy.axes = TRUE, print.auc=TRUE, main = "PDX2Patient Modeling")
+
+```
+<img src="./Example5_PDX2Patient.png" width="400px" />
+
 
 ## References {#references}
 

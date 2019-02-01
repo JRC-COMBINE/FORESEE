@@ -96,7 +96,17 @@ FeatureSelector.pvalue <- function(TrainObject, TestObject, GeneFilter, DrugName
   # Order samples in TrainObject according to their DrugResponse
   num <- min(50,floor(length(TrainObject$DrugResponse)/2)) # in case length(DrugResponse) < 100
   sensInd <- order(TrainObject$DrugResponse)[1:num]
-  resInd <- order(TrainObject$DrugResponse)[(length(TrainObject$DrugResponse)-num):length(TrainObject$DrugResponse)]
+  resInd <- order(TrainObject$DrugResponse)[(length(TrainObject$DrugResponse)-num+1):length(TrainObject$DrugResponse)]
+
+  # Warning: FORESEE pvalue is comparing most sensitive vs. most resistant samples.
+  # In case of a binarization beforehand, it is just taking a random set of num samples marked as responders
+  # vs. a random set of num samples marked as non-responders (not highest vs. lowest)
+
+  if (length(unique(TrainObject$DrugResponse))==2){
+    warning(paste0("Due to the binary response in the TrainObject, the pvalue Genefilter does not compare the ",
+                   num, " samples of highest vs. the ", num ," samples of lowest drug response, but instead compares ",
+                   num, " random resistant vs. ", num, " random sensitive samples."))
+  }
 
   # Calculate t-test between most sensitive and most resistant samples to find significant genes
   pvalue_TrainObject<-c()

@@ -12,7 +12,7 @@
 }
 
 \title{FORESEE Data Overview and Preparation}
-\date{June 2018}
+\date{February 2019}
 \author{L. K. Turnhoff, A. H. Esfahani, M. Montazeri, N. Kusch and A. Schuppert}
 
 \begin{document}
@@ -21,7 +21,7 @@
 
 \section{Introduction}
 One of the major accommodations provided by FORESEE in facilitating a rapid drug prediction model development is its rich curated data sets.
-More than two gigabytes of cell line, xenograft and patient data sets are downloaded, curated and structured in objects, which are designed
+More than three gigabytes of cell line, xenograft and patient data sets are downloaded, curated and structured in objects, which are designed
 for more convenient model development. In this text we describe the FORESEE data objects ForeseeCell and ForeseePatient. We also provide
 information about data sets added to FORESEE in the structure of the aforementioned objects.
 
@@ -45,7 +45,7 @@ These components are available in all instances of ForeseeCell. Here we list the
   response variable (called 'CellResponseType' in ForeseeTrain()) and a 'Description'
   column for each response variable.
   \item[GeneExpression] Althought technically part of the InputTypes, GeneExpression is present in all ForeseeCell object instances.
-  It is a matrix, with genes in rows and samples (cell lines or xenograft model) in columns. Entrez IDs are saved in 'rownames' of
+  It is a matrix, with genes in rows and samples (cell lines or xenograft models) in columns. Entrez IDs are saved in 'rownames' of
   the matrix and sample names in 'colnames'.
 \end{description}
 
@@ -55,15 +55,15 @@ These components are not necessarily available in all instances of ForeseeCell. 
 \begin{description}
   \item[GeneExpressionRNAseq] In data sets including both DNA array and RNA-seq measured gene expressions, DNA array values are
   saved in the 'GeneExpression' component and RNA-seq values are saved in 'GeneExpressionRNAseq'. Similar to GeneExpression,
-  GeneExpressionRNAseq is a matrix, with genes in rows and samples (cell lines or xenograft model) in columns. Entrez IDs are saved in 'rownames' of
+  GeneExpressionRNAseq is a matrix, with genes in rows and samples (cell lines or xenograft models) in columns. Entrez IDs are saved in 'rownames' of
   the matrix and sample names in 'colnames'. Information about units used in GeneExpressionRNAseq can be found in the description of InputTypes.
   Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
   \item[ProteinExpression] Another matrix, with protein abundance values, with genes(corresponding to each protein) in rows and
-  samples (cell lines or xenograft model) in columns. Entrez IDs are saved in
+  samples (cell lines or xenograft models) in columns. Entrez IDs are saved in
   'rownames' of the matrix and sample names in 'colnames'. Information about technology and units used in ProteinExpression can be found in
   the description of InputTypes.
   Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
-  \item[Methylation] Another matrix with genes in rows and samples (cell lines or xenograft model) in columns.
+  \item[Methylation] Another matrix with genes in rows and samples (cell lines or xenograft models) in columns.
   Availability of this potential component in a ForeseeCell data set can be checked via the InputTypes component.
   \item[SNP6] Copy number variation measured by Affymetrix genome-wide human SNP Array 6.0 chip, arranged in a matrix similar to GeneExpression,
   genes in rows and samples in columns.

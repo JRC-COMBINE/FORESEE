@@ -175,7 +175,7 @@ Foreseen<- Foreseer(
   ForeseeModel=ForeseeModel, 
   BlackBox = "rf_ranger"
 )
-ROCObj_GDSC <- pROC::roc(-(as.numeric(TestObject$Annotation)), Foreseen, direction="<", auc=TRUE)
+ROCObj_GDSC <- pROC::roc(TestObject$Annotation, Foreseen, direction=">", auc=TRUE)
 rocauc_GDSC <-ROCObj_GDSC$auc
 ```
 
@@ -216,7 +216,7 @@ Foreseen<- Foreseer(
   ForeseeModel=ForeseeModel, 
   BlackBox = "rf_ranger"
 )
-ROCObj_DAEMEN <- pROC::roc(-(as.numeric(TestObject$Annotation)), Foreseen, direction="<", auc=TRUE)
+ROCObj_DAEMEN <- pROC::roc(TestObject$Annotation, Foreseen, direction=">", auc=TRUE)
 rocauc_DAEMEN <-ROCObj_DAEMEN$auc
 
 ```
@@ -263,13 +263,13 @@ Foreseen<- Foreseer(
   BlackBox = "linear"
 )
 require(pROC)
-ROCObj <- pROC::roc(-(as.numeric(TestObject$Annotation)), Foreseen)
+ROCObj <- pROC::roc(TestObject$Annotation, Foreseen, direction=">")
 plot.roc(ROCObj, legacy.axes = TRUE, print.auc=TRUE, main = "Training Tissue: Lung")
 
 ```
 <img src="./Example3_TrainingTissueLung.jpeg" width="400px" />
 
-However, often there is more detailed information on the samples within the data files that remains unused, if only the *SampleSelector* is used for specification. This information can still be used, if users preprocesse the ForeseeCell Object before their analysis.
+However, often there is more detailed information on the samples within the data files that remains unused, if only the *SampleSelector* is used for specification. This information can still be used, if users preprocess the ForeseeCell Object before their analysis.
 
 In order to get an overview of what information is available for the GDSC object, we can investigate the meta information:
 ```r
@@ -312,7 +312,7 @@ Foreseen<- Foreseer(
   BlackBox = "linear"
 )
 require(pROC)
-ROCObj <- pROC::roc(-(as.numeric(TestObject$Annotation)), Foreseen)
+ROCObj <- pROC::roc(TestObject$Annotation, Foreseen, direction=">")
 plot.roc(ROCObj, legacy.axes = TRUE, print.auc=TRUE, main = "Training Histology: Carcinoma")
 
 ```
@@ -373,17 +373,17 @@ From the comparison of the value of the Performance variable, it becomes apparen
 
 
 #### 4.2. User-Defined DuplicationHandling: {#usecase4.2}
-In case of having duplications within the features, such as the expression of the same gene measured by different probes, the user can personalize how FORESEE summarizes the multiple values for the same feature into one value.
+In case of having duplication within the features, such as the expression of the same gene measured by different probes, the user can personalize how FORESEE summarizes the multiple values for the same feature into one value.
 
 FORESEE expects the function you pass to *DuplicationHandling* to get one vector of numerics as input, 
 and returns one numerical value as output. There are numerous examples of these kinds of functions in R, such as mean, median, ...
 
 *DuplicationHandling* is a cpu-intensive task. Thus, we recommend to pass a relatively fast function to 
-*DuplicationHandling* in case you want to handle the duplications by your own implemented function.
+*DuplicationHandling* in case you want to handle duplications by your own implemented function.
 
 Here are two examples showing how to pass functions to *DuplicationHandling*:
 
-As the first example, we try to have the 'median' of the duplicated features as the summerized value:
+As the first example, we try to have the 'median' of the duplicated features as the summarized value:
 
 ```r
 library(FORESEE)
@@ -615,20 +615,22 @@ data("GDSC")
 data("CTRP")
 
 # Erlotinib in GDSC
-GDSC$DrugInfo$DRUG_NAME[grep("Erlotinib",GDSC$DrugInfo$DRUG_NAME,ignore.case=TRUE)]
+grep("Erlotinib",listDrugs(GDSC),ignore.case=TRUE,value=TRUE)
 # Erlotinib in CTRP
-CTRP$DrugInfo$DRUG_NAME[grep("Erlotinib",CTRP$DrugInfo$DRUG_NAME,ignore.case=TRUE)]
+grep("Erlotinib",listDrugs(CTRP),ignore.case=TRUE,value=TRUE)
 ```
 
-In order to enable FORESEE to find the correct drug to model, we need to adjust the drug names to a common name.
-Then, we can run FORESEE exactly like for the cell2patient case. 
-Since the drug response in both platforms is given as AUC (continuous values), we pick pearson correlation as measure of evaluation.
+Although different in capitalization, either one can be used since FORESEE drug name matching is case-insensitive. 
+(In occasions where drug name difference goes beyond simple letter cases, you can feed DrugName input variable
+with both drug names. For example, if you wanted to train on erlotinib in GDSC and test on erlotinib in WITKIEWICZ,
+which has erlotinib data under the name 'Erlotinib HCl', you can use DrugName=c("Erlotinib","Erlotinib HCl") as
+input for ForeseeTrain(). This is also useful in cases where you want to train and test on different drugs.)
+
+We can run FORESEE exactly like for the cell2patient case. 
+Since the drug response in both platforms is given as AUC (continuous values), we pick Pearson correlation as measure of evaluation.
 
 
 ```r
-#Capitalize erlotinib in CTRP object
-colnames(CTRP$AUC)[grep("Erlotinib",colnames(CTRP$AUC),ignore.case=TRUE)[1]]<-"Erlotinib"
-
 # Train a model on GDSC cell line data
 ForeseeTrain(
   TrainObject=GDSC, 
@@ -670,7 +672,7 @@ plot(TestObject$DrugResponse, Foreseen,
 
 #### 5.2.  PDX2Patient Modeling: {#usecase5.2}
 
-Patiend-derived xenografts are often tested to obtain a better estimate of a drug response in patients than achievable with cell lines. FORESEE can create pdx2patient models to help determining the performance of those. In this example we check if the WITKIEWICZ pdx data [@xenograft2] can be used to train a model that predicts the drug response of GSE6434 breast cancer patients [@Chang2005].
+Patient-derived xenografts are often tested to obtain a better estimate of a drug response in patients than achievable with cell lines. FORESEE can create pdx2patient models to help determining the performance of those. In this example we check if the WITKIEWICZ pdx data [@xenograft2] can be used to train a model that predicts the drug response of GSE6434 breast cancer patients [@Chang2005].
 
 First, we check if the pdx data set contains the drug of interest, docetaxel. 
 
@@ -681,23 +683,19 @@ data("WITKIEWICZ")
 data("GSE6434")
 
 # Docetaxel in PDX data by Witkiewicz et al.
-WITKIEWICZ$DrugInfo$Item.Name[grep("Docetaxel",WITKIEWICZ$DrugInfo$Item.Name,ignore.case=TRUE)]
+grep("Docetaxel",listDrugs(WITKIEWICZ),ignore.case=TRUE,value=TRUE)
 
 ```
 
-In order to enable FORESEE to find the correct drug to model, we need to adjust the drug names to a common name.
-Then, we can run FORESEE exactly like for the cell2patient case. 
+Then, we can run FORESEE exactly like for the cell2patient case.
 
 
 ```r
-#Remove the brand name of the drug in WITKIEWICZ pdx object
-colnames(WITKIEWICZ$AUC)[grep("Docetaxel",colnames(WITKIEWICZ$AUC),ignore.case=TRUE)[1]]<-"Docetaxel"
-
 # Train a model on WITKIEWICZ pdx data
 ForeseeTrain(
   TrainObject=WITKIEWICZ, 
   TestObject=GSE6434, 
-  DrugName="Docetaxel", 
+  DrugName="Docetaxel (Taxotere)", 
   CellResponseType = "AUC", 
   CellResponseTransformation = "binarization_kmeans", 
   InputDataTypes = "GeneExpression", 
@@ -721,7 +719,7 @@ ForeseeTest(
 
 # Plot the result
 require(pROC)
-ROCObj <- pROC::roc(-(as.numeric(TestObject$Annotation)), Foreseen)
+ROCObj <- pROC::roc(TestObject$Annotation, Foreseen, direction=">")
 plot.roc(ROCObj, legacy.axes = TRUE, print.auc=TRUE, main = "PDX2Patient Modeling")
 
 ```

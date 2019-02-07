@@ -21,6 +21,8 @@ The option 'all' keeps all genes as features
 The function 'listInputOptions("FeatureSelector")' returns a list of the possible options.
 Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 If the user inserts a list as an input, the list is considered as chosen features.}
+
+\item{DrugName}{Name of the drug whose efficacy is supposed to be predicted with the model. It is used in 'ontology' or 'pathway' GeneFilters.}
 }
 \value{
 \item{TrainObject}{The TrainObject with the selected gene set as features.}

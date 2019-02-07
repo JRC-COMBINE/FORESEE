@@ -14,6 +14,9 @@
 #' @param TestObject Object that contains all data that the model is to be tested on, including molecular data (such as gene expression, mutation, copy number variation, methylation, cancer type, etc. ) and drug response data
 #' @param DrugName Name of the drug whose efficacy is supposed to be predicted with the model.
 #' You can get all possible values with listDrugs(OBJ) or listInputOptions("DrugName", OBJ), where OBJ is the object you want to use as TrainObject.
+#' In cases with ForeseeCell Objects as both TrainObject and TestObject inputs, if you want to use two different drugs from train & test objects
+#' (or the same drug have different names in your train and test objects), you can use a character vector with the length 2 as DrugName input.
+#' In this case, the first value in the character vector is used on TrainObject and the second on TestObject.
 #' @param CellResponseType Format of the drug response data of the TrainObject, such as IC50, AUC, GI50, etc.
 #' You can get all possible values with listInputOptions("CellResponseType", OBJ), where OBJ is the object you want to use as TrainObject.
 #' @param CellResponseTransformation Method that is to be used to transform the drug response data of the TrainObject, such as power transform, logarithm, binarization, user defined functions, etc.
@@ -65,12 +68,20 @@ ForeseeTrain <- function(TrainObject, TestObject, DrugName, CellResponseType, Ce
   # The function 'listInputOptions("CellResponseProcessor")' returns a list of the possible options.
   # Instead of choosing one of the implemented options, a user-defined function can be used as an input.
 
+  # Preprocessing DrugName input:
+  if(!is.character(DrugName) | length(DrugName) > 2 | length(DrugName) < 1){
+    stop("'DrugName' is expected to be a character vector of length 1 or 2.")
+  } else {
+    TestDrugName <- tail(DrugName, n = 1)
+    DrugName <- DrugName[1]
+  }
+
   # Process Cell Response
   TrainObject <- CellResponseProcessor(TrainObject, DrugName, CellResponseType, CellResponseTransformation)
 
   # If FORESEE is used to do cell2cell prediction, the drug response data of the TestObject is processed in the same manner as the TrainObject
   if (class(TestObject)=="ForeseeCell"){
-    TestObject <- CellResponseProcessor(TestObject, DrugName=DrugName, CellResponseType=CellResponseType, CellResponseTransformation=CellResponseTransformation)
+    TestObject <- CellResponseProcessor(TestObject, DrugName=TestDrugName, CellResponseType=CellResponseType, CellResponseTransformation=CellResponseTransformation)
   }
 
   #################################################################################################################################

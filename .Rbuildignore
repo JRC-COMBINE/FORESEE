@@ -5,3 +5,4 @@
 ^data-raw$
 README.md
 documentation/*
+.DS_store

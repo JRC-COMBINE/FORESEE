@@ -599,13 +599,13 @@ print(Performance)
 
 
 ### 5.  Alternatives to Cell2Patient Modeling with FORESEE {#usecase5}
-The systematic screening of modeling pipelines is not just useful for translational cell2patient modeling. Therefore, FORESEE also supports cell-to-cell (cell2cell) and patient-derived xenograft-to-patient (pdx2patient) modeling pipelines. In this section we demonstrate one example for each use case.
+The systematic screening of modeling pipelines is not just useful for translational cell2patient modeling. Therefore, FORESEE also supports cell-to-cell (cell2cell) and patient-derived xenograft-to-patient (pdx2patient) modeling pipelines. In this section, we demonstrate one example for each use case.
 
 #### 5.1.  Cell2Cell Modeling: {#usecase5.1}
 In the case of cell2cell modeling, it can be interesting to see how well one dataset can be modelled by another one. 
 In this example, we test, how the effect of Erlotinib on cell lines can be modelled using GDSC [@Garnett2012] as a training set and CTRP [@CTRP3, @CTRP1, @CTRP2] as a test set. 
 
-First, we check if both data bases contain the drug of interest, erlotinib. 
+First, we check if both data bases contain the drug of interest, Erlotinib. 
 
 
 ```r
@@ -622,12 +622,12 @@ grep("Erlotinib",listDrugs(CTRP),ignore.case=TRUE,value=TRUE)
 
 Although different in capitalization, either one can be used since FORESEE drug name matching is case-insensitive. 
 (In occasions where drug name difference goes beyond simple letter cases, you can feed DrugName input variable
-with both drug names. For example, if you wanted to train on erlotinib in GDSC and test on erlotinib in WITKIEWICZ,
-which has erlotinib data under the name 'Erlotinib HCl', you can use DrugName=c("Erlotinib","Erlotinib HCl") as
+with both drug names. For example, if you wanted to train on Erlotinib in GDSC and test on Erlotinib in WITKIEWICZ,
+which has Erlotinib data under the name 'Erlotinib HCl', you can use DrugName=c("Erlotinib","Erlotinib HCl") as
 input for ForeseeTrain(). This is also useful in cases where you want to train and test on different drugs.)
 
-We can run FORESEE exactly like for the cell2patient case. 
-Since the drug response in both platforms is given as AUC (continuous values), we pick Pearson correlation as measure of evaluation.
+We can run FORESEE the same way we did for the cell2patient case. 
+Since the drug response in both platforms is given as AUC (continuous values), we pick Pearson correlation as the measure of evaluation.
 
 
 ```r
@@ -672,9 +672,9 @@ plot(TestObject$DrugResponse, Foreseen,
 
 #### 5.2.  PDX2Patient Modeling: {#usecase5.2}
 
-Patient-derived xenografts are often tested to obtain a better estimate of a drug response in patients than achievable with cell lines. FORESEE can create pdx2patient models to help determining the performance of those. In this example we check if the WITKIEWICZ pdx data [@xenograft2] can be used to train a model that predicts the drug response of GSE6434 breast cancer patients [@Chang2005].
+Patient-derived xenografts are often tested to obtain a better estimate of a drug response in patients than achievable with cell lines. FORESEE can create pdx2patient models to help determine the performance of those. In this example, we check if the WITKIEWICZ pdx data [@xenograft2] can be used to train a model that predicts the drug response of GSE6434 breast cancer patients [@Chang2005].
 
-First, we check if the pdx data set contains the drug of interest, docetaxel. 
+First, we check if the pdx data set contains the drug of interest, Docetaxel. 
 
 ```r
 
@@ -687,7 +687,7 @@ grep("Docetaxel",listDrugs(WITKIEWICZ),ignore.case=TRUE,value=TRUE)
 
 ```
 
-Then, we can run FORESEE exactly like for the cell2patient case.
+Then, we can run FORESEE the same way we did for the cell2patient case.
 
 
 ```r

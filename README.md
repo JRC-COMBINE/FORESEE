@@ -1,3 +1,8 @@
+## Notice: This repository is deprecated!
+Due to file size restrictions of GitHub, we moved FORESEE to [a GitLab repository, hosted by RWTH Aachen university](https://git.rwth-aachen.de/jrc-combine/foresee), and continued support and development there. 
+
+Therefore, for accessing the last version of FORESEE, use the GitLab version here: https://git.rwth-aachen.de/jrc-combine/foresee.
+
 # FORESEE: a Tool for the Systematic Comparison of Translational Drug Response Modeling Pipelines
 
 The uniFied translatiOnal dRug rESponsE prEdiction platform FORESEE is an R-package that is designed to act as a scaffold in developing and benchmarking translational drug sensitivity models. The package is generally geared to utilize drug sensitivity knowledge gained in cancer cell line modeling to predict clinical therapy outcome in patients. For this purpose, FORESEE introduces a uniform data format for public cell line and patient data sets on the one hand and incorporates state-of-the-art preprocessing methods, model training algorithms and different validation techniques on the other hand. The modular implementation of these different functional elements offers the training and testing of diverse combinatorial models, which can be used to re-evaluate and improve already existing modeling pipelines, but also to develop new ones.
